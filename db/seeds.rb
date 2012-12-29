@@ -2,3 +2,5 @@ admin = User.create_main_user(   :email => "admin@gmail.com" ,:password => "will
 
 customer_1 = Customer.create :name => "Dixzell"
 customer_2 = Customer.create :name => "Bangka Terbang"
+
+

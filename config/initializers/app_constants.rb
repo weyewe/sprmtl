@@ -101,7 +101,11 @@ IMAGE_ASSET_URL = {
 
 
 
- 
+PAYMENT_TERM = {
+  :cash                    => 1,  # paid in advance
+  :credit                  => 2, # create invoice on delivery 
+  :credit_with_downpayment => 3  # partially paid in advance, will be deducted at the end of the term
+} 
 
 # inside VS outside 
 SALES_ITEM_STATUS = {
