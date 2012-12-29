@@ -92,7 +92,8 @@ class SalesItem < ActiveRecord::Base
     if self.only_machining?
       PostProductionOrder.create_machining_only_sales_production_order( self )
     elsif self.casting_included?
-      ProductionOrder.create_sales_production_order( self )
+      production_order = ProductionOrder.create_sales_production_order( self )
+      self.update_pending_production 
     end    
     
     self.is_confirmed = true 
@@ -108,14 +109,31 @@ class SalesItem < ActiveRecord::Base
   end
   
   
+=begin
+  PRODUCTION PROGRESS TRACKING
+=end
+  def update_pending_production
+    to_be_produced = self.production_orders.sum("quantity" )
+    produced = self.production_histories.sum('quantity')
+    
+    self.pending_production = to_be_produced - produced 
+    self.save 
+  end
+  
+  def deduct_pending_production
 
 =begin
-  PRODUCTION PROGRESS
+  PRODUCTION PROGRESS STATISTIC
 =end
 
   def update_pre_production_statistics 
     self.number_of_pre_production = self.pre_production_histories.sum('processed_quantity')
     self.save 
+  end
+  
+  
+  def update_production_statistics( production_history ) 
+    
   end
   
 end

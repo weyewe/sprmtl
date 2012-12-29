@@ -40,7 +40,6 @@ class PreProductionHistory < ActiveRecord::Base
     
     new_object.creator_id         =  employee.id
     new_object.sales_item_id      =  sales_item.id
-    new_object.processed_quantity =  params[:processed_quantity] 
     new_object.ok_quantity        =  params[:ok_quantity]
     new_object.broken_quantity    =  params[:broken_quantity]  
     new_object.start_date         =  params[:start_date]

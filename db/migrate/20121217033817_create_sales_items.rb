@@ -19,6 +19,7 @@ class CreateSalesItems < ActiveRecord::Migration
       
       t.decimal :price_per_piece , :precision => 11, :scale => 2 , :default => 0  # 10^9 << max value
       t.integer :quantity 
+      
       t.text    :delivery_address 
       t.text    :description 
       

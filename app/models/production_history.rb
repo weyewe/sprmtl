@@ -2,12 +2,12 @@ class ProductionHistory < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_item 
   validates_presence_of  :processed_quantity, 
-                          :ok_quantity, :repairable_quantity, :broken_quantity, 
-                          :ok_weight, :repairable_weight,  :broken_weight, 
+                          :ok_quantity,  :broken_quantity,  #:repairable_quantity,
+                          :ok_weight,   :broken_weight,  #:repairable_weight,
                           :start_date, :finish_date
                           
-  validates_numericality_of :ok_quantity, :broken_quantity  , :repairable_quantity, 
-                  :ok_weight, :repairable_weight, :broken_weight 
+  validates_numericality_of :ok_quantity, :broken_quantity  ,  #:repairable_quantity, 
+                          :ok_weight, :broken_weight  #:repairable_weight,
                   
    
   
@@ -18,17 +18,22 @@ class ProductionHistory < ActiveRecord::Base
     
     
     new_object.ok_quantity         = params[:ok_quantity]
-    new_object.repairable_quantity = params[:repairable_quantity]
+    # new_object.repairable_quantity = params[:repairable_quantity]
     new_object.broken_quantity     = params[:broken_quantity] 
     new_object.ok_weight           = params[:ok_weight] 
-    new_object.repairable_weight   = params[:repairable_weight] 
+    # new_object.repairable_weight   = params[:repairable_weight] 
     new_object.broken_weight       = params[:broken_weight] 
     new_object.start_date          = params[:start_date] 
     new_object.finish_date         = params[:finish_date] 
 
     
     if new_object.save   
-      sales_item.update_production_statistics 
+      new_object.update_processed_quantity
+      sales_item.update_production_statistics( new_object )  
+      
+      #  result in production => ok or broken 
+      # broken in postproduction => ok or broken  --> that's it.. no repair  (cross department will confuse them)
+ 
     end
     
     return new_object 
@@ -36,7 +41,7 @@ class ProductionHistory < ActiveRecord::Base
   
   def update_processed_quantity 
     self.processed_quantity = new_object.ok_quantity  + 
-                                    new_object.repairable_quantity + 
+                                    # new_object.repairable_quantity + 
                                     new_object.broken_quantity
     self.save
   end

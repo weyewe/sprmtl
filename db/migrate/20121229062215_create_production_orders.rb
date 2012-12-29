@@ -4,6 +4,7 @@ class CreateProductionOrders < ActiveRecord::Migration
       t.integer :sales_item_id 
       t.integer :creator_id 
       
+      
       t.integer :case     , :default  => PRODUCTION_ORDER[:sales_order]
       
       t.integer :quantity 
@@ -12,6 +13,7 @@ class CreateProductionOrders < ActiveRecord::Migration
       t.integer :source_document_entry_id
       t.string  :source_document 
       t.integer :source_document_id 
+      
        
       
       t.timestamps
