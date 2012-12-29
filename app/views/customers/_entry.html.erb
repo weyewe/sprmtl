@@ -1,0 +1,40 @@
+ 
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%= "#{object.name}" %>
+	</td>
+	<td>
+		<%= "#{object.contact_person}" %>
+	</td>
+	
+	<td>
+		<ul>
+			<li>tel: <%= object.phone %></li>
+			<li>cell: <%= object.mobile %></li>
+			<li>bbm: <%= object.bbm_pin   %></li>
+			<li>email: <%= object.email   %> </li>
+		</ul>  
+	</td>
+	 
+
+	<td>
+		<ul>
+			<li>Office: <%= object.office_address %></li>
+			<li>Delivery: <%= object.delivery_address %></li> 
+		</ul>
+	</td>
+	
+	<td>
+		<%= link_to root_url, :class =>"delete_entry", :style => "cursor:pointer; text-decoration:none;" do %>
+			<i class='icon-remove'></i>Delete
+		<% end %> 
+	</td>
+
+	<td>
+		<%= link_to edit_customer_url(object), 
+			:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+			<i class='icon-edit'></i>Edit
+		<% end %>
+	</td>
+	
+</tr>

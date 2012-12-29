@@ -1,0 +1,337 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<title><%= COMPANY_NAME %> | <%= COMPANY_MOTO %></title>
+	
+	<meta charset="utf-8">
+	
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,800">
+	
+	
+<!-- 	<link rel="stylesheet" href="css/font-awesome.css">
+	
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/bootstrap-responsive.css">
+
+	<link rel="stylesheet" href="./css/ui-lightness/jquery-ui-1.8.21.custom.css">	
+	
+	<link rel="stylesheet" href="css/application.css">
+	<link rel="stylesheet" href="css/pages/dashboard.css"> -->
+	<%= stylesheet_link_tag 'application'%>
+	<%= yield :additional_css %>
+
+	<%= javascript_include_tag 'modernizr-2.5.3.min' %>
+	<!-- <script src="js/libs/modernizr-2.5.3.min.js"></script> -->
+	<%= csrf_meta_tags %>
+
+</head>
+
+<body>
+	
+<div id="wrapper">
+	
+<div id="topbar">
+	
+	<div class="container">
+		
+		<a href="javascript:;" id="menu-trigger" class="dropdown-toggle" data-toggle="dropdown" data-target="#">
+			<i class="icon-cog"></i>
+		</a>
+	
+		<div id="top-nav">
+			
+			<ul>
+				<!-- <li class="dropdown">
+							<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+								View Your Store				
+								<b class="caret"></b>
+							</a>
+							
+							<ul class="dropdown-menu pull-right">
+								<li><a href="javascript:;">All Store</a></li>
+								<li><a href="javascript:;">Store 1 </a></li>
+								<li><a href="javascript:;">Store 2</a></li> 
+							</ul> 
+						</li> -->
+			</ul>
+			
+			<ul class="pull-right">
+				<li><a href="javascript:;"><i class="icon-user"></i> Logged in as Bambang Dixzell</a></li>
+				<li><a href="javascript:;"><span class="badge badge-primary">1</span> New Message</a></li>
+				<li class="dropdown">
+					<a href="./pages/settings.html" class="dropdown-toggle" data-toggle="dropdown">
+						Settings						
+						<b class="caret"></b>
+					</a>
+					
+					<ul class="dropdown-menu pull-right">
+						<li><a href="javascript:;">Settings #1</a></li>
+						<li><a href="javascript:;">Settings #2</a></li>
+						<li class="dropdown-submenu">
+		                  <a tabindex="-1" href="#">Dropdown menu</a>
+		                  <ul class="dropdown-menu">
+		                    <li><a tabindex="-1" href="#">Second level link</a></li>
+		                    <li><a tabindex="-1" href="#">Second level link</a></li>
+		                    <li><a tabindex="-1" href="#">Second level link</a></li>
+		                  </ul>
+		                </li>
+					</ul> 
+				</li>
+				<li><%= link_to "Logout", destroy_user_session_url %> </li>
+			</ul>
+			
+		</div> <!-- /#top-nav -->
+		
+	</div> <!-- /.container -->
+	
+</div> <!-- /#topbar -->
+
+
+	
+	
+<div id="header">
+	
+	<div class="container">
+		
+		<a href="./index.html" class="brand">Dashboard Admin</a>
+		
+		<a href="javascript:;" class="btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        	<i class="icon-reorder"></i>
+      	</a>
+	
+		<div class="nav-collapse">
+			<ul id="main-nav" class="nav pull-right">
+				<li class="nav-icon active">
+					<%= link_to '#'  do %>
+						<i class="icon-home"></i>
+						<span>Home</span>
+					<% end %>
+					<!-- <a href="./index.html">
+							  					
+						</a> -->
+				</li>
+				
+				<li class="dropdown">					
+					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-th"></i>
+						<span>Management</span> 
+						<b class="caret"></b>
+					</a>	
+				
+					<ul class="dropdown-menu">
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-plus-sign"></i>Store
+							<% end %>
+						</li>
+						<li>
+							<%= link_to '#'   do %>
+								<i class="icon-user"></i>
+								<span>Employee</span>
+							<% end %>
+						</li>
+				 
+					</ul>    				
+				</li>
+				
+				<li class="dropdown">					
+					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-gift"></i>
+						<span> Supply</span> 
+						<b class="caret"></b>
+					</a>	
+				
+					<ul class="dropdown-menu">
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-folder-open"></i>Vendor
+							<% end %> 
+						</li>
+						<li>
+							
+							<%= link_to '#'  do %>
+								<i class="icon-th-list"></i>Purchase Invoice
+							<% end %>
+						</li>
+						<li>
+							<%= link_to '#'   do %>
+								<i class="icon-remove"></i>Purchase Return
+							<% end %>
+							
+						</li>
+						<!-- <li><a href="./pricing.html"> <i class="icon-flag"></i>Purchase Allowance</a></li>  -->
+						
+						<li class="divider"></li>
+						
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-tasks"></i>Stock Conversion 
+							<% end %>
+						</li>
+						
+						
+					</ul>    				
+				</li>
+				
+				<li class="dropdown">					
+					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-copy"></i>
+						<span>Inventory</span> 
+						<b class="caret"></b>
+					</a>	
+					
+					 
+				
+					<ul class="dropdown-menu">
+						<li>
+							<%= link_to '#' do %>
+								<i class="icon-folder-open"></i>Category
+							<% end %>
+								<!-- <a href="./faq.html"><i class="icon-folder-open"></i>Item Category</a> -->
+						</li>
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-hdd"></i>Item DB
+							<% end %>
+							<!-- <a href="./faq.html"><i class="icon-hdd"></i>Item DB</a> -->
+						</li> 
+						
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-th-list"></i>Service DB
+							<% end %>
+						</li>
+						
+						
+						
+						<li class="divider"></li>
+						
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-star"></i>Stock Migration
+							<% end %>
+						</li>
+						
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-edit"></i>Stock Adjustment
+							<% end %>
+						</li>
+						
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-tasks"></i>Convert Stock
+							<% end %>
+						</li>
+						
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-trash"></i>Scrap Item
+							<% end %>
+						</li>
+						
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-refresh"></i>Replace Item
+							<% end %>
+						</li>
+						
+						
+						 
+						
+					</ul>    				
+				</li>
+				
+				<li class="dropdown">					
+					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-shopping-cart"></i>
+						<span>Sales</span> 
+						<b class="caret"></b>
+					</a>	
+				
+					<ul class="dropdown-menu">							
+						<li>
+							<%= link_to new_customer_url  do %>
+								<i class="icon-folder-close"></i>Customer
+							<% end %>
+							 
+						</li>
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-shopping-cart"></i>Sales Order
+							<% end %>
+						</li>
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-wrench"></i>Sales Return
+							<% end %>							
+						</li>
+						
+						<li class="divider"></li>
+						
+						<li>
+							<%= link_to '#'  do %>
+								<i class="icon-tasks"></i>Sales History
+							<% end %>
+						</li>
+					</ul>    				
+				</li>
+			</ul>
+			
+		</div> <!-- /.nav-collapse -->
+
+	</div> <!-- /.container -->
+	
+</div> <!-- /#header -->
+
+
+
+
+	<%= yield %>
+
+
+</div> <!-- /#wrapper -->
+
+
+
+
+<div id="footer">
+		
+	<div class="container">
+		
+		<div class="row">
+			
+			<div class="span6">
+				© 2012 <a href="http://weyewe.com">weyewe</a>, all rights reserved.
+			</div> <!-- /span6 -->
+			
+			<div id="builtby" class="span6">
+				<a href="http://weyewe.com">Built by weyewe.</a>				
+			</div> <!-- /.span6 -->
+			
+		</div> <!-- /row -->
+		
+	</div> <!-- /container -->
+	
+</div> <!-- /#footer -->
+
+
+ 
+
+
+<%= javascript_include_tag "application" %>
+<%= yield :additional_js %>
+
+
+
+</body>
+</html>

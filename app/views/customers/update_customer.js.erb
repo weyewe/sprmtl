@@ -1,0 +1,49 @@
+$(document).ready(function(){
+	// remove the spin
+	
+	var $modal = $("#editEntry");
+	var $form = $("form", $modal );
+	$form.spin(false); 
+	
+	// if update is successful
+		// remove the form 
+		// hide the modal 
+		// update the row entry 
+	// else
+		// replace the form with the faulty one 
+		// show all the error 
+	
+	
+		<% if   @has_no_errors  %> 
+			// clean the add product form
+			$form.remove(); 
+
+			<% new_entry  = escape_javascript( render :partial =>  'customers/entry', :locals => {
+				:object => @customer 
+			} )%>
+
+			$("#entry-<%= @customer.id %>").replaceWith('<%= new_entry %>') 
+
+			$.msgbox("Berhasil update Customer: <%= @customer.name %>", 
+						{type: "info"});
+
+			
+			$modal.modal('hide'); 
+
+
+		<% elsif  not @has_no_errors %> 
+			<% new_form = escape_javascript(   render :partial => "customers/new_object_form", :locals => {
+		    :new_object => @customer , 
+				:url => update_customer_url(@customer)  
+		  })%>
+			//replace the form, show the edit
+			$form.replaceWith("<%= new_form %>"); 
+
+			$.msgbox("Error dalam update customer: <%= @customer.name %>", 
+						{type: "error"});
+		<% end %>
+
+
+
+		jQuery('.prevent_double_submit').preventDoubleSubmit(); 
+});

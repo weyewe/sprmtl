@@ -1,0 +1,59 @@
+<div class="account-container login stacked">
+	
+	<div class="content clearfix">
+		 
+		
+		<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+		
+		<h1>Sign In</h1>		
+		
+		<div class="login-fields">
+			
+			<p>Sign in using your registered account:</p>
+			
+			<div class="field">
+				<label for="username">Email:</label>
+				<!-- <input type="text" id="username" name="username" value="" placeholder="Email" class="login username-field" /> -->
+				<%= f.text_field :email  , placeholder: "Email", autocomplete: "off", :class=> "login username-field" %>
+			</div> <!-- /field -->
+			
+			<div class="field">
+				<label for="password">Password:</label>
+				<!-- <input type="password" id="password" name="password" value="" placeholder="Password" class="login password-field"/> -->
+				<%= f.password_field :password , placeholder: "Password", autocomplete: "off" , :class => "login password-field" %>
+			</div> <!-- /password -->
+			
+		</div> <!-- /login-fields -->
+		
+		<div class="login-actions">
+			
+			<span class="login-checkbox">
+				<%= f.check_box :remember_me %>
+				<!-- <input id="Field" name="Field" type="checkbox" class="field login-checkbox" value="First Choice" tabindex="4" /> -->
+				<label class="choice" for="Field">Keep me signed in</label>
+			</span>
+								
+			<%= f.submit   "Sign In", :class => "button btn btn-primary btn-large"  %>
+			
+		</div> <!-- .actions -->
+		 
+	  <% end %>
+	
+		
+	</div> <!-- /content -->
+	
+</div> <!-- /account-container -->
+
+
+<!-- Text Under Box -->
+<!-- <div class="login-extra">
+	Don't have an account? <a href="./signup.html">Sign Up</a><br/>
+	Remind <a href="#">Password</a>
+</div> --> <!-- /login-extra -->
+
+
+  
+ 
+<% content_for :additional_js do %> 
+  <%= javascript_include_tag "signin.js" 	%> 
+<% end %>

@@ -1,0 +1,12 @@
+<div class="alert">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <strong>Error! Total error: <%= new_object.errors.messages.length %></strong>
+
+	<ul>
+		<% new_object.errors.each do |attr, err| %>
+			<li>
+				<%= err %>
+			</li>
+		<% end %>    
+	</ul>
+</div>

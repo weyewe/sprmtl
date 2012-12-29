@@ -1,0 +1,50 @@
+<% if new_object.persisted? %>
+	<% id = 'edit_object'%>
+<% else %>
+	<% id = 'new_object'%>
+<% end %>
+
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => "form-horizontal prevent_double_submit ajax-form   no_content_form",
+        :id => "#{id}"}) do |f| %>
+
+	 
+
+
+  <%= f.input :name  , :input_html => {:class => "input-xlarge "}, 
+  :label => "Name" %>
+
+	<%= f.input :contact_person  , :input_html => {:class => "input-xlarge "}, 
+  :label => "Contact Person" %>
+
+	<%= f.input :phone  , :input_html => {:class => "input-xlarge "}, 
+  :label => "Telepon" %>
+
+	<%= f.input :mobile  , :input_html => {:class => "input-xlarge "}, 
+  :label => "HP" %>
+
+	<%= f.input :bbm_pin  , :input_html => {:class => "input-xlarge "}, 
+  :label => "BBM" %>
+
+
+	<%= f.input :email  , :input_html => {:class => "input-xlarge "}, 
+  :label => "Email" %>
+ 
+	<%= f.input :office_address  , :input_html => {:class => "input-xlarge ", :rows => 3}, 
+  :label => "Alamat Kantor" %>
+
+	<%= f.input :delivery_address  , :input_html => {:class => "input-xlarge ", :rows => 3}, 
+  :label => "Alamat Pengiriman" %>
+
+
+  <div class="form-actions">
+	
+		<% if new_object.persisted? %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update Customer" %>
+		<% else %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Customer" %>
+		<% end %>
+		
+  </div>
+<% end %>

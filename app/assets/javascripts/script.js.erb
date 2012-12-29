@@ -1,0 +1,45 @@
+/* All ajax requests are sending authenticty token*/
+$(document).ajaxSend(function(event, request, settings) {
+  if (typeof(AUTH_TOKEN) == "undefined") return;
+  // settings.data is a serialized string like "foo=bar&baz=boink" (or null)
+  settings.data = settings.data || "";
+  settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(AUTH_TOKEN);
+});
+
+
+
+$(document).ready(function(){
+	
+	jQuery('.prevent_double_submit').preventDoubleSubmit();
+	
+	$(".ajax-form").live("submit", function(){
+    var $form = $(this);  
+    // $form.showLoading();
+
+		$form.spin("large", "black");
+		// $form.spin(false);
+
+    $.ajax({
+      url: $form.attr("action"),
+      type: "POST",
+      data: $form.serialize(),
+      dataType: 'script',
+      success: function(response){
+        // 
+        // $form.clearForm();
+        // $entry_link.hideLoading();
+      }
+    });
+    
+    return false ; 
+  });
+
+	
+
+
+	
+	
+
+
+
+});
