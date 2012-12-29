@@ -70,3 +70,15 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'debugger'
+group :development, :test do 
+  
+  gem "rspec-rails", "~> 2.6"
+  gem "factory_girl_rails", "~> 4.0"
+  # gem "faker"
+end
+
+
+group :test do
+  # Pretty printed test output
+  gem 'turn', :require => false
+end

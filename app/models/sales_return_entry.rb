@@ -1,4 +1,4 @@
-class ProductionHistory < ActiveRecord::Base
+class SalesReturnEntry < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_item 
 end

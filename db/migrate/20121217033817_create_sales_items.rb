@@ -10,7 +10,7 @@ class CreateSalesItems < ActiveRecord::Migration
       t.string  :past_sales_item_id 
       
       
-      t.integer :material_id 
+      t.integer :material_id , :default => MATERIAL[:steel][:value]
       
       t.boolean :is_pre_production    ,   :default => false 
       t.boolean :is_production        ,   :default => false 
@@ -20,6 +20,7 @@ class CreateSalesItems < ActiveRecord::Migration
       t.decimal :price_per_piece , :precision => 11, :scale => 2 , :default => 0  # 10^9 << max value
       t.integer :quantity 
       t.text    :delivery_address 
+      t.text    :description 
       
       t.date    :requested_deadline
       t.date    :estimated_internal_deadline 
@@ -44,6 +45,8 @@ class CreateSalesItems < ActiveRecord::Migration
       # fulfilled order => when it is approved by the customer
       # if there is sales return, deduct the fulfilled order 
       t.integer :fulfilled_order                , :default =>  0 
+       
+     t.boolean :is_confirmed, :default => true 
       
       
 =begin

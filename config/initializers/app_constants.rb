@@ -99,21 +99,60 @@ IMAGE_ASSET_URL = {
 }
 
 
+=begin
+  ITEM CONSTANT
+=end
+MATERIAL     = {
+  :steel     => {
+    :value   => 1, 
+    :name    => "Steel" 
+  } ,
+  :copper    =>  {
+    :value   => 2, 
+    :name    => "Tembaga"
+  }, 
+  :alumunium => {
+    :value   => 3, 
+    :name    => "Aluminium"
+  }
+}
 
 
+=begin
+  PRODUCTION RELATED
+=end
+
+
+PRODUCTION_ORDER = {
+  :sales_order          => 1,  
+  :fail_production      => 2, 
+  :fail_post_production => 3, 
+  :sales_return         => 4, 
+  :delivery_lost        => 5 
+}
+
+POST_PRODUCTION_ORDER = {
+  :sales_order_only_post_production => 1,  # so the guy put the iron @us. 
+  :sales_order                      => 2
+  :production_repair                => 3, 
+  :sales_return                     => 4
+}
+
+RECYCLE_ORDER  = {
+  :production_failure      => 1, 
+  :post_production_failure => 2,
+  :sales_return         => 3   # returned, can't be fixed at all. fuck.  recycle 
+}
+ 
+ 
+=begin
+  PAYMENT RELATED
+=end
+ 
 PAYMENT_TERM = {
   :cash                    => 1,  # paid in advance
   :credit                  => 2, # create invoice on delivery 
   :credit_with_downpayment => 3  # partially paid in advance, will be deducted at the end of the term
-} 
-
-# inside VS outside 
-SALES_ITEM_STATUS = {
-  :ready => 1 ,
-  :on_delivery => 2 ,
-  :delivered => 3 , 
-  :pending_production => 4 , 
-  :pending_post_production => 5  
 }
  
 
