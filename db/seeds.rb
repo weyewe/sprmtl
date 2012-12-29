@@ -63,7 +63,7 @@ ProductionHistory.create_history( admin, sales_item_1, {
   :broken_weight         => 20,
   
   :person_in_charge      => nil ,# list of employee id 
-  :order_date            => Date.new( 2012, 10,10 ) ,
+  :start_date            => Date.new( 2012, 10,10 ) ,
   :finish_date           => Date.new( 2013, 1, 15) 
 })
 
@@ -83,7 +83,7 @@ PostProductionHistory.create_history( admin, sales_item_1, {
   :broken_weight      => 20,
   
   :person_in_charge   => nil ,# list of employee id 
-  :order_date         => Date.new( 2012, 10,10 ) ,
+  :start_date         => Date.new( 2012, 10,10 ) ,
   :finish_date        => Date.new( 2013, 1, 15) 
 })
 # update pending production 
