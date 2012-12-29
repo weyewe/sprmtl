@@ -124,7 +124,7 @@ ActiveRecord::Schema.define(:version => 20121229075312) do
     t.integer  "ready",                                                           :default => 0
     t.integer  "on_delivery",                                                     :default => 0
     t.integer  "fulfilled_order",                                                 :default => 0
-    t.boolean  "is_confirmed",                                                    :default => true
+    t.boolean  "is_confirmed",                                                    :default => false
     t.datetime "created_at",                                                                         :null => false
     t.datetime "updated_at",                                                                         :null => false
   end

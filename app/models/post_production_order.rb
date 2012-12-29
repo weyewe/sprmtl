@@ -5,7 +5,7 @@ class PostProductionOrder < ActiveRecord::Base
                   
   belongs_to :sales_item 
   
-  def PostProductionOrder.create_machining_only( sales_item )
+  def PostProductionOrder.create_machining_only_sales_production_order( sales_item )
     PostProductionOrder.create(
       :sales_item_id            => sales_item.id                                               , 
       :case                     =>  POST_PRODUCTION_ORDER[:sales_order_only_post_production]   ,

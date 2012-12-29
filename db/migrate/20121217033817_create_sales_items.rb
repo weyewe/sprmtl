@@ -46,7 +46,7 @@ class CreateSalesItems < ActiveRecord::Migration
       # if there is sales return, deduct the fulfilled order 
       t.integer :fulfilled_order                , :default =>  0 
        
-     t.boolean :is_confirmed, :default => true 
+     t.boolean :is_confirmed, :default => false  
       
       
 =begin

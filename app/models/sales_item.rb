@@ -1,6 +1,8 @@
 class SalesItem < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_order
+  
+  has_many :pre_production_orders
   has_many :production_orders
   has_many :post_production_orders
   
@@ -88,7 +90,7 @@ class SalesItem < ActiveRecord::Base
     return nil if self.is_confirmed == true 
     
     if self.only_machining?
-      PostProductionOrder.create_machining_only( self )
+      PostProductionOrder.create_machining_only_sales_production_order( self )
     elsif self.casting_included?
       ProductionOrder.create_sales_production_order( self )
     end    
@@ -107,5 +109,13 @@ class SalesItem < ActiveRecord::Base
   
   
 
+=begin
+  PRODUCTION PROGRESS
+=end
+
+  def update_pre_production_statistics 
+    self.number_of_pre_production = self.pre_production_histories.sum('processed_quantity')
+    self.save 
+  end
   
 end
