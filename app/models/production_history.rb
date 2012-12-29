@@ -33,6 +33,14 @@ class ProductionHistory < ActiveRecord::Base
       
       #  result in production => ok or broken 
       # broken in postproduction => ok or broken  --> that's it.. no repair  (cross department will confuse them)
+      if sales_item.is_post_production? 
+        # generate PostProductionOrder 
+        PostProductionOrder.generate_sales_production_order( new_object )
+      else
+        # update item ready
+        sales_item.update_ready_item( new_object )  
+      end
+      
  
     end
     

@@ -135,5 +135,23 @@ class SalesItem < ActiveRecord::Base
   def update_production_statistics( production_history ) 
     
   end
+   
+  
+  def update_ready_item 
+    
+    self.ready = self.post_production_histories.sum( "ok_quantity" ) 
+    total_produced = 0 
+    
+    if self.stop_at_production? 
+      total_produced  = self.production_orders.sum("ok_quantity")
+    elsif self.stop_at_post_production?
+      total_produced  = self.post_production_orders.sum("ok_quantity")
+    end
+    
+    total_consumed = self.delivery_entries.where(:is_confirmed => true).sum("quantity_sent")
+    
+    self.ready = total_produced - total_consumed
+    self.save  
+  end
   
 end
