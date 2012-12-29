@@ -3,6 +3,7 @@ class CreateSalesOrders < ActiveRecord::Migration
     create_table :sales_orders do |t|
       
       t.integer :creator_id 
+      t.integer :customer_id 
       
       t.string  :code 
       t.date    :order_date 

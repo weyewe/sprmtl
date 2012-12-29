@@ -53,8 +53,15 @@ ActiveRecord::Schema.define(:version => 20121229075312) do
 
   create_table "post_production_orders", :force => true do |t|
     t.integer  "sales_item_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.integer  "creator_id"
+    t.integer  "case",                     :default => 2
+    t.integer  "quantity"
+    t.string   "source_document_entry"
+    t.integer  "source_document_entry_id"
+    t.string   "source_document"
+    t.integer  "source_document_id"
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
   end
 
   create_table "pre_production_histories", :force => true do |t|
@@ -78,8 +85,6 @@ ActiveRecord::Schema.define(:version => 20121229075312) do
     t.integer  "source_document_entry_id"
     t.string   "source_document"
     t.integer  "source_document_id"
-    t.integer  "confirmer_id"
-    t.datetime "confirmed_at"
     t.datetime "created_at",                              :null => false
     t.datetime "updated_at",                              :null => false
   end
@@ -119,18 +124,23 @@ ActiveRecord::Schema.define(:version => 20121229075312) do
     t.integer  "ready",                                                           :default => 0
     t.integer  "on_delivery",                                                     :default => 0
     t.integer  "fulfilled_order",                                                 :default => 0
+    t.boolean  "is_confirmed",                                                    :default => true
     t.datetime "created_at",                                                                         :null => false
     t.datetime "updated_at",                                                                         :null => false
   end
 
   create_table "sales_orders", :force => true do |t|
     t.integer  "creator_id"
+    t.integer  "customer_id"
     t.string   "code"
     t.date     "order_date"
     t.integer  "payment_term",                                      :default => 2
     t.decimal  "downpayment_amount", :precision => 11, :scale => 2, :default => 0.0
-    t.datetime "created_at",                                                         :null => false
-    t.datetime "updated_at",                                                         :null => false
+    t.boolean  "is_confirmed",                                      :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.datetime "created_at",                                                           :null => false
+    t.datetime "updated_at",                                                           :null => false
   end
 
   create_table "sales_return_entries", :force => true do |t|

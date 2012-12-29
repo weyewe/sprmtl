@@ -133,7 +133,7 @@ PRODUCTION_ORDER = {
 
 POST_PRODUCTION_ORDER = {
   :sales_order_only_post_production => 1,  # so the guy put the iron @us. 
-  :sales_order                      => 2
+  :sales_order                      => 2,
   :production_repair                => 3, 
   :sales_return                     => 4
 }

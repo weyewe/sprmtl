@@ -2,6 +2,7 @@ class SalesOrder < ActiveRecord::Base
   # attr_accessible :title, :body
   validates_presence_of :creator_id
   validates_presence_of :customer_id  
+  has_many :sales_items 
   
   def self.create_by_employee( employee, params ) 
     return nil if employee.nil? 
@@ -21,9 +22,9 @@ class SalesOrder < ActiveRecord::Base
   
   def generate_code
     string = "SO" + "/" + 
-              this.created_at.year + '/' + 
-              this.created_at.month + '/' + 
-              this.id 
+              self.created_at.year.to_s + '/' + 
+              self.created_at.month.to_s + '/' + 
+              self.id.to_s
               
     self.code =  string 
     self.save 
@@ -37,7 +38,7 @@ class SalesOrder < ActiveRecord::Base
     # transaction block to confirm all the sales item  + sales order confirmation 
     ActiveRecord::Base.transaction do
       self.confirmer_id = employee.id 
-      self.confirmed_date = DateTime.now 
+      self.confirmed_at = DateTime.now 
       self.is_confirmed = true 
       self.save 
       self.sales_items.each do |sales_item|

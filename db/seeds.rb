@@ -27,3 +27,4 @@ sales_item_1 = SalesItem.create_sales_item( admin, sales_order_1,  {
 
 
 sales_order.confirm( admin )
+

@@ -1,5 +1,6 @@
 class SalesItem < ActiveRecord::Base
   # attr_accessible :title, :body
+  belongs_to :sales_order
   has_many :production_orders
   has_many :post_production_orders
   
@@ -27,7 +28,7 @@ class SalesItem < ActiveRecord::Base
   end
   
   def delivery_address_must_present_if_delivered_is_true
-    if  is_delivery == true and  not delivery_address  
+    if  is_delivered == true and  not delivery_address.present? 
       errors.add(:delivery_address , "Harus ada alamat pengiriman" )  
     end
   end
@@ -75,9 +76,9 @@ class SalesItem < ActiveRecord::Base
   
   def generate_code
     string = "SI" + "/" + 
-              this.created_at.year + '/' + 
-              this.created_at.month + '/' + 
-              this.id 
+              self.created_at.year.to_s + '/' + 
+              self.created_at.month.to_s+ '/' + 
+              self.id .to_s
               
     self.code =  string 
     self.save 
