@@ -93,17 +93,29 @@ PostProductionHistory.create_history( admin, sales_item_1, {
 # do the delivery 
 delivery = Delivery.create_by_employee( admin , {
   :customer_id        => customer_1.id,       
-  # :person_in_charge   =>   "#{joni.id},#{joko.id}", 
-  :delivery_date      => Date.new( 2013, 2, 15)
+  :person_in_charge   =>   "#{joni.id},#{joko.id}", 
+  :delivery_date      => Date.new( 2013, 2, 15),
+  :pic           => "#{joko.id}, #{joni.id}"
 })
 
 
-sales_item_1 = DeliveryEntry.create_delivery_entry( admin, delivery,  {
-  :sales_item_id     =>  sales_item_1.id , 
-  :quantity           => 2
+delivery_entry_1 = DeliveryEntry.create_delivery_entry( admin, delivery,  {
+  :sales_item_id =>  sales_item_1.id , 
+  :quantity_sent => 2
 })
 
-delivery.confirm  
+delivery.confirm(admin) 
+
+delivery_entry_1.reload
+delivery_entry_1.update_finalization_data( 
+  :quantity_confirmed =>2 , 
+  :quantity_returned => 0 , 
+  :quantity_lost => 0 
+) 
+
+delivery_entry_1.finalize( admin ) 
+
+
 
 
 # DON't auto create invoice 

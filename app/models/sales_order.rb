@@ -3,6 +3,7 @@ class SalesOrder < ActiveRecord::Base
   validates_presence_of :creator_id
   validates_presence_of :customer_id  
   has_many :sales_items 
+   
   
   def self.create_by_employee( employee, params ) 
     return nil if employee.nil? 

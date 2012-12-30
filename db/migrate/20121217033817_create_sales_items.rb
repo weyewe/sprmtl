@@ -6,25 +6,31 @@ class CreateSalesItems < ActiveRecord::Migration
       
       t.string  :code
       
-      t.boolean :is_repeat_order, :default => false 
-      t.string  :past_sales_item_id 
+      t.boolean :is_repeat_order, :default                      => false 
+      t.string  :past_sales_item_id   
       
       
-      t.integer :material_id , :default => MATERIAL[:steel][:value]
+      t.integer :material_id , :default                         => MATERIAL[:steel][:value]
       
-      t.boolean :is_pre_production    ,   :default => false 
-      t.boolean :is_production        ,   :default => false 
-      t.boolean :is_post_production   ,   :default => false 
-      t.boolean :is_delivered         ,   :default => false 
+      t.boolean :is_pre_production    ,   :default              => false 
+      t.boolean :is_production        ,   :default              => false 
+      t.boolean :is_post_production   ,   :default              => false 
+      t.boolean :is_delivered         ,   :default              => false 
       
-      t.decimal :price_per_piece , :precision => 11, :scale => 2 , :default => 0  # 10^9 << max value
+      t.decimal :price_per_piece , :precision                   => 11, :scale => 2 , :default => 0  # 10^9 << max value
       t.integer :quantity 
       
-      t.text    :delivery_address 
-      t.text    :description 
+      t.text        :delivery_address 
+      t.boolean     :is_sales_order_delivery_address , :default => false 
+      # if  it is true, delivery_address can be empty
       
-      t.date    :requested_deadline
-      t.date    :estimated_internal_deadline 
+      t.text        :description 
+      
+      t.date        :requested_deadline
+      t.date        :estimated_internal_deadline 
+
+      
+      
       
       
       # statistics  ( internal )
