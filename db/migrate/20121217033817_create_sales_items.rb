@@ -18,7 +18,9 @@ class CreateSalesItems < ActiveRecord::Migration
       t.boolean :is_delivered         ,   :default              => false 
       
       t.decimal :price_per_piece , :precision                   => 11, :scale => 2 , :default => 0  # 10^9 << max value
+      t.decimal :weight_per_piece, :precision => 7, :scale => 2 , :default => 0  
       t.integer :quantity 
+      
       
       t.text        :delivery_address 
       t.boolean     :is_sales_order_delivery_address , :default => false 

@@ -41,7 +41,7 @@ sales_item_1 = SalesItem.create_sales_item( admin, sales_order_1,  {
 
 sales_order.confirm( admin )
 
-# do the preproduction
+# do the preproduction  # this is just an appendix.. not a KPI in the company-customer info 
 PreProductionHistory.create_history( admin, sales_item_1, {
   :quantity_processed       => 10, 
   :quantity_ok              => 5,
@@ -54,8 +54,7 @@ PreProductionHistory.create_history( admin, sales_item_1, {
 # do the production 
 ProductionHistory.create_history( admin, sales_item_1, {
   :processed_quantity    => 10, 
-  :ok_quantity           => 8,
-  :repairable_quantity => 0,
+  :ok_quantity           => 8, 
   :broken_quantity       => 2, 
   
   :ok_weight             => 86,  # in kg.. .00 

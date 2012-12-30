@@ -16,12 +16,14 @@ class SalesItem < ActiveRecord::Base
   validates_presence_of :description
   validates_presence_of :creator_id
   validates_presence_of :price_per_piece
+  validates_presence_of :weight_per_piece
   # validates_presence_of :material_id 
   
   validate :material_must_present_if_production_is_true 
   validate :delivery_address_must_present_if_delivered_is_true 
   validate :quantity_must_be_at_least_one
   validate :price_per_piece_must_not_be_zero 
+  validate  :weight_per_piece_must_not_be_less_than_zero
   
   def material_must_present_if_production_is_true
     if  is_production == true  and  material_id.nil?
@@ -47,6 +49,11 @@ class SalesItem < ActiveRecord::Base
     end
   end
   
+  def weight_per_piece_must_not_be_less_than_zero
+    if  weight_per_piece <= BigDecimal('0')
+      errors.add(:weight_per_piece , "Berat satuan tidak boleh kurang dari 0 kg" )  
+    end
+  end
   
   def SalesItem.create_sales_item( employee, sales_order, params ) 
     return nil if employee.nil?
@@ -62,11 +69,13 @@ class SalesItem < ActiveRecord::Base
     new_object.is_post_production = params[:is_post_production]
     new_object.is_delivered       = params[:is_delivered]      
     new_object.delivery_address   = params[:delivery_address]  
+    new_object.price_per_piece    =  BigDecimal( params[:price_per_piece ])
+    new_object.weight_per_piece    =  BigDecimal( params[:weight_per_piece ])
     new_object.quantity           = params[:quantity]          
     new_object.description        = params[:description]   
     new_object.delivery_address   = params[:delivery_address]          
     new_object.requested_deadline = params[:requested_deadline] # Date.new( 2013, 3,5 )
-    new_object.price_per_piece    =  BigDecimal( params[:price_per_piece ])
+    
     
     if new_object.save 
       new_object.generate_code 
@@ -109,18 +118,31 @@ class SalesItem < ActiveRecord::Base
   end
   
   
+  
+  def sales_production_orders
+    if self.only_machining?
+      return [] 
+    elsif casting_included? 
+      return self.production_orders.where(:case    => PRODUCTION_ORDER[:sales_order]) 
+    end
+  end
+  
 =begin
   PRODUCTION PROGRESS TRACKING
 =end
+  
+  def has_unconfirmed_production_history?
+    self.production_histories.where(:is_confirmed => false ).count != 0 
+  end
+
   def update_pending_production
     to_be_produced = self.production_orders.sum("quantity" )
-    produced = self.production_histories.sum('quantity')
+    produced = self.production_histories.sum('ok_quantity')
     
     self.pending_production = to_be_produced - produced 
     self.save 
   end
   
-  def deduct_pending_production
 
 =begin
   PRODUCTION PROGRESS STATISTIC

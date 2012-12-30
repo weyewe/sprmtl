@@ -143,6 +143,23 @@ RECYCLE_ORDER  = {
   :post_production_failure => 2,
   :sales_return         => 3   # returned, can't be fixed at all. fuck.  recycle 
 }
+
+RESPONSIBILITY = {
+  :pre_production_staff   => 1,
+  :pre_production_qc     => 2 ,
+  
+  :production_staff      => 11,
+  :production_qc         => 12, 
+  
+  :post_production_staff => 11,
+  :post_production_qc    => 12, 
+  
+  :delivery_staff        => 21, 
+  :delivery_qc           => 22, 
+  
+  :sales_return_qc      => 31 
+
+}
  
  
 =begin

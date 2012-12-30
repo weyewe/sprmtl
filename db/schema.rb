@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121229075312) do
+ActiveRecord::Schema.define(:version => 20121230054220) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -33,16 +33,50 @@ ActiveRecord::Schema.define(:version => 20121229075312) do
     t.datetime "updated_at",                          :null => false
   end
 
+  create_table "deliveries", :force => true do |t|
+    t.integer  "creator_id"
+    t.integer  "delivery_date"
+    t.string   "code"
+    t.integer  "customer_id"
+    t.boolean  "is_confirmed",  :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.boolean  "is_finalized",  :default => false
+    t.integer  "finalizer_id"
+    t.datetime "finalized_at"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
   create_table "delivery_entries", :force => true do |t|
     t.integer  "sales_item_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.integer  "delivery_id"
+    t.integer  "quantity_sent"
+    t.integer  "quantity_confirmed"
+    t.integer  "quantity_returned"
+    t.integer  "quantity_lost"
+    t.boolean  "is_confirmed",       :default => false
+    t.boolean  "is_finalized",       :default => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
   end
 
   create_table "delivery_lost_entries", :force => true do |t|
     t.integer  "sales_item_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "employees", :force => true do |t|
+    t.string   "name"
+    t.string   "phone"
+    t.string   "mobile"
+    t.string   "email"
+    t.string   "bbm_pin"
+    t.text     "address"
+    t.boolean  "is_deleted", :default => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   create_table "post_production_histories", :force => true do |t|
@@ -66,14 +100,33 @@ ActiveRecord::Schema.define(:version => 20121229075312) do
 
   create_table "pre_production_histories", :force => true do |t|
     t.integer  "sales_item_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.integer  "creator_id"
+    t.integer  "processed_quantity"
+    t.integer  "ok_quantity"
+    t.integer  "broken_quantity"
+    t.date     "start_date"
+    t.date     "finish_date"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   create_table "production_histories", :force => true do |t|
     t.integer  "sales_item_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.integer  "creator_id"
+    t.integer  "processed_quantity"
+    t.integer  "ok_quantity"
+    t.integer  "broken_quantity"
+    t.integer  "repairable_quantity"
+    t.decimal  "ok_weight",           :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "broken_weight",       :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "repairable_weight",   :precision => 7, :scale => 2, :default => 0.0
+    t.date     "start_date"
+    t.date     "finish_date"
+    t.boolean  "is_confirmed",                                      :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.datetime "created_at",                                                           :null => false
+    t.datetime "updated_at",                                                           :null => false
   end
 
   create_table "production_orders", :force => true do |t|
@@ -89,7 +142,24 @@ ActiveRecord::Schema.define(:version => 20121229075312) do
     t.datetime "updated_at",                              :null => false
   end
 
+  create_table "responsibilities", :force => true do |t|
+    t.integer  "entry_id"
+    t.integer  "case"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "sales_entries", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "sales_invoice_entries", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "sales_invoices", :force => true do |t|
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -106,8 +176,10 @@ ActiveRecord::Schema.define(:version => 20121229075312) do
     t.boolean  "is_post_production",                                              :default => false
     t.boolean  "is_delivered",                                                    :default => false
     t.decimal  "price_per_piece",                  :precision => 11, :scale => 2, :default => 0.0
+    t.decimal  "weight_per_piece",                 :precision => 7,  :scale => 2, :default => 0.0
     t.integer  "quantity"
     t.text     "delivery_address"
+    t.boolean  "is_sales_order_delivery_address",                                 :default => false
     t.text     "description"
     t.date     "requested_deadline"
     t.date     "estimated_internal_deadline"

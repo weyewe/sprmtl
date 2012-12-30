@@ -23,7 +23,7 @@ class PreProductionHistory < ActiveRecord::Base
   
   def no_zero_sum
     if ok_quantity.present? and broken_quantity.present?
-      if ok_quantity == and  broken_quantity == 0 
+      if ok_quantity == 0 and  broken_quantity == 0 
         errors.add(:ok_quantity , "Kuantitas sukses dan gagal tidak boleh sama-sama 0" ) 
       end
     end

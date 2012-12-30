@@ -29,7 +29,10 @@ describe SalesItem do
       :delivery_address => "Yeaaah babyy", 
       :requested_deadline => Date.new(2013, 3,5 ),
       :price_per_piece => "90000",
+      :weight_per_piece   => '15'
     })
+    
+    @sales_order.sales_items.count.should == 1
     
     @sales_order.confirm(@admin)
     @sales_order.is_confirmed.should be_true  
@@ -48,7 +51,8 @@ describe SalesItem do
         :description => "Bla bla bla bla bla", 
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
-        :price_per_piece => "90000",
+        :price_per_piece => "90000", 
+        :weight_per_piece   => '15'
       })
       
       @only_machining_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
@@ -62,11 +66,16 @@ describe SalesItem do
         :description => "Bla bla bla bla bla", 
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
-        :price_per_piece => "80000",
+        :price_per_piece => "80000", 
+        :weight_per_piece   => '15'
       })
       @sales_order.confirm(@admin)
       @has_production_sales_item.reload
       @only_machining_sales_item.reload 
+    end
+    
+    it 'should have id' do
+      @has_production_sales_item.id.should_not be_nil 
     end
     
     it 'should set the correct sales item classification' do

@@ -45,28 +45,37 @@ describe SalesOrder do
     it 'should not be confirmable if there is no sales item' do
       @sales_order.confirm( @admin ) 
       @sales_order.is_confirmed.should be_false 
-    end
+    end 
     
-    it 'should confirm if there is one sales item' do
+    context 'creating sales order with 1 sales item, including production' do
+      before(:each) do
+        @quantity_in_sales_item = 50 
+        @has_production_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
+            :material_id => MATERIAL[:steel][:value], 
+            :is_pre_production => true , 
+            :is_production     => true, 
+            :is_post_production => true, 
+            :is_delivered => true, 
+            :delivery_address => "Perumahan Citra Garden 1 Blok AC2/3G",
+            :quantity => @quantity_in_sales_item,
+            :description => "Bla bla bla bla bla", 
+            :delivery_address => "Yeaaah babyy", 
+            :requested_deadline => Date.new(2013, 3,5 ),
+            :price_per_piece => "90000", 
+            :weight_per_piece   => '15'
+          }) 
+      end
       
+      it 'should have 1 sales_item' do
+        @sales_order.sales_items.count.should == 1 
+      end
       
-      sales_item_1 = SalesItem.create_sales_item( @admin, @sales_order,  {
-        :material_id => MATERIAL[:steel][:value], 
-        :is_pre_production => true , 
-        :is_production     => true, 
-        :is_post_production => true, 
-        :is_delivered => true, 
-        :delivery_address => "Perumahan Citra Garden 1 Blok AC2/3G",
-        :quantity => 50,
-        :description => "Bla bla bla bla bla", 
-        :delivery_address => "Yeaaah babyy", 
-        :requested_deadline => Date.new(2013, 3,5 ),
-        :price_per_piece => "90000",
-      })
+      it 'should be confirmable' do 
+        @sales_order.confirm( @admin ) 
+        @sales_order.is_confirmed.should be_true
+      end
       
-      @sales_order.confirm(@admin)
-      @sales_order.is_confirmed.should be_true  
-    end
+    end # context 'creating sales order with 1 sales item, including production'
   end
   
   
