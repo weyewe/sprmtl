@@ -117,7 +117,21 @@ class SalesItem < ActiveRecord::Base
     self.is_production == true 
   end
   
+  def has_post_production?
+    self.is_post_production?
+  end
   
+  
+  
+##############################################################
+###############################
+############ PRODUCTION 
+###############################
+##############################################################
+  
+=begin
+  PRODUCTION PROGRESS TRACKING
+=end
   
   def sales_production_orders
     if self.only_machining?
@@ -127,9 +141,9 @@ class SalesItem < ActiveRecord::Base
     end
   end
   
-=begin
-  PRODUCTION PROGRESS TRACKING
-=end
+  def fail_production_production_orders
+    self.production_orders.where(:case => PRODUCTION_ORDER[:fail_production])
+  end
   
   def has_unconfirmed_production_history?
     self.production_histories.where(:is_confirmed => false ).count != 0 
@@ -152,17 +166,45 @@ class SalesItem < ActiveRecord::Base
     self.number_of_pre_production = self.pre_production_histories.sum('processed_quantity')
     self.save 
   end
+   
+=begin
+  INTERFACING PRODUCTION AND POST PRODUCTION 
+=end
+
+  def generate_next_phase_after_production( production_history )
+    if self.has_post_production?
+      PostProductionOrder.generate_sales_post_production_order( self )
+    else
+      self.update_ready_statistics 
+    end
+  end
   
-  
-  def update_production_statistics( production_history ) 
+  def update_production_statistics(production_history)
     
   end
-   
   
+##############################################################
+###############################
+############ POST PRODUCTION 
+###############################
+##############################################################
+
+  def sales_post_production_orders
+    self.post_production_orders.where(:case => POST_PRODUCTION_ORDER[:sales_order] )
+  end
+   
+ 
+ 
+ 
+##############################################################
+###############################
+############ DELIVERY 
+###############################
+############################################################## 
 =begin
   READY ITEM   ( Ready == pending delivery ) 
 =end
-  def update_ready_item 
+  def update_ready_statistics
     self.ready = self.total_finished - self.total_delivered
     self.save  
   end

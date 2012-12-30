@@ -17,4 +17,17 @@ class PostProductionOrder < ActiveRecord::Base
     ) 
   end
   
+  
+  def PostProductionOrder.generate_sales_post_production_order( production_history) 
+    PostProductionOrder.create(
+      :sales_item_id            => production_history.sales_item_id      ,
+      :case                     =>  POST_PRODUCTION_ORDER[:sales_order]  ,
+      :quantity                 => production_history.ok_quantity        ,
+      :source_document_entry    => production_history.class.to_s         ,
+      :source_document_entry_id => production_history.id                 ,
+      :source_document          => production_history.class.to_s         ,
+      :source_document_id       => production_history.id                 
+    )                                                                    
+  end
+  
 end

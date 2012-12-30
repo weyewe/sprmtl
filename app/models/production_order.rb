@@ -15,4 +15,19 @@ class ProductionOrder < ActiveRecord::Base
         :source_document_id       => sales_item.sales_order_id  
       )
   end
+  
+  def ProductionOrder.generate_fail_production_production_order( production_history )
+    sales_item = production_history.sales_item 
+    ProductionOrder.create(
+      :sales_item_id            => production_history.sales_item_id       ,
+      :case                     => PRODUCTION_ORDER[:fail_production]     ,
+      :quantity                 => production_history.broken_quantity     ,
+
+      :source_document_entry    => production_history.class.to_s          ,
+      :source_document_entry_id => production_history.id                  ,
+      :source_document          => production_history.class.to_s          ,
+      :source_document_id       => production_history.id  
+    ) 
+  end
+  
 end

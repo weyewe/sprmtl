@@ -61,9 +61,7 @@ class ProductionHistory < ActiveRecord::Base
     
     new_object  = ProductionHistory.new
     new_object.sales_item_id = sales_item.id 
-    puts "((((((((((( The sales item id is : #{sales_item.id }"
-    puts ")))))))))))) The sales item id in production history : #{new_object.sales_item_id  }"
-    puts "\n\n sales item inspect: #{sales_item.inspect }"
+     
   
     
     new_object.ok_quantity         = params[:ok_quantity]
@@ -80,11 +78,7 @@ class ProductionHistory < ActiveRecord::Base
       # do something
     end
     
-    if new_object.sales_item.nil?
-      puts "THe sales item can't be referred"
-    else
-      puts "THe sales item can be referred"
-    end
+   
     
     return new_object 
   end
@@ -97,6 +91,8 @@ class ProductionHistory < ActiveRecord::Base
     self.save
   end
   
+  
+  
   def confirm( employee )
     return nil if employee.nil? 
     
@@ -104,19 +100,42 @@ class ProductionHistory < ActiveRecord::Base
       self.update_processed_quantity
       sales_item = self.sales_item
       sales_item.update_production_statistics( self )
-      #  result in production => ok or broken 
-      # broken in postproduction => ok or broken  --> that's it.. no repair  (cross department will confuse them)
-      if sales_item.is_post_production? 
-        # generate PostProductionOrder 
-        PostProductionOrder.generate_sales_post_production_order( self )
-      else
-        # update item ready
-        sales_item.update_ready_item( self )  
-      end
+      
+       
+      # if only post production
+      
+      sales_item.generate_next_phase_after_production( self ) 
+      sales_item.update_production_statistics( self )  
+      
       self.is_confirmed = true 
       self.confirmer_id = employee.id
       self.confirmed_at = DateTime.now 
       self.save
+      
+      
+      
+      # # if start from production 
+      # 
+      # #  we don't handle pre production only 
+      #  
+      # if self.ok_quantity > 0 
+      #   if sales_item.has_post_production? 
+      #     PostProductionOrder.generate_sales_post_production_order( self )
+      #   else
+      #     sales_item.update_ready_item  
+      #   end
+      # end
+      # 
+      # if self.broken_quantity > 0 
+      #   ProductionOrder.generate_fail_production_production_order( self )
+      # end
+      # 
+      # 
+      # 
+      # self.is_confirmed = true 
+      # self.confirmer_id = employee.id
+      # self.confirmed_at = DateTime.now 
+      # self.save
     end
     
   end
