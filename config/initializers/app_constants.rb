@@ -124,11 +124,12 @@ MATERIAL     = {
 
 
 PRODUCTION_ORDER = {
-  :sales_order          => 1,  
-  :fail_production      => 2, 
-  :fail_post_production => 3, 
-  :sales_return         => 4, 
-  :delivery_lost        => 5 
+  :sales_order             => 1,  
+  :production_failure      => 2, 
+  :post_production_failure => 3, 
+  :sales_return            => 4, 
+  :delivery_lost           => 5 
+
 }
 
 POST_PRODUCTION_ORDER = {

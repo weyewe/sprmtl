@@ -1,12 +1,12 @@
 class ProductionHistory < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_item 
-  validates_presence_of   :ok_quantity,  :broken_quantity,  #:repairable_quantity,
-                          :ok_weight,   :broken_weight,  #:repairable_weight,
+  validates_presence_of   :ok_quantity,  :broken_quantity,  :repairable_quantity,
+                          :ok_weight,   :broken_weight,  :repairable_weight,
                           :start_date, :finish_date
                           
-  validates_numericality_of :ok_quantity, :broken_quantity  ,  #:repairable_quantity, 
-                          :ok_weight, :broken_weight  #:repairable_weight,
+  validates_numericality_of :ok_quantity, :broken_quantity  ,  :repairable_quantity, 
+                          :ok_weight, :broken_weight  , :repairable_weight
                   
    
   validate :no_all_zero_quantity
@@ -17,9 +17,10 @@ class ProductionHistory < ActiveRecord::Base
    
 
   def no_all_zero_quantity
-    if  ok_quantity == 0  and  broken_quantity == 0 
-      errors.add(:ok_quantity , "OK dan gagal tidak boleh bernilai 0 bersamaan" ) 
-      errors.add(:broken_quantity , "OK dan gagal tidak boleh bernilai 0 bersamaan" )   
+    if  ok_quantity == 0  and  broken_quantity == 0 and repairable_quantity == 0 
+      errors.add(:ok_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" ) 
+      errors.add(:broken_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" )   
+      errors.add(:repairable_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" )  
     end
   end
   
@@ -31,6 +32,10 @@ class ProductionHistory < ActiveRecord::Base
     if broken_quantity <0 
       errors.add(:broken_quantity , "Kuantitas tidak boleh lebih kecil dari 0" )   
     end 
+    
+    if repairable_quantity <0 
+      errors.add(:repairable_quantity , "Kuantitas tidak boleh lebih kecil dari 0" )   
+    end
   end
   
   def no_negative_weight
@@ -41,6 +46,10 @@ class ProductionHistory < ActiveRecord::Base
     if broken_weight < BigDecimal('0')
       errors.add(:broken_weight , "Berat tidak boleh negative" )   
     end
+    
+    if repairable_weight < BigDecimal('0')
+      errors.add(:repairable_weight , "Berat tidak boleh negative" )   
+    end
   end
   
   def prevent_zero_weight_for_non_zero_quantity
@@ -50,6 +59,10 @@ class ProductionHistory < ActiveRecord::Base
     
     if broken_quantity >  0  and broken_weight <=  BigDecimal('0')
       errors.add(:broken_weight , "Berat tidak boleh 0 jika kuantity > 0 " )   
+    end
+    
+    if repairable_quantity >  0  and repairable_weight <=  BigDecimal('0')
+      errors.add(:repairable_weight , "Berat tidak boleh 0 jika kuantity > 0 " )   
     end
   end
   
@@ -65,10 +78,10 @@ class ProductionHistory < ActiveRecord::Base
   
     
     new_object.ok_quantity         = params[:ok_quantity]
-    # new_object.repairable_quantity = params[:repairable_quantity]
+    new_object.repairable_quantity = params[:repairable_quantity]
     new_object.broken_quantity     = params[:broken_quantity] 
     new_object.ok_weight           = params[:ok_weight] 
-    # new_object.repairable_weight   = params[:repairable_weight] 
+    new_object.repairable_weight   = params[:repairable_weight] 
     new_object.broken_weight       = params[:broken_weight] 
     new_object.start_date          = params[:start_date] 
     new_object.finish_date         = params[:finish_date] 
@@ -86,7 +99,7 @@ class ProductionHistory < ActiveRecord::Base
   
   def update_processed_quantity 
     self.processed_quantity = self.ok_quantity  + 
-                                    # new_object.repairable_quantity + 
+                                    self.repairable_quantity + 
                                     self.broken_quantity
     self.save
   end

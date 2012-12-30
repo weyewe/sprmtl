@@ -133,7 +133,7 @@ describe ProductionHistory do
       @production_history.is_confirmed?.should be_true
     end
     
-    context "confirming the production history" do
+    context "confirming the production history: Interfacing Production vs Post Production" do
       before(:each) do
         @production_history.confirm(@admin)
         @complete_cycle_sales_item.reload 

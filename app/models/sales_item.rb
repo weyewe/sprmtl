@@ -142,7 +142,7 @@ class SalesItem < ActiveRecord::Base
   end
   
   def fail_production_production_orders
-    self.production_orders.where(:case => PRODUCTION_ORDER[:fail_production])
+    self.production_orders.where(:case => PRODUCTION_ORDER[:production_failure])
   end
   
   def has_unconfirmed_production_history?
@@ -175,21 +175,35 @@ class SalesItem < ActiveRecord::Base
 =end
 
   def generate_next_phase_after_production( production_history )
-    if self.has_post_production?
-      PostProductionOrder.generate_sales_post_production_order( self )
-    else
-      self.update_ready_statistics 
-    end
+    if self.has_post_production? # stop at post_production 
+      # if it has post production, the repairable will be counted as post production work 
+      # repairable + ok 
+      PostProductionOrder.generate_sales_post_production_order( production_history ) 
+      
+    else  # stop at production 
+      # if it doesn't have post production, the repairing work will be internal extra expense 
+      PostProductionOrder.generate_production_repair_post_production_order( production_history ) 
+    end 
   end
   
   def update_production_statistics(production_history)
-    # :pending_production       
+    # :pending_production  
+    self.pending_production = self.production_orders.sum("quantity") - 
+                              self.production_histories.sum("ok_quantity") 
+         
     # :pending_post_production  
+    self.pending_post_production = self.post_production_orders.sum("quantity") -  
+                                  self.post_production_histories.sum("ok_quantity")
     # :ready                    
+    self.update_ready_statistics 
     
     # number_of_production
-    # number_of_failed_production
+    self.number_of_production = self.production_histories.sum("processed_quantity")
     
+    # number_of_failed_production
+    self.number_of_failed_production = self.production_histories.sum("broken_quantity")
+    
+    self.save  
   end
   
 ##############################################################
@@ -221,14 +235,16 @@ class SalesItem < ActiveRecord::Base
   def total_finished 
     total  = 0 
     if self.stop_at_production? 
-      total  = self.production_histories.sum("ok_quantity") 
+      total  = self.production_histories.sum("ok_quantity")  +   # original production work 
+                self.post_production_histories.sum("ok_quantity")  # repair work 
     elsif self.stop_at_post_production?
-      total  = self.post_production_histories.sum("ok_quantity")
+      total  = self.post_production_histories.sum("ok_quantity") # all post production work 
     end
     
     return total
   end
   
+  # all the items going out 
   def total_delivered
     self.delivery_entries.where(:is_confirmed => true).sum("quantity_sent")
   end

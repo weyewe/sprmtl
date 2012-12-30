@@ -20,7 +20,7 @@ class ProductionOrder < ActiveRecord::Base
     sales_item = production_history.sales_item 
     ProductionOrder.create(
       :sales_item_id            => production_history.sales_item_id       ,
-      :case                     => PRODUCTION_ORDER[:fail_production]     ,
+      :case                     => PRODUCTION_ORDER[:production_failure]     ,
       :quantity                 => production_history.broken_quantity     ,
 
       :source_document_entry    => production_history.class.to_s          ,
