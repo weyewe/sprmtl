@@ -111,31 +111,7 @@ class ProductionHistory < ActiveRecord::Base
       self.confirmer_id = employee.id
       self.confirmed_at = DateTime.now 
       self.save
-      
-      
-      
-      # # if start from production 
-      # 
-      # #  we don't handle pre production only 
-      #  
-      # if self.ok_quantity > 0 
-      #   if sales_item.has_post_production? 
-      #     PostProductionOrder.generate_sales_post_production_order( self )
-      #   else
-      #     sales_item.update_ready_item  
-      #   end
-      # end
-      # 
-      # if self.broken_quantity > 0 
-      #   ProductionOrder.generate_fail_production_production_order( self )
-      # end
-      # 
-      # 
-      # 
-      # self.is_confirmed = true 
-      # self.confirmer_id = employee.id
-      # self.confirmed_at = DateTime.now 
-      # self.save
+       
     end
     
   end

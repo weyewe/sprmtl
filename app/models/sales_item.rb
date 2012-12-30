@@ -168,7 +168,10 @@ class SalesItem < ActiveRecord::Base
   end
    
 =begin
-  INTERFACING PRODUCTION AND POST PRODUCTION 
+  INTERFACING 
+          PRODUCTION            => READY 
+                          AND 
+          POST PRODUCTION       => READY
 =end
 
   def generate_next_phase_after_production( production_history )
@@ -180,6 +183,12 @@ class SalesItem < ActiveRecord::Base
   end
   
   def update_production_statistics(production_history)
+    # :pending_production       
+    # :pending_post_production  
+    # :ready                    
+    
+    # number_of_production
+    # number_of_failed_production
     
   end
   
@@ -210,25 +219,24 @@ class SalesItem < ActiveRecord::Base
   end
    
   def total_finished 
-    self.total_produced + self.total_repaired
+    total  = 0 
+    if self.stop_at_production? 
+      total  = self.production_histories.sum("ok_quantity") 
+    elsif self.stop_at_post_production?
+      total  = self.post_production_histories.sum("ok_quantity")
+    end
+    
+    return total
   end
   
   def total_delivered
     self.delivery_entries.where(:is_confirmed => true).sum("quantity_sent")
   end
   
-  def total_produced
-    total_produced  = 0 
-    if self.stop_at_production? 
-      total_produced  = self.production_orders.sum("ok_quantity") 
-    elsif self.stop_at_post_production?
-      total_produced  = self.post_production_orders.sum("ok_quantity")
-    end
-    return total_produced 
-  end
+ 
   
-  def total_repaired
-    self.production_repair_post_production_orders.sum("ok_quantity") + 
-    self.sales_return_repair_post_production_orders.sum("ok_quantity")
-  end
+  # def total_repaired
+  #   self.production_repair_post_production_orders.sum("ok_quantity") + 
+  #   self.sales_return_repair_post_production_orders.sum("ok_quantity")
+  # end
 end
