@@ -13,6 +13,7 @@ class PostProductionHistory < ActiveRecord::Base
   validate :no_negative_quantity
   validate :no_negative_weight
   validate :prevent_zero_weight_for_non_zero_quantity
+  validate  :prevent_excess_post_production
 
    
 
@@ -57,11 +58,20 @@ class PostProductionHistory < ActiveRecord::Base
   
   end
   
+  def prevent_excess_post_production
+    sales_item = self.sales_item
+    pending_post_production = sales_item.pending_post_production
+    if ok_quantity + broken_quantity > sales_item.pending_post_production
+      errors.add(:ok_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )   
+      errors.add(:broken_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )
+    end
+  end
+  
   
   
   def PostProductionHistory.create_history( employee, sales_item , params ) 
     return nil if employee.nil?  or sales_item.nil? 
-    return nil if sales_item.has_unconfirmed_production_history? 
+    return nil if sales_item.has_unconfirmed_post_production_history? 
     
     new_object  = PostProductionHistory.new
     new_object.sales_item_id = sales_item.id 
@@ -77,7 +87,6 @@ class PostProductionHistory < ActiveRecord::Base
 
     
     if new_object.save   
-      self.update_processed_quantity
     end
     
    

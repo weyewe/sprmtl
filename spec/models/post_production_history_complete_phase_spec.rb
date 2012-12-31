@@ -65,7 +65,7 @@ describe PostProductionHistory do
     
     @production_history.confirm(@admin)
     @complete_cycle_sales_item.reload
-    
+    @pending_post_production = @complete_cycle_sales_item.pending_post_production 
     
   end
    
@@ -75,9 +75,11 @@ describe PostProductionHistory do
   end
   
   it 'should create post production history if the processed quantity < pending post production' do
+    broken_quantity = 1 
+    ok_quantity = @pending_post_production- broken_quantity
     post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
-      :ok_quantity           => @ok_quantity, 
-      :broken_quantity       => @broken_quantity, 
+      :ok_quantity           => ok_quantity, 
+      :broken_quantity       => broken_quantity, 
 
       :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
       :broken_weight         =>  "#{2*10}" ,
@@ -90,10 +92,67 @@ describe PostProductionHistory do
     post_production_history.should be_valid 
   end
   
-  it 'should not create post production history if the processed quantity > pending post production' do
+  
+  it 'should not allow post production history creation if there is unconfirmed post production history' do
+    extra_quantity = 1 
+    broken_quantity = 1 
+    ok_quantity = @pending_post_production- broken_quantity + extra_quantity 
+    post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
+      :ok_quantity           => ok_quantity, 
+      :broken_quantity       => broken_quantity, 
+
+      :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
+      :broken_weight         =>  "#{2*10}" ,
+
+      # :person_in_charge      => nil ,# list of employee id 
+      :start_date            => Date.new( 2012, 10,10 ) ,
+      :finish_date           => Date.new( 2013, 1, 15) 
+    })
+    
+    post_production_history.should_not be_valid 
+    
   end
   
-  it 'should not allow post production history creation if there is unconfirmed post production history'
+  
+  
+  it 'should not create post production history if the processed quantity > pending post production' do
+    broken_quantity_1 = 1 
+    ok_quantity_1 =  1 
+    
+    
+    post_production_history_1 = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
+      :ok_quantity           => ok_quantity_1, 
+      :broken_quantity       => broken_quantity_1, 
+
+      :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
+      :broken_weight         =>  "#{2*10}" ,
+
+      # :person_in_charge      => nil ,# list of employee id 
+      :start_date            => Date.new( 2012, 10,10 ) ,
+      :finish_date           => Date.new( 2013, 1, 15) 
+    })
+    
+    broken_quantity_2 = 1
+    ok_quantity_2 =  @pending_post_production - broken_quantity_1 - ok_quantity_1 - 
+                        broken_quantity_2
+    
+    post_production_history_2 = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
+      :ok_quantity           => ok_quantity_2, 
+      :broken_quantity       => broken_quantity_2, 
+
+      :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
+      :broken_weight         =>  "#{2*10}" ,
+
+      # :person_in_charge      => nil ,# list of employee id 
+      :start_date            => Date.new( 2012, 10,10 ) ,
+      :finish_date           => Date.new( 2013, 1, 15) 
+    })
+    
+    post_production_history_2.should be_nil 
+    
+  end
+  
+  
    
   
   
