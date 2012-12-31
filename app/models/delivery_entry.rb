@@ -41,6 +41,61 @@ class DeliveryEntry < ActiveRecord::Base
     return new_object 
   end
   
+  def validate_post_production_quantity 
+    if quantity_confirmed.nil? or quantity_confirmed < 0 
+      self.errors.add(:quantity_confirmed , "Tidak boleh kurang dari 0" ) 
+    end
+    
+    if quantity_returned.nil? or quantity_returned < 0 
+      self.errors.add(:quantity_returned , "Tidak boleh kurang dari 0" ) 
+    end
+    
+    if quantity_lost.nil? or quantity_lost < 0 
+      self.errors.add(:quantity_lost , "Tidak boleh kurang dari 0" ) 
+    end
+  end
+  
+  def validate_post_production_total_sum
+    if self.quantity_confirmed + self.quantity_returned + self.quantity_lost != self.quantity_sent 
+      msg = "Jumlah yang terkirim: #{self.quantity_sent}. Konfirmasi + Retur + Hilang tidak sesuai."
+      self.errors.add(:quantity_confirmed , msg ) 
+      self.errors.add(:quantity_returned ,  msg ) 
+      self.errors.add(:quantity_lost ,      msg ) 
+    end
+  end
+  
+  
+  def validate_post_production_update
+    self.validate_post_production_quantity
+    return self if not self.valid? 
+     
+    self.validate_post_production_total_sum
+    return self if not self.valid? 
+    
+    self.validate_returned_item_quantity_weight
+    return self if not self.valid?
+  end
+    
+  def update_post_delivery( employee, params ) 
+    return nil if employee.nil? 
+    return nil if not self.is_confirmed?
+    
+    self.quantity_confirmed         = params[:quantity_confirmed]
+    self.quantity_returned          = params[:quantity_returned]
+    self.quantity_returned_weight   = BigDecimal( params[:quantity_returned_weight] ) 
+    self.quantity_lost              = params[:quantity_lost]
+    
+    
+    # validation 
+    
+    self.validate_post_production_update
+    
+    return self if not self.valid?
+    
+    self.save  
+    return self  
+  end
+  
   
   def generate_code
     string = "DE" + "/" + 
@@ -64,8 +119,23 @@ class DeliveryEntry < ActiveRecord::Base
   end
   
   def finalize
-    
+    return nil if self.is_confirmed == false 
     return nil if self.is_finalized == true 
+    
+    
+    # self.validate_post_production_quantity
+    # self.validate_post_production_total_sum
+    # self.validate_returned_item_quantity_weight
+    self.validate_post_production_update
+    
+    if not self.valid?
+      puts("AAAAAAAAAAAAAAAA THe sibe kia is NOT  valid")
+      raise ActiveRecord::Rollback, "Call tech support!" 
+    else
+      puts("BBBBBBBBBBBBBBBBBBB THe sibe kia is valid")
+    end
+    
+    
     self.is_finalized = true 
     self.save
     
