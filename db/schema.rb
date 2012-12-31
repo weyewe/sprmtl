@@ -81,8 +81,19 @@ ActiveRecord::Schema.define(:version => 20121230054220) do
 
   create_table "post_production_histories", :force => true do |t|
     t.integer  "sales_item_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.integer  "creator_id"
+    t.integer  "processed_quantity"
+    t.integer  "ok_quantity"
+    t.integer  "broken_quantity"
+    t.decimal  "ok_weight",          :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "broken_weight",      :precision => 7, :scale => 2, :default => 0.0
+    t.date     "start_date"
+    t.date     "finish_date"
+    t.boolean  "is_confirmed",                                     :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.datetime "created_at",                                                          :null => false
+    t.datetime "updated_at",                                                          :null => false
   end
 
   create_table "post_production_orders", :force => true do |t|

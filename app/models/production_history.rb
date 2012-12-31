@@ -33,7 +33,7 @@ class ProductionHistory < ActiveRecord::Base
       errors.add(:broken_quantity , "Kuantitas tidak boleh lebih kecil dari 0" )   
     end 
     
-    if repairable_quantity <0 
+    if repairable_quantity < 0 
       errors.add(:repairable_quantity , "Kuantitas tidak boleh lebih kecil dari 0" )   
     end
   end

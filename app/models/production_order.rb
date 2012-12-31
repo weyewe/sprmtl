@@ -16,7 +16,7 @@ class ProductionOrder < ActiveRecord::Base
       )
   end
   
-  def ProductionOrder.generate_fail_production_production_order( production_history )
+  def ProductionOrder.generate_production_failure_production_order( production_history )
     sales_item = production_history.sales_item 
     ProductionOrder.create(
       :sales_item_id            => production_history.sales_item_id       ,

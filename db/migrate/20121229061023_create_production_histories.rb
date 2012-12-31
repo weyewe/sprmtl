@@ -4,7 +4,7 @@ class CreateProductionHistories < ActiveRecord::Migration
       t.integer :sales_item_id
       
       t.integer      :creator_id          
-      t.integer      :processed_quantity  
+      t.integer      :processed_quantity    # by product ... no real need though..
       
       t.integer      :ok_quantity         
       t.integer      :broken_quantity     

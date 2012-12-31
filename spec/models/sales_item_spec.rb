@@ -40,6 +40,7 @@ describe SalesItem do
   
   context "upon sales order confirmation" do
     before(:each) do 
+      @has_production_quantity = 50 
       @has_production_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
         :material_id => MATERIAL[:steel][:value], 
         :is_pre_production => true , 
@@ -47,7 +48,7 @@ describe SalesItem do
         :is_post_production => true, 
         :is_delivered => true, 
         :delivery_address => "Perumahan Citra Garden 1 Blok AC2/3G",
-        :quantity => 50,
+        :quantity => @has_production_quantity,
         :description => "Bla bla bla bla bla", 
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
@@ -69,7 +70,10 @@ describe SalesItem do
         :price_per_piece => "80000", 
         :weight_per_piece   => '15'
       })
+      
+      @initial_has_production_pending_production = @has_production_sales_item.pending_production
       @sales_order.confirm(@admin)
+     
       @has_production_sales_item.reload
       @only_machining_sales_item.reload 
     end
@@ -100,6 +104,18 @@ describe SalesItem do
       @only_machining_sales_item.production_orders.count.should == 0 
       @only_machining_sales_item.post_production_orders.count.should == 1 
     end
+    
+    it 'should update the pending_production' do
+      @final_has_production_pending_production = @has_production_sales_item.pending_production
+      
+      delta = @final_has_production_pending_production - @initial_has_production_pending_production
+      
+      puts "initial_pending_production: #{@initial_has_production_pending_production}"
+      puts "final_has_production_pending_production: #{@final_has_production_pending_production}"
+      delta.should == @has_production_quantity
+    end
   end
+  
+  
   
 end

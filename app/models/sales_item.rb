@@ -17,7 +17,7 @@ class SalesItem < ActiveRecord::Base
   validates_presence_of :creator_id
   validates_presence_of :price_per_piece
   validates_presence_of :weight_per_piece
-  # validates_presence_of :material_id 
+  validates_presence_of :quantity 
   
   validate :material_must_present_if_production_is_true 
   validate :delivery_address_must_present_if_delivered_is_true 
@@ -121,6 +121,14 @@ class SalesItem < ActiveRecord::Base
     self.is_post_production?
   end
   
+  def stop_at_production?
+    self.is_post_production == false and self.is_production == true 
+  end
+  
+  def stop_at_post_production?
+    self.is_post_production == true 
+  end
+  
   
   
 ##############################################################
@@ -169,9 +177,9 @@ class SalesItem < ActiveRecord::Base
    
 =begin
   INTERFACING 
-          PRODUCTION            => READY 
+                PRODUCTION  => READY 
                           AND 
-          POST PRODUCTION       => READY
+          POST PRODUCTION  => READY
 =end
 
   def generate_next_phase_after_production( production_history )
@@ -184,12 +192,26 @@ class SalesItem < ActiveRecord::Base
       # if it doesn't have post production, the repairing work will be internal extra expense 
       PostProductionOrder.generate_production_repair_post_production_order( production_history ) 
     end 
+    
+    ProductionOrder.generate_production_failure_production_order( production_history ) 
+    
+  end
+  
+  
+  def production_finished_quantity
+    if self.stop_at_production? 
+      return self.production_histories.sum("ok_quantity")  
+    else self.stop_at_post_production? 
+      return self.production_histories.sum("ok_quantity")  + 
+              self.production_histories.sum("repairable_quantity")
+    end
   end
   
   def update_production_statistics(production_history)
     # :pending_production  
+    
     self.pending_production = self.production_orders.sum("quantity") - 
-                              self.production_histories.sum("ok_quantity") 
+                              self.production_finished_quantity
          
     # :pending_post_production  
     self.pending_post_production = self.post_production_orders.sum("quantity") -  

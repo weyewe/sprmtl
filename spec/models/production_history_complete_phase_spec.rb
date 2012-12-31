@@ -31,13 +31,14 @@ describe ProductionHistory do
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
         :price_per_piece => "90000", 
-        :weight_per_piece   => '15'
+        :weight_per_piece   => '15' 
       })
     
     
    
 
     @sales_order.confirm(@admin)
+    @complete_cycle_sales_item.reload
   end
   
   it 'should be able to create production history' do
@@ -48,9 +49,10 @@ describe ProductionHistory do
       :processed_quantity    => 10, 
       :ok_quantity           => 8, 
       :broken_quantity       => 2, 
+      :repairable_quantity   => 0 , 
 
       :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
-      # :repairable_weight     => 0,
+      :repairable_weight     => "0",
       :broken_weight         =>  "#{2*10}" ,
 
       # :person_in_charge      => nil ,# list of employee id 
@@ -66,9 +68,10 @@ describe ProductionHistory do
       :processed_quantity    => 10, 
       :ok_quantity           => 8, 
       :broken_quantity       => 2, 
+      :repairable_quantity   => 0, 
 
       :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
-      # :repairable_weight     => 0,
+      :repairable_weight     => '0',
       :broken_weight         =>  "#{2*10}" ,
 
       # :person_in_charge      => nil ,# list of employee id 
@@ -82,9 +85,10 @@ describe ProductionHistory do
       :processed_quantity    => 10, 
       :ok_quantity           => 8, 
       :broken_quantity       => 2, 
+      :repairable_quantity    => 0, 
 
       :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
-      # :repairable_weight     => 0,
+      :repairable_weight     => '0',
       :broken_weight         =>  "#{2*10}" ,
 
       # :person_in_charge      => nil ,# list of employee id 
@@ -110,13 +114,15 @@ describe ProductionHistory do
         :broken_quantity       => @broken_quantity, 
 
         :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
-        :repairable_weight     => 13,
+        :repairable_weight     => '13',
         :broken_weight         =>  "#{2*10}" ,
 
         # :person_in_charge      => nil ,# list of employee id 
         :start_date            => Date.new( 2012, 10,10 ) ,
         :finish_date           => Date.new( 2013, 1, 15) 
       })
+      
+      
       
     end
     
@@ -135,32 +141,47 @@ describe ProductionHistory do
       @production_history.is_confirmed?.should be_true
     end
     
+     
+    
     context "confirming the production history: Interfacing Production vs Post Production" do
       before(:each) do
+        @initial_pending_production = @complete_cycle_sales_item.pending_production
+        @initial_pending_post_production = @complete_cycle_sales_item.pending_post_production
+        
+        
         @production_history.confirm(@admin)
-        @complete_cycle_sales_item.reload 
+        @complete_cycle_sales_item.reload  
       end
       
       
-      it 'should create post production order quantity equal to the number of ok quantity + repairable quantity' do
+      it 'should create 1 post production order' do
         @complete_cycle_sales_item.post_production_orders.count.should ==  1
         @complete_cycle_sales_item.sales_post_production_orders.count.should ==  1
+        @post_production_order  = @complete_cycle_sales_item.sales_post_production_orders.first 
+        @post_production_order.quantity.should == @production_history.ok_quantity + 
+                                                  @production_history.repairable_quantity
       end
       
-      it 'should create production order equal to the number of the broken quantity ' do
+      it 'should create 1 production order for the broken production remake' do
         @complete_cycle_sales_item.fail_production_production_orders.count.should == 1 
-        @complete_cycle_sales_item.production_orders.count.should == 2 
-        
-        
-        # the first == sales order
-        # the second production order == fail_production
+        @complete_cycle_sales_item.production_orders.count.should == 2  
       end
       
       # updating the sales item statistics
-      it 'should deduct pending production by the ok quantity' do
+      it 'should deduct pending production by the ok + repairable quantity' do 
+        @final_pending_production = @complete_cycle_sales_item.pending_production 
+        delta_pending_production = @ok_quantity + @repairable_quantity - @broken_quantity  
+        (@initial_pending_production -  @final_pending_production).should == delta_pending_production
       end
       
       it 'should add the pending post production by the ok + repairable quantity' do
+        @final_pending_post_production = @complete_cycle_sales_item.pending_post_production
+        
+        
+        puts "initial pending post production: #{@initial_pending_post_production}"
+        puts "final pending post production: #{@final_pending_post_production}"
+        delta_pending_post_production = @ok_quantity + @repairable_quantity
+        (   @final_pending_post_production - @initial_pending_post_production ).should == delta_pending_post_production
       end
       
         
@@ -203,7 +224,9 @@ end
         # => if GIRO          => pending approval 
         # => if cash          => auto approve 
         
-# HOW ABOUT THOSE DOWN PAYMENT MECHANISM? 
+# HOW ABOUT THOSE DOWN PAYMENT MECHANISM?  ++> FUCK! => ASK THEM ... 
+  # no cash
+  # no downpayment. always use the credit method.. happens most of the time. 
 
 # invoice has_many payment_entries  => no.. asking them to select the invoice is crazy
   # => just ask them to specify the amount and method.. the system will perform auto clearance (automated)
