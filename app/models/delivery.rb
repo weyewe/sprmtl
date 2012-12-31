@@ -3,6 +3,8 @@ class Delivery < ActiveRecord::Base
   
   validates_presence_of :creator_id
   validates_presence_of :customer_id 
+  has_one :delivery_lost 
+  has_one :sales_return 
   
   
   def self.create_by_employee( employee, params ) 
@@ -49,6 +51,27 @@ class Delivery < ActiveRecord::Base
     end 
   end
   
+  
+  def finalize(employee)
+    return nil if employee.nil? 
+    return nil if self.is_finalized == true  
+    
+    # transaction block to confirm all the sales item  + sales order confirmation 
+    ActiveRecord::Base.transaction do
+      self.finalizer_id = employee.id 
+      self.finalized_at = DateTime.now 
+      self.is_finalized = true 
+      self.save 
+      
+      self.delivery_entries.each do |delivery_entry|
+        delivery_entry.finalize 
+      end
+      
+      # create SalesReturn
+      # create DeliveryLost
+      
+    end
+  end
     
   
   

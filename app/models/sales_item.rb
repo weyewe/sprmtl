@@ -6,6 +6,8 @@ class SalesItem < ActiveRecord::Base
   has_many :production_orders
   has_many :post_production_orders
   
+  has_many :delivery_entries
+  
   has_many :pre_production_histories # PreProductionHistory 
   has_many :production_histories # ProductionHistory
   has_many :post_production_histories#  PostProductionHistory
@@ -330,6 +332,47 @@ class SalesItem < ActiveRecord::Base
   end
   
  
+=begin
+  ON sending out the goods 
+  # OMAKASE STYLE!! ahahaha ^_^
+=end
+  def update_on_delivery_statistics
+    # we will update on_delivery.. number of items on the way to the customer's site 
+    
+    all_confirmed_entries = self.delivery_entries .where( :is_confirmed => true ) 
+    all_finalized_entries = all_confirmed_entries.where(:is_finalized => true)
+    
+    total_items_going_out = all_confirmed_entries.sum("quantity_sent")
+    total_items_approved = all_finalized_entries.sum("quantity_confirmed")
+    total_items_returned = all_finalized_entries.sum("quantity_returned")
+    total_items_lost = all_finalized_entries.sum('quantity_lost')
+    
+    self.on_delivery = total_items_going_out  - 
+                        total_items_approved  -
+                        total_items_returned  -   # can it be returned at later date? => no idea
+                        total_items_lost
+    self.save 
+  end
+
+=begin
+  on DELIVERY FINALIZATION =>  CUSTOMER approves the number of delivery item, 
+                            sales return and , delivery lost 
+=end
+
+  def update_post_delivery_statistics
+    # sales return and delivery lost will be created on their own class
+    # with logic to trigger the ProductionOrder => for lost delivery
+    # for sales return, there are 2 possibility => PostProductionOrder or ProductionOrder. 
+    
+    self.fulfilled_order = self.delivery_entries.where(
+                            :is_confirmed => true, 
+                            :is_finalized => true 
+                          ).sum("quantity_confirmed")
+    
+    self.save 
+  end
+
+  
   
   # def total_repaired
   #   self.production_repair_post_production_orders.sum("ok_quantity") + 

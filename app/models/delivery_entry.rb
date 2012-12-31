@@ -52,18 +52,26 @@ class DeliveryEntry < ActiveRecord::Base
     self.save 
   end
   
-  def confirm
-    return nil if self.is_confirmed == true 
-    
-    if self.only_machining?
-      PostProductionOrder.create_machining_only_sales_production_order( self )
-    elsif self.casting_included?
-      production_order = ProductionOrder.create_sales_production_order( self )
-      self.update_pending_production 
-    end    
-    
+  def confirm 
+    return nil if self.is_confirmed == true  
     self.is_confirmed = true 
     self.save 
+    
+    sales_item = self.sales_item 
+    
+    sales_item.update_ready_statistics
+    sales_item.update_on_delivery_statistics
+  end
+  
+  def finalize
+    
+    return nil if self.is_finalized == true 
+    self.is_finalized = true 
+    self.save
+    
+    sales_item = self.sales_item 
+    sales_item.update_on_delivery_statistics
+    sales_item.update_delivered_statistics 
   end
   
 end

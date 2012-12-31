@@ -53,6 +53,7 @@ class CreateSalesItems < ActiveRecord::Migration
       
       # fulfilled order => when it is approved by the customer
       # if there is sales return, deduct the fulfilled order 
+      # LAST ONE THAT WE NEED => actual fulfilled order 
       t.integer :fulfilled_order                , :default =>  0 
        
      t.boolean :is_confirmed, :default => false  

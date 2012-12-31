@@ -132,11 +132,16 @@ describe Delivery do
     
     context 'creating delivery with 1 delivery entry ' do
       before(:each) do
-        
         @pending_delivery = @complete_cycle_sales_item.ready 
+        
+        @quantity_sent = 1 
+        if @pending_delivery > 1 
+          @quantity_sent = @pending_delivery - 1 
+        end
+        
         @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
-            :quantity_sent => , 
-            :quantity_sent_weight => "" 
+            :quantity_sent => @quantity_sent, 
+            :quantity_sent_weight => "#{@quantity_sent * 10}" 
           }) 
       end
       
@@ -145,8 +150,8 @@ describe Delivery do
       end
       
       it 'should be confirmable' do 
-        @sales_order.confirm( @admin ) 
-        @sales_order.is_confirmed.should be_true
+        @delivery.confirm( @admin ) 
+        @delivery.is_confirmed.should be_true
       end
       
     end # context 'creating delivery with 1 delivery entry , including production'
