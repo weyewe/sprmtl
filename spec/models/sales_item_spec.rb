@@ -114,7 +114,7 @@ describe SalesItem do
       # puts "final_has_production_pending_production: #{@final_has_production_pending_production}"
       delta.should == @has_production_quantity
     end
-  end
+  end # on confirming sales order 
   
   
   

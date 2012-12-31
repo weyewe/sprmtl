@@ -54,6 +54,7 @@ class Delivery < ActiveRecord::Base
   
   def finalize(employee)
     return nil if employee.nil? 
+    return nil if self.is_confirmed == false 
     return nil if self.is_finalized == true  
     
     # transaction block to confirm all the sales item  + sales order confirmation 
