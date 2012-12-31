@@ -179,9 +179,38 @@ describe Delivery do
         
         
         it 'should not finalize if there is returned weight, but 0 returned quantity'  do
+          @delivery_entry.reload 
+          @delivery_entry.update_post_delivery(@admin, {
+            :quantity_confirmed => @delivery_entry.quantity_sent , 
+            :quantity_returned => 0 ,
+            :quantity_returned_weight => '10' ,
+            :quantity_lost => 0
+          })
+          
+          @delivery_entry.should_not be_valid 
+          
+          #  fuck, not fail..
+          @delivery.finalize(@admin)
+          @delivery.reload 
+          @delivery.is_finalized.should be_false
         end
         
-        it 'should not finalize if there is 0 returned weight while returned quantity != 0 '
+        it 'should not finalize if there is 0 returned weight while returned quantity != 0 ' do
+          @delivery_entry.reload 
+          @delivery_entry.update_post_delivery(@admin, {
+            :quantity_confirmed => @delivery_entry.quantity_sent - 1 , 
+            :quantity_returned => 1 ,
+            :quantity_returned_weight => '0' ,
+            :quantity_lost => 0
+          })
+          
+          @delivery_entry.should_not be_valid 
+          
+          #  fuck, not fail..
+          @delivery.finalize(@admin)
+          @delivery.reload 
+          @delivery.is_finalized.should be_false
+        end
         
         
         it 'should not finalize if quantity_sent != quantity_confirmed + quantity return + quantity loss ' do
@@ -196,33 +225,62 @@ describe Delivery do
           @delivery_entry.should_not be_valid 
           
           #  fuck, not fail..
-          @delivery.is_finalized.should be_false 
           @delivery.finalize(@admin)
           @delivery.reload 
           @delivery.is_finalized.should be_false 
         end
         
          
-        # context "FINALIZE: confirm all" do
-        #   @quantity_sent= @delivery_entry.quantity_sent
-        #   @delivery_entry.update_post_delivery(@admin, {
-        #     :quantity_confirmed => @quantity_sent , 
-        #     :quantity_returned => 0 ,
-        #     :quantity_returned_weight => '0' ,
-        #     :quantity_lost => 0 
-        #   })
-        #   
-        #   @delivery.finalize(@admin)  
-        # end # end of "confirm all"
-        # 
-        # context "FINALIZE: confirm partial, return partial" do
-        # end # end of "confirm partial, return partial"
-        # 
-        # context "FINALIZE: confirm none, return partial, lost partial" do
-        # end # end of "confirm none, return partial, lost partial"
-        # 
-        # context "FINALIZE: confirm_partial, return none, lost_partial " do
-        # end # end of "confirm_partial, return none, lost_partial"
+        context "FINALIZE: confirm all" do
+          before(:each) do
+            
+            @quantity_confirmed=   @delivery_entry.quantity_sent 
+            result = @delivery_entry.update_post_delivery(@admin, {
+              :quantity_confirmed => @quantity_confirmed , 
+              :quantity_returned => 0 ,
+              :quantity_returned_weight => '0' ,
+              :quantity_lost => 0 
+            })
+            result.should be_valid 
+            @complete_cycle_sales_item.reload 
+            @initial_on_delivery_item = @complete_cycle_sales_item.on_delivery 
+            @initial_fulfilled = @complete_cycle_sales_item.fulfilled_order
+            
+            @delivery.finalize(@admin)  
+            @complete_cycle_sales_item.reload 
+          end 
+          
+          it 'should finalize the delivery' do
+            @delivery.is_finalized.should be_true 
+          end
+          
+          it 'should increase the fulfilled quantity by the quantity on_delivery ' do
+            @final_on_delivery_item = @complete_cycle_sales_item.on_delivery 
+            @delivery_entry.reload 
+            puts "confirmed quantity: #{@delivery_entry.quantity_confirmed}"
+            puts "initial_on_delivery_item: #{@initial_on_delivery_item}"
+            puts "final_on_delivery_item  : #{@final_on_delivery_item}"
+            delta = @initial_on_delivery_item - @final_on_delivery_item
+            delta.should == @quantity_confirmed
+          end
+          
+          it 'should deduct the quantity of confirmed item' do
+            @final_fulfilled = @complete_cycle_sales_item.fulfilled_order
+            
+            delta = @final_fulfilled - @initial_fulfilled
+            delta.should == @quantity_confirmed
+          end
+          
+        end # end of "confirm all"
+        
+        context "FINALIZE: confirm partial, return partial" do
+        end # end of "confirm partial, return partial"
+        
+        context "FINALIZE: confirm none, return partial, lost partial" do
+        end # end of "confirm none, return partial, lost partial"
+        
+        context "FINALIZE: confirm_partial, return none, lost_partial " do
+        end # end of "confirm_partial, return none, lost_partial"
       
      
         

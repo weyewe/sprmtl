@@ -343,14 +343,23 @@ class SalesItem < ActiveRecord::Base
     all_finalized_entries = all_confirmed_entries.where(:is_finalized => true)
     
     total_items_going_out = all_confirmed_entries.sum("quantity_sent")
-    total_items_approved = all_finalized_entries.sum("quantity_confirmed")
-    total_items_returned = all_finalized_entries.sum("quantity_returned")
-    total_items_lost = all_finalized_entries.sum('quantity_lost')
+    total_items_approved  = all_finalized_entries.sum("quantity_confirmed")
+    total_items_returned  = all_finalized_entries.sum("quantity_returned")
+    total_items_lost      = all_finalized_entries.sum('quantity_lost')
+
+    
+    # puts "!!!!!!!!!!!!!!!!!!!!!!!! UPDATE on DELIVERY STATISTICS\n"*5
+    # puts "total_items_going_out: #{total_items_going_out}"
+    # puts "total_items_approved (confirmed): #{total_items_approved}"
+    # puts "total_items_returned: #{total_items_returned}"
+    # puts "total_items_lost: #{total_items_lost}"
     
     self.on_delivery = total_items_going_out  - 
                         total_items_approved  -
                         total_items_returned  -   # can it be returned at later date? => no idea
                         total_items_lost
+                        
+    # puts ">>>>>>>> latest on_delivery: #{ self.on_delivery}"
     self.save 
   end
 

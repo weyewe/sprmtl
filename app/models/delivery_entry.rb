@@ -67,13 +67,13 @@ class DeliveryEntry < ActiveRecord::Base
   
   def validate_post_production_update
     self.validate_post_production_quantity
-    return self if not self.valid? 
+    # return self if not self.valid? 
      
     self.validate_post_production_total_sum
-    return self if not self.valid? 
+    # return self if not self.valid? 
     
     self.validate_returned_item_quantity_weight
-    return self if not self.valid?
+    # return self if not self.valid?
   end
     
   def update_post_delivery( employee, params ) 
