@@ -88,7 +88,6 @@ class ProductionHistory < ActiveRecord::Base
 
     
     if new_object.save   
-      # do something
     end
     
    
@@ -112,7 +111,6 @@ class ProductionHistory < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       self.update_processed_quantity
       sales_item = self.sales_item
-      sales_item.update_production_statistics( self )
       
        
       # if only post production

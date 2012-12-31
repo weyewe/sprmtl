@@ -149,7 +149,7 @@ class SalesItem < ActiveRecord::Base
     end
   end
   
-  def fail_production_production_orders
+  def production_failure_production_orders
     self.production_orders.where(:case => PRODUCTION_ORDER[:production_failure])
   end
   
@@ -234,9 +234,22 @@ class SalesItem < ActiveRecord::Base
 ###############################
 ##############################################################
 
+
+=begin
+   POST PRODUCTION PROGRESS TRACKING
+=end
+
   def sales_post_production_orders
     self.post_production_orders.where(:case => POST_PRODUCTION_ORDER[:sales_order] )
   end
+   
+  def has_unconfirmed_post_production_history?
+    self.post_production_histories.where(:is_confirmed => false ).count != 0 
+  end
+ 
+
+
+  
    
  
  

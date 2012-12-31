@@ -163,7 +163,7 @@ describe ProductionHistory do
       end
       
       it 'should create 1 production order for the broken production remake' do
-        @complete_cycle_sales_item.fail_production_production_orders.count.should == 1 
+        @complete_cycle_sales_item.production_failure_production_orders.count.should == 1 
         @complete_cycle_sales_item.production_orders.count.should == 2  
       end
       
@@ -175,11 +175,8 @@ describe ProductionHistory do
       end
       
       it 'should add the pending post production by the ok + repairable quantity' do
-        @final_pending_post_production = @complete_cycle_sales_item.pending_post_production
+        @final_pending_post_production = @complete_cycle_sales_item.pending_post_production 
         
-        
-        puts "initial pending post production: #{@initial_pending_post_production}"
-        puts "final pending post production: #{@final_pending_post_production}"
         delta_pending_post_production = @ok_quantity + @repairable_quantity
         (   @final_pending_post_production - @initial_pending_post_production ).should == delta_pending_post_production
       end

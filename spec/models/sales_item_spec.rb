@@ -109,9 +109,9 @@ describe SalesItem do
       @final_has_production_pending_production = @has_production_sales_item.pending_production
       
       delta = @final_has_production_pending_production - @initial_has_production_pending_production
-      
-      puts "initial_pending_production: #{@initial_has_production_pending_production}"
-      puts "final_has_production_pending_production: #{@final_has_production_pending_production}"
+      # 
+      # puts "initial_pending_production: #{@initial_has_production_pending_production}"
+      # puts "final_has_production_pending_production: #{@final_has_production_pending_production}"
       delta.should == @has_production_quantity
     end
   end
