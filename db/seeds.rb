@@ -55,11 +55,12 @@ PreProductionHistory.create_history( admin, sales_item_1, {
 ProductionHistory.create_history( admin, sales_item_1, {
   :processed_quantity    => 10, 
   :ok_quantity           => 8, 
+  :repairable_quantity     => 0,
   :broken_quantity       => 2, 
   
-  :ok_weight             => 86,  # in kg.. .00 
-  :repairable_weight     => 0,
-  :broken_weight         => 20,
+  :ok_weight             => '86',  # in kg.. .00 
+  :repairable_weight     => '0',
+  :broken_weight         => '20',
   
   :person_in_charge      => nil ,# list of employee id 
   :start_date            => Date.new( 2012, 10,10 ) ,
@@ -130,5 +131,10 @@ delivery_entry_1.finalize( admin )
                         # => independent ( later date )
 
 
+=begin
+  The nature of delivery order and sales invoice
+  
+  when the item is passed, sales invoice is made
+=end
 
 
