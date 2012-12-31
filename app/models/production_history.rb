@@ -116,7 +116,7 @@ class ProductionHistory < ActiveRecord::Base
       # if only post production
       
       sales_item.generate_next_phase_after_production( self ) 
-      sales_item.update_production_statistics( self )  
+      sales_item.update_production_statistics 
       
       self.is_confirmed = true 
       self.confirmer_id = employee.id

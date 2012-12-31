@@ -153,6 +153,70 @@ describe PostProductionHistory do
   end
   
   
+  context "confirming post confirm post production spec" do
+    before(:each) do
+      @total_post_production_1 = 4 
+      
+      @post_production_broken_1 = 1 
+      @post_production_ok_1 = @total_post_production_1 - @post_production_broken_1
+      @post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
+        :ok_quantity           => @post_production_ok_1, 
+        :broken_quantity       => @post_production_broken_1, 
+
+        :ok_weight             =>  "#{@post_production_ok_1*15}" ,  # in kg.. .00 
+        :broken_weight         =>  "#{@post_production_broken_1*10}" ,
+
+        # :person_in_charge      => nil ,# list of employee id 
+        :start_date            => Date.new( 2012, 10,10 ) ,
+        :finish_date           => Date.new( 2013, 1, 15) 
+      })
+      
+      @complete_cycle_sales_item.reload 
+      
+      @initial_pending_post_production = @complete_cycle_sales_item.pending_post_production 
+      @initial_ready      = @complete_cycle_sales_item.ready
+      @initial_pending_production  =  @complete_cycle_sales_item.pending_production 
+      
+      @post_production_history.confirm( @admin ) 
+
+      @complete_cycle_sales_item.reload 
+    end
+    
+    
+    it 'should deduct the pending post production by the number of ok_quantity' do
+      @final_pending_post_production = @complete_cycle_sales_item.pending_post_production 
+      
+      delta = @initial_pending_post_production - @final_pending_post_production
+      
+      delta.should == @post_production_ok_1
+    end
+    
+    it 'should add the ready item by ok quantity' do
+      @final_ready = @complete_cycle_sales_item.ready 
+      
+      delta =  @final_ready - @initial_ready 
+      
+      delta.should == @post_production_ok_1
+    end
+    
+    it 'should add the pending_production   by broken quantity' do
+      @final_pending_production  =  @complete_cycle_sales_item.pending_production
+      
+      delta = @final_pending_production - @initial_pending_production
+
+      delta.should == @post_production_broken_1
+    end
+    
+    it 'should create ProductionOrder for the PRODUCTION_ORDER[:post_production_failure]' do
+      @complete_cycle_sales_item.post_production_failure_production_orders.where(:source_document_entry_id => @post_production_history.id ).count == 1
+      post_production_failure_production_order = @complete_cycle_sales_item.post_production_failure_production_orders.where(:source_document_entry_id => @post_production_history.id ).first 
+      
+      
+      post_production_failure_production_order.quantity.should == @post_production_broken_1
+    end
+  end #"confirming post confirm post production spec"
+  
+  
    
   
   

@@ -207,7 +207,7 @@ class SalesItem < ActiveRecord::Base
     end
   end
   
-  def update_production_statistics(production_history)
+  def update_production_statistics 
     # :pending_production  
     
     self.pending_production = self.production_orders.sum("quantity") - 
@@ -247,7 +247,52 @@ class SalesItem < ActiveRecord::Base
     self.post_production_histories.where(:is_confirmed => false ).count != 0 
   end
  
+  def post_production_failure_production_orders
+    self.production_orders.where(:case => PRODUCTION_ORDER[:post_production_failure])
+  end
+ 
+=begin
+  POST PRODUCTION INTERFACE with delivery
+=end
 
+  # over here, we are assuming that all sales item come with production 
+  def generate_next_phase_after_post_production( post_production_history )
+    
+    # all things going from post production is the ready item 
+    
+    # for the failure 
+    if self.is_production?
+      ProductionOrder.generate_post_production_failure_production_order( post_production_history ) 
+      self.update_production_statistics
+    else
+      # FUCK>> ASK the company for the policy
+      
+      # reimburse? or, there is no case of this at all?
+    end 
+  end
+  
+  
+  def post_production_finished_quantity
+    return self.post_production_histories.sum("ok_quantity")
+  end
+  
+  def update_post_production_statistics(post_production_history)
+    # :pending_production  
+    
+    self.pending_post_production = self.post_production_orders.sum("quantity") - 
+                              self.post_production_finished_quantity
+     
+    # :ready                    
+    self.update_ready_statistics 
+    
+    # number_of_production
+    self.number_of_post_production = self.post_production_histories.sum("processed_quantity")
+    
+    # number_of_failed_production
+    self.number_of_failed_post_production = self.post_production_histories.sum("broken_quantity")
+    
+    self.save  
+  end
 
   
    
