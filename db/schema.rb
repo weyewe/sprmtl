@@ -34,31 +34,36 @@ ActiveRecord::Schema.define(:version => 20121230054220) do
   end
 
   create_table "deliveries", :force => true do |t|
-    t.integer  "creator_id"
-    t.integer  "delivery_date"
     t.string   "code"
+    t.integer  "creator_id"
     t.integer  "customer_id"
-    t.boolean  "is_confirmed",  :default => false
+    t.text     "delivery_address"
+    t.date     "delivery_date"
+    t.boolean  "is_confirmed",     :default => false
     t.integer  "confirmer_id"
     t.datetime "confirmed_at"
-    t.boolean  "is_finalized",  :default => false
+    t.boolean  "is_finalized",     :default => false
     t.integer  "finalizer_id"
     t.datetime "finalized_at"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
   end
 
   create_table "delivery_entries", :force => true do |t|
+    t.integer  "creator_id"
     t.integer  "sales_item_id"
     t.integer  "delivery_id"
+    t.string   "code"
     t.integer  "quantity_sent"
+    t.decimal  "quantity_sent_weight",     :precision => 7, :scale => 2, :default => 0.0
     t.integer  "quantity_confirmed"
     t.integer  "quantity_returned"
+    t.decimal  "quantity_returned_weight", :precision => 7, :scale => 2, :default => 0.0
     t.integer  "quantity_lost"
-    t.boolean  "is_confirmed",       :default => false
-    t.boolean  "is_finalized",       :default => false
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.boolean  "is_confirmed",                                           :default => false
+    t.boolean  "is_finalized",                                           :default => false
+    t.datetime "created_at",                                                                :null => false
+    t.datetime "updated_at",                                                                :null => false
   end
 
   create_table "delivery_lost_entries", :force => true do |t|

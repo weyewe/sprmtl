@@ -92,75 +92,44 @@ describe Delivery do
     @post_production_history.confirm( @admin ) 
 
     @complete_cycle_sales_item.reload
-    
-  end
-  
-  it 'should not allow sales order creation if there is no employee' do 
-    delivery   = Delivery.create_by_employee( nil , {
+    @delivery   = Delivery.create_by_employee( @admin , {
       :customer_id    => @customer.id,          
       :delivery_address   => "some address",    
-      :delivery_date     => Date.new(2012, 12, 15) 
+      :delivery_date     => Date.new(2012, 12, 15)
     })
     
-    delivery.should be_nil 
   end
   
-  it 'should allow creation if there is employee' do 
-    
-    delivery   = Delivery.create_by_employee( @admin , {
-      :customer_id    => @customer.id,          
-      :delivery_address   => "some address",    
-      :delivery_date     => Date.new(2012, 12, 15)   
-    })
-    
-    delivery.should be_valid
-  end
-  
-  context "post sales order creation" do
-    before(:each) do
-      @delivery   = Delivery.create_by_employee( @admin , {
-        :customer_id    => @customer.id,          
-        :delivery_address   => "some address",    
-        :delivery_date     => Date.new(2012, 12, 15)
+  it 'should not create delivery entry if 0 <  quantity sent  ' do
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
+        :quantity_sent => 0 , 
+        :quantity_sent_weight => "324" 
       })
-    end
-    
-    it 'should not be confirmable if there is no sales item' do
-      @delivery.confirm( @admin ) 
-      @delivery.is_confirmed.should be_false 
-    end 
-    
-    context 'creating delivery with 1 delivery entry ' do
-      before(:each) do
-        
-        @pending_delivery = @complete_cycle_sales_item.ready 
-        @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
-            :quantity_sent => , 
-            :quantity_sent_weight => "" 
-          }) 
-      end
-      
-      it 'should have 1 delivery_entry' do
-        @delivery_entry.delivery_entries.count.should == 1 
-      end
-      
-      it 'should be confirmable' do 
-        @sales_order.confirm( @admin ) 
-        @sales_order.is_confirmed.should be_true
-      end
-      
-    end # context 'creating delivery with 1 delivery entry , including production'
+    @delivery_entry.should_not be_valid 
   end
   
+  it 'should not create delivery entry if  quantity sent > ready ' do 
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
+        :quantity_sent => @complete_cycle_sales_item.ready + 1  , 
+        :quantity_sent_weight => "324" 
+      })
+    @delivery_entry.should_not be_valid
+  end
   
-  # create delivery order 
-  # => add delivery entries
-  # create delivery order confirmation 
-    # => sales return
-      # => decide whether it will go to post production (fix) 
-      # => or it will go to production  (remake) 
-    # => delivery loss 
-  
+  it 'should not create delivery entry if  weight > 0 ' do 
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
+        :quantity_sent => @complete_cycle_sales_item.ready + 1  , 
+        :quantity_sent_weight => "-5" 
+      })
+    @delivery_entry.should_not be_valid
+    
+    
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
+      :quantity_sent => @complete_cycle_sales_item.ready + 1  , 
+      :quantity_sent_weight => "0" 
+      })
+    @delivery_entry.should_not be_valid
+  end
  
   
   

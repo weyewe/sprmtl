@@ -1,9 +1,11 @@
 class CreateDeliveryEntries < ActiveRecord::Migration
   def change
     create_table :delivery_entries do |t|
+      t.integer :creator_id 
       t.integer :sales_item_id 
       
       t.integer :delivery_id  # Surat Jalan 
+      t.string  :code 
       
 =begin
   quantity_sent is the number of sales item leaving our warehouse
@@ -15,10 +17,20 @@ class CreateDeliveryEntries < ActiveRecord::Migration
   
   quantity_lost + quantity_returned + quantity_confirmed == quantity_sent 
 =end
-      t.integer :quantity_sent 
-      t.integer :quantity_confirmed   # => migrate the on_delivery to fulfilled 
-      t.integer :quantity_returned # => sales_return
-      t.integer :quantity_lost     # => sales_lost 
+      t.integer     :quantity_sent 
+      t.decimal     :quantity_sent_weight , :precision => 7, :scale => 2 , :default => 0 
+      
+      
+=begin
+  After customer approval 
+=end
+      t.integer     :quantity_confirmed   # => migrate the on_delivery to fulfilled 
+      
+      t.integer     :quantity_returned # => sales_return
+      t.decimal     :quantity_returned_weight , :precision => 7, :scale => 2 , :default => 0 
+      
+      t.integer     :quantity_lost     # => sales_lost 
+       
       
       
 
