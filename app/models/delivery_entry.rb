@@ -2,6 +2,7 @@ class DeliveryEntry < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :delivery
   belongs_to :sales_item 
+  has_one :sales_return_entry
   
   
   
@@ -158,8 +159,6 @@ class DeliveryEntry < ActiveRecord::Base
       # end
       
       raise ActiveRecord::Rollback, "Call tech support!" 
-    else
-      # puts("BBBBBBBBBBBBBBBBBBB THe sibe kia is valid")
     end
     
     

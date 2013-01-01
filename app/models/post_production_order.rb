@@ -43,4 +43,17 @@ class PostProductionOrder < ActiveRecord::Base
     )
   end
   
+  def PostProductionOrder.generate_sales_return_repair_post_production_order( sales_return_entry )
+    PostProductionOrder.create(
+      :sales_item_id            => sales_return_entry.sales_item_id      ,
+      :case                     =>  POST_PRODUCTION_ORDER[:sales_return_repair]  ,
+      :quantity                 => sales_return_entry.quantity_for_post_production, 
+      
+      :source_document_entry    => sales_return_entry.class.to_s          ,
+      :source_document_entry_id => sales_return_entry.id                  ,
+      :source_document          => sales_return_entry.sales_return.class.to_s          ,
+      :source_document_id       => sales_return_entry.sales_return_id
+    )
+  end
+  
 end

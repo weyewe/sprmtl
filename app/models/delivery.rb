@@ -72,21 +72,25 @@ class Delivery < ActiveRecord::Base
 
       # create SalesReturn
       
-      # if self.any_sales_return? 
-      #   SalesReturn.create_by_employee( employee  , self  ) 
-      # end
-      # 
-      # # create DeliveryLost
-      # if self.any_delivery_lost? 
-      #   DeliveryLost.create_by_employee( employee, self )
-      # end
+      if self.has_sales_return? 
+        SalesReturn.create_by_employee( employee  , self  ) 
+      end
+      
+      # create DeliveryLost
+      if self.has_delivery_lost? 
+        DeliveryLost.create_by_employee( employee, self )
+      end
       
       
       puts "DOING SHITE AS NORMAL, NO ROLLBACK"
     end 
-
-   
-    
+  end
+  
+=begin
+  SALES RETURN RELATED
+=end
+  def has_sales_return?
+    self.delivery_entries.where({ quantity_returned.not_eq 0 }).count != 0 
   end
     
   

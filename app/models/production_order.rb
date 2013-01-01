@@ -44,4 +44,19 @@ class ProductionOrder < ActiveRecord::Base
       :source_document_id       => post_production_history.id  
     ) 
   end
+  
+  
+  def ProductionOrder.generate_sales_return_production_order( sales_return_entry )
+    
+    ProductionOrder.create(
+      :sales_item_id            => sales_return_entry.sales_item_id       ,
+      :case                     => PRODUCTION_ORDER[:sales_return]     ,
+      :quantity                 => sales_return_entry.quantity_for_production     ,
+
+      :source_document_entry    => sales_return_entry.class.to_s          ,
+      :source_document_entry_id => sales_return_entry.id                  ,
+      :source_document          => sales_return_entry.sales_return.class.to_s          ,
+      :source_document_id       => sales_return_entry.sales_return_id
+    ) 
+  end
 end
