@@ -355,10 +355,10 @@ class SalesItem < ActiveRecord::Base
     # puts "size of confirmed entries: #{all_confirmed_entries.length}"
     # puts "size of finalized entries: #{all_finalized_entries.length}"
     # puts "!!!!!!!!!!!!!!!!!!!!!!!! UPDATE on DELIVERY STATISTICS\n"*2
-    # puts "total_items_going_out: #{total_items_going_out}"
-    # puts "total_items_approved (confirmed): #{total_items_approved}"
-    # puts "total_items_returned: #{total_items_returned}"
-    # puts "total_items_lost: #{total_items_lost}"
+    puts "total_items_going_out: #{total_items_going_out}"
+    puts "total_items_approved (confirmed): #{total_items_approved}"
+    puts "total_items_returned: #{total_items_returned}"
+    puts "total_items_lost: #{total_items_lost}"
     
     self.on_delivery = total_items_going_out  - 
                         total_items_approved  -

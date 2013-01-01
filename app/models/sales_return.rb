@@ -1,13 +1,14 @@
 class SalesReturn < ActiveRecord::Base
   # attr_accessible :title, :body
-  belongs_to :delivery 
+  belongs_to :delivery
+  has_many :sales_return_entries
   
   def SalesReturn.create_by_employee( employee, delivery )
     return nil if employee.nil?
     return nil if delivery.nil? 
     return nil if delivery.is_confirmed == false 
     return nil if delivery.is_finalized == false 
-    return nil if not delivery.any_sales_return? 
+    return nil if not delivery.has_sales_return? 
     
     new_object = SalesReturn.new 
     new_object.creator_id   = employee.id 

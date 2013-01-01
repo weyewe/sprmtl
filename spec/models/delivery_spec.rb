@@ -40,8 +40,8 @@ describe Delivery do
     @sales_order.confirm(@admin)
     @complete_cycle_sales_item.reload
     
-    @processed_quantity = 10
-    @ok_quantity = 8 
+    @processed_quantity = 20
+    @ok_quantity = 18 
     @broken_quantity = 1
     @repairable_quantity = 1 
     
@@ -67,7 +67,7 @@ describe Delivery do
     @complete_cycle_sales_item.reload
     @pending_post_production = @complete_cycle_sales_item.pending_post_production
     
-    @total_post_production_1 = 4 
+    @total_post_production_1 = 15
     
     @post_production_broken_1 = 1 
     @post_production_ok_1 = @total_post_production_1 - @post_production_broken_1
@@ -287,12 +287,85 @@ describe Delivery do
             
             delta = @final_fulfilled - @initial_fulfilled
             delta.should == @quantity_confirmed
-          end
-          
+            puts "The final fulfilled: #{@final_fulfilled}"
+          end 
         end # end of "confirm all"
 
-        # context "FINALIZE: confirm partial, return partial" do
-        # end # end of "confirm partial, return partial"
+        context "FINALIZE: confirm partial, return partial" do
+          before(:each) do
+            puts "\n"
+            puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@ The starting of partial confirmed and partial return\n "*10
+            
+            puts "The quantity sent: #{@delivery_entry.quantity_sent}\n"*5
+            @quantity_returned = 5 
+            @quantity_confirmed =   @delivery_entry.quantity_sent - @quantity_returned
+            
+            puts "quantity_confirmed: #{@quantity_confirmed}"
+            puts "quantity_returned: #{@quantity_returned}"
+            
+            @delivery_entry.update_post_delivery(@admin, {
+              :quantity_confirmed => @quantity_confirmed , 
+              :quantity_returned => @quantity_returned ,
+              :quantity_returned_weight => "#{@quantity_returned*20}" ,
+              :quantity_lost => 0 
+            }) 
+            
+            
+            @complete_cycle_sales_item.reload 
+            @initial_on_delivery_item = @complete_cycle_sales_item.on_delivery 
+            @initial_fulfilled = @complete_cycle_sales_item.fulfilled_order
+            
+            
+            @delivery.reload 
+            @delivery.finalize(@admin)
+            @delivery.reload
+            
+            # @delivery.finalize(@admin)  
+            @complete_cycle_sales_item.reload 
+          end 
+          
+          it 'should finalize the delivery' do
+            
+            @delivery.is_finalized.should be_true 
+          end
+          
+          it 'should increase the fulfilled quantity by the quantity on_delivery ' do
+            
+            @final_on_delivery_item = @complete_cycle_sales_item.on_delivery 
+            @delivery_entry.reload 
+            
+            puts "initial_on_delivery_item :#{@initial_on_delivery_item}"
+            puts "reload : #{@final_on_delivery_item}"
+               
+            delta = @initial_on_delivery_item - @final_on_delivery_item  - @quantity_returned
+            delta.should == @quantity_confirmed
+          end
+          
+          it 'should deduct the quantity of confirmed item' do
+            @final_fulfilled = @complete_cycle_sales_item.fulfilled_order
+
+            delta = @final_fulfilled - @initial_fulfilled
+            delta.should == @quantity_confirmed
+            puts "The final fulfilled: #{@final_fulfilled}"
+          end
+          
+          it 'should create a sales return with the corresponding sales entry' do
+            @delivery.has_sales_return?.should be_true 
+          end
+          
+          it 'should have the same number of sales return entries as the returned delivery entries' do
+            total_returned_delivery_entries = @delivery.delivery_entries.
+                                                  where{( quantity_returned.not_eq 0)}.count 
+                                                  
+            total_sales_return_entries = @delivery.sales_return.sales_return_entries.count 
+            
+            total_sales_return_entries.should == total_returned_delivery_entries
+          end
+          
+          # go in detail in sales_return_spec => confirming the sales return, produce the shite 
+        end # end of "confirm partial, return partial"
+        
+        
         # 
         # context "FINALIZE: confirm none, return partial, lost partial" do
         # end # end of "confirm none, return partial, lost partial"
