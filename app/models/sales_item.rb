@@ -339,7 +339,10 @@ class SalesItem < ActiveRecord::Base
   def update_on_delivery_statistics
     # we will update on_delivery.. number of items on the way to the customer's site 
     
+    # when it is confirmed, it is deducting the stock 
     all_confirmed_entries = self.delivery_entries .where( :is_confirmed => true ) 
+    
+    # when it is finalized, it is the approval from the customer 
     all_finalized_entries = all_confirmed_entries.where(:is_finalized => true)
     
     total_items_going_out = all_confirmed_entries.sum("quantity_sent")
@@ -348,7 +351,10 @@ class SalesItem < ActiveRecord::Base
     total_items_lost      = all_finalized_entries.sum('quantity_lost')
 
     
-    # puts "!!!!!!!!!!!!!!!!!!!!!!!! UPDATE on DELIVERY STATISTICS\n"*5
+    # puts "\n"
+    # puts "size of confirmed entries: #{all_confirmed_entries.length}"
+    # puts "size of finalized entries: #{all_finalized_entries.length}"
+    # puts "!!!!!!!!!!!!!!!!!!!!!!!! UPDATE on DELIVERY STATISTICS\n"*2
     # puts "total_items_going_out: #{total_items_going_out}"
     # puts "total_items_approved (confirmed): #{total_items_approved}"
     # puts "total_items_returned: #{total_items_returned}"

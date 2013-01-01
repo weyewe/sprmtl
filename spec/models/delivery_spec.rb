@@ -167,6 +167,7 @@ describe Delivery do
           
           @delivery.confirm( @admin ) 
           @complete_cycle_sales_item.reload 
+          @delivery_entry.reload
         end
         
         it 'should add the on_delivery status and deduct the ready status' do
@@ -179,7 +180,6 @@ describe Delivery do
         
         
         it 'should not finalize if there is returned weight, but 0 returned quantity'  do
-          @delivery_entry.reload 
           @delivery_entry.update_post_delivery(@admin, {
             :quantity_confirmed => @delivery_entry.quantity_sent , 
             :quantity_returned => 0 ,
@@ -187,7 +187,9 @@ describe Delivery do
             :quantity_lost => 0
           })
           
-          @delivery_entry.should_not be_valid 
+          
+          @delivery_entry.reload 
+          @delivery_entry.errors.size.should_not == 0 
           
           #  fuck, not fail..
           @delivery.finalize(@admin)
@@ -195,26 +197,10 @@ describe Delivery do
           @delivery.is_finalized.should be_false
         end
         
-        it 'should not finalize if there is 0 returned weight while returned quantity != 0 ' do
-          @delivery_entry.reload 
-          @delivery_entry.update_post_delivery(@admin, {
-            :quantity_confirmed => @delivery_entry.quantity_sent - 1 , 
-            :quantity_returned => 1 ,
-            :quantity_returned_weight => '0' ,
-            :quantity_lost => 0
-          })
-          
-          @delivery_entry.should_not be_valid 
-          
-          #  fuck, not fail..
-          @delivery.finalize(@admin)
-          @delivery.reload 
-          @delivery.is_finalized.should be_false
-        end
+       
         
         
         it 'should not finalize if quantity_sent != quantity_confirmed + quantity return + quantity loss ' do
-          @delivery_entry.reload 
           @delivery_entry.update_post_delivery(@admin, {
             :quantity_confirmed => @delivery_entry.quantity_sent , 
             :quantity_returned => 1 ,
@@ -222,7 +208,10 @@ describe Delivery do
             :quantity_lost => 1
           })
           
-          @delivery_entry.should_not be_valid 
+          # we are doing this errors checking because we can't use valid? 
+          # it will reset the errors, and run through all validations 
+          @delivery_entry.reload 
+          @delivery_entry.errors.size.should_not == 0
           
           #  fuck, not fail..
           @delivery.finalize(@admin)
@@ -230,23 +219,63 @@ describe Delivery do
           @delivery.is_finalized.should be_false 
         end
         
+        it 'should finalize if everything is normal' do
+          @quantity_confirmed =   @delivery_entry.quantity_sent 
+          puts "\n\n\n\n"
+          puts "!!!!!!!!!!!!!!!!!! Gonna try success finalization\n"*5
+          @delivery_entry.update_post_delivery(@admin, {
+            :quantity_confirmed => @quantity_confirmed , 
+            :quantity_returned => 0 ,
+            :quantity_returned_weight => '0' ,
+            :quantity_lost => 0 
+          })
+          
+          
+          @delivery_entry.errors.size.should == 0
+          
+          puts "\n\n"
+          puts "in the spec\n"*5
+          @delivery_entry.reload 
+          
+          puts "quantity_confirmed = #{@delivery_entry.quantity_confirmed}"
+          @delivery_entry.quantity_confirmed.should == @quantity_confirmed
+          @delivery_entry.quantity_returned.should == 0
+          @delivery_entry.quantity_lost.should == 0
+          
+          @delivery.reload 
+          @delivery.finalize(@admin)
+          @delivery.reload 
+          @delivery.is_finalized.should be_true 
+
+          puts "\n POST DELIVERY FINALIZATION"
+          puts "quantity_sent: #{@delivery_entry.quantity_sent}"
+          puts "quantity_confirmed: #{@delivery_entry.quantity_confirmed}"
+          puts "quantity_returned: #{@delivery_entry.quantity_returned}"
+          puts "quantity_lost: #{@delivery_entry.quantity_lost}"
+        end
+        
          
         context "FINALIZE: confirm all" do
           before(:each) do
-            
-            @quantity_confirmed=   @delivery_entry.quantity_sent 
-            result = @delivery_entry.update_post_delivery(@admin, {
+            @quantity_confirmed =   @delivery_entry.quantity_sent 
+            @delivery_entry.update_post_delivery(@admin, {
               :quantity_confirmed => @quantity_confirmed , 
               :quantity_returned => 0 ,
               :quantity_returned_weight => '0' ,
               :quantity_lost => 0 
-            })
-            result.should be_valid 
+            }) 
+            
+            
             @complete_cycle_sales_item.reload 
             @initial_on_delivery_item = @complete_cycle_sales_item.on_delivery 
             @initial_fulfilled = @complete_cycle_sales_item.fulfilled_order
             
-            @delivery.finalize(@admin)  
+            
+            @delivery.reload 
+            @delivery.finalize(@admin)
+            @delivery.reload
+            
+            # @delivery.finalize(@admin)  
             @complete_cycle_sales_item.reload 
           end 
           
@@ -272,15 +301,15 @@ describe Delivery do
           end
           
         end # end of "confirm all"
-        
-        context "FINALIZE: confirm partial, return partial" do
-        end # end of "confirm partial, return partial"
-        
-        context "FINALIZE: confirm none, return partial, lost partial" do
-        end # end of "confirm none, return partial, lost partial"
-        
-        context "FINALIZE: confirm_partial, return none, lost_partial " do
-        end # end of "confirm_partial, return none, lost_partial"
+        # 
+        # context "FINALIZE: confirm partial, return partial" do
+        # end # end of "confirm partial, return partial"
+        # 
+        # context "FINALIZE: confirm none, return partial, lost partial" do
+        # end # end of "confirm none, return partial, lost partial"
+        # 
+        # context "FINALIZE: confirm_partial, return none, lost_partial " do
+        # end # end of "confirm_partial, return none, lost_partial"
       
      
         

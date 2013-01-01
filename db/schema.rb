@@ -54,12 +54,12 @@ ActiveRecord::Schema.define(:version => 20121231141550) do
     t.integer  "sales_item_id"
     t.integer  "delivery_id"
     t.string   "code"
-    t.integer  "quantity_sent"
+    t.integer  "quantity_sent",                                          :default => 0
     t.decimal  "quantity_sent_weight",     :precision => 7, :scale => 2, :default => 0.0
-    t.integer  "quantity_confirmed"
-    t.integer  "quantity_returned"
+    t.integer  "quantity_confirmed",                                     :default => 0
+    t.integer  "quantity_returned",                                      :default => 0
     t.decimal  "quantity_returned_weight", :precision => 7, :scale => 2, :default => 0.0
-    t.integer  "quantity_lost"
+    t.integer  "quantity_lost",                                          :default => 0
     t.boolean  "is_confirmed",                                           :default => false
     t.boolean  "is_finalized",                                           :default => false
     t.datetime "created_at",                                                                :null => false

@@ -5,12 +5,12 @@ class DeliveryEntry < ActiveRecord::Base
   
   
   
-  validate   :quantity_sent_is_not_zero_and_less_than_ready_quantity
+  # validate   :quantity_sent_is_not_zero_and_less_than_ready_quantity
   validate   :quantity_sent_weight_is_not_zero_and_less_than_ready_quantity 
   
   def quantity_sent_is_not_zero_and_less_than_ready_quantity
     sales_item = self.sales_item
-    if  quantity_sent <= 0 or quantity_sent > sales_item.ready 
+    if   self.delivery.is_confirmed == false and ( quantity_sent <= 0 or quantity_sent > sales_item.ready ) 
       errors.add(:quantity_sent , "Kuantitas harus lebih dari 0 dan kurang ato sama dengan #{sales_item.ready}" )  
     end
   end
@@ -32,6 +32,7 @@ class DeliveryEntry < ActiveRecord::Base
     
     new_object.quantity_sent        = params[:quantity_sent]       
     new_object.quantity_sent_weight = BigDecimal( params[:quantity_sent_weight ])
+    
     
     
     if new_object.save 
@@ -57,28 +58,43 @@ class DeliveryEntry < ActiveRecord::Base
   
   def validate_post_production_total_sum
     if self.quantity_confirmed + self.quantity_returned + self.quantity_lost != self.quantity_sent 
-      msg = "Jumlah yang terkirim: #{self.quantity_sent}. Konfirmasi + Retur + Hilang tidak sesuai."
+      msg = "Jumlah yang terkirim: #{self.quantity_sent}. " +
+              "Konfirmasi #{self.quantity_confirmed} + " + 
+              " Retur #{self.quantity_returned }+ " + 
+              " Hilang #{self.quantity_lost} tidak sesuai."
       self.errors.add(:quantity_confirmed , msg ) 
       self.errors.add(:quantity_returned ,  msg ) 
       self.errors.add(:quantity_lost ,      msg ) 
     end
   end
   
+  def validate_returned_item_quantity_weight  
+    if self.quantity_returned == 0 and self.quantity_returned_weight.to_i !=  0 
+      self.errors.add(:quantity_returned_weight , "Tidak ada yang di retur. Harus 0" )  
+    end
+  end
   
-  def validate_post_production_update
-    self.validate_post_production_quantity
-    # return self if not self.valid? 
-     
-    self.validate_post_production_total_sum
-    # return self if not self.valid? 
+  
+  def validate_post_production_update 
+    self.validate_post_production_quantity 
+    # puts "after validate_post_production_quantity, errors: #{self.errors.size.to_s}"
     
-    self.validate_returned_item_quantity_weight
-    # return self if not self.valid?
+    self.validate_post_production_total_sum   
+    # puts "after validate_post_production_total_sum, errors: #{self.errors.size.to_s}"
+    
+    self.validate_returned_item_quantity_weight 
+    # puts "after validate_returned_item_quantity_weight, errors: #{self.errors.size.to_s}"
+    
   end
     
   def update_post_delivery( employee, params ) 
     return nil if employee.nil? 
     return nil if not self.is_confirmed?
+    
+    
+    puts "confirmed: #{params[:quantity_confirmed]}"
+    puts "quantity_returned: #{params[:quantity_returned]}"
+    puts "quantity_lost: #{params[:quantity_lost]}"
     
     self.quantity_confirmed         = params[:quantity_confirmed]
     self.quantity_returned          = params[:quantity_returned]
@@ -86,12 +102,12 @@ class DeliveryEntry < ActiveRecord::Base
     self.quantity_lost              = params[:quantity_lost]
     
     
-    # validation 
     
     self.validate_post_production_update
+    # puts "after validate_post_production_update, errors: #{self.errors.size.to_s}"
     
-    return self if not self.valid?
-    
+    return self if  self.errors.size != 0 
+    # puts "Not supposed to be printed out if there is error"
     self.save  
     return self  
   end
@@ -122,26 +138,40 @@ class DeliveryEntry < ActiveRecord::Base
     return nil if self.is_confirmed == false 
     return nil if self.is_finalized == true 
     
+    # puts "finalizing shite\n"*10
     
-    # self.validate_post_production_quantity
-    # self.validate_post_production_total_sum
-    # self.validate_returned_item_quantity_weight
+    puts "before finalize delivery_entry"
+    puts "confirmed: #{self.quantity_confirmed}"
+    puts "quantity_returned: #{self.quantity_returned}"
+    puts "quantity_lost: #{self.quantity_lost}"
+     
     self.validate_post_production_update
     
-    if not self.valid?
+    if  self.errors.size != 0 
       puts("AAAAAAAAAAAAAAAA THe sibe kia is NOT  valid")
+      
+      self.errors.messages.each do |key, values| 
+        puts "The key is #{key.to_s}"
+        values.each do |value|
+          puts "\tthe value is #{value}"
+        end
+      end
+      
       raise ActiveRecord::Rollback, "Call tech support!" 
     else
       puts("BBBBBBBBBBBBBBBBBBB THe sibe kia is valid")
     end
     
     
+    
     self.is_finalized = true 
     self.save
     
+    
+    # puts "&&&&&&&&&&&&&&&&&&BEFORE UPDATING ON FINALIZE\n"*10
     sales_item = self.sales_item 
     sales_item.update_on_delivery_statistics
-    sales_item.update_delivered_statistics 
+    sales_item.update_post_delivery_statistics 
   end
   
 end
