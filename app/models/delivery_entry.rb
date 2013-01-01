@@ -5,7 +5,7 @@ class DeliveryEntry < ActiveRecord::Base
   
   
   
-  # validate   :quantity_sent_is_not_zero_and_less_than_ready_quantity
+  validate   :quantity_sent_is_not_zero_and_less_than_ready_quantity
   validate   :quantity_sent_weight_is_not_zero_and_less_than_ready_quantity 
   
   def quantity_sent_is_not_zero_and_less_than_ready_quantity

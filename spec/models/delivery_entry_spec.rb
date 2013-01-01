@@ -105,6 +105,7 @@ describe Delivery do
         :quantity_sent => 0 , 
         :quantity_sent_weight => "324" 
       })
+      
     @delivery_entry.should_not be_valid 
   end
   
