@@ -92,9 +92,9 @@ class DeliveryEntry < ActiveRecord::Base
     return nil if not self.is_confirmed?
     
     
-    puts "confirmed: #{params[:quantity_confirmed]}"
-    puts "quantity_returned: #{params[:quantity_returned]}"
-    puts "quantity_lost: #{params[:quantity_lost]}"
+    # puts "confirmed: #{params[:quantity_confirmed]}"
+    # puts "quantity_returned: #{params[:quantity_returned]}"
+    # puts "quantity_lost: #{params[:quantity_lost]}"
     
     self.quantity_confirmed         = params[:quantity_confirmed]
     self.quantity_returned          = params[:quantity_returned]
@@ -140,26 +140,26 @@ class DeliveryEntry < ActiveRecord::Base
     
     # puts "finalizing shite\n"*10
     
-    puts "before finalize delivery_entry"
-    puts "confirmed: #{self.quantity_confirmed}"
-    puts "quantity_returned: #{self.quantity_returned}"
-    puts "quantity_lost: #{self.quantity_lost}"
+    # puts "before finalize delivery_entry"
+    # puts "confirmed: #{self.quantity_confirmed}"
+    # puts "quantity_returned: #{self.quantity_returned}"
+    # puts "quantity_lost: #{self.quantity_lost}"
      
     self.validate_post_production_update
     
     if  self.errors.size != 0 
-      puts("AAAAAAAAAAAAAAAA THe sibe kia is NOT  valid")
+      # puts("AAAAAAAAAAAAAAAA THe sibe kia is NOT  valid")
       
-      self.errors.messages.each do |key, values| 
-        puts "The key is #{key.to_s}"
-        values.each do |value|
-          puts "\tthe value is #{value}"
-        end
-      end
+      # self.errors.messages.each do |key, values| 
+      #   puts "The key is #{key.to_s}"
+      #   values.each do |value|
+      #     puts "\tthe value is #{value}"
+      #   end
+      # end
       
       raise ActiveRecord::Rollback, "Call tech support!" 
     else
-      puts("BBBBBBBBBBBBBBBBBBB THe sibe kia is valid")
+      # puts("BBBBBBBBBBBBBBBBBBB THe sibe kia is valid")
     end
     
     

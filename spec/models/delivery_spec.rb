@@ -160,7 +160,7 @@ describe Delivery do
         @delivery.is_finalized.should be_false 
       end
       
-      context "on delivery confirmation" do
+      context "on delivery confirmation: UPDATE THE FINALIZED STATUS, SALES RETURN and LOST DELIVERY" do
         before(:each) do
           @complete_cycle_sales_item.reload 
           @initial_on_delivery = @complete_cycle_sales_item.on_delivery 
@@ -220,9 +220,7 @@ describe Delivery do
         end
         
         it 'should finalize if everything is normal' do
-          @quantity_confirmed =   @delivery_entry.quantity_sent 
-          puts "\n\n\n\n"
-          puts "!!!!!!!!!!!!!!!!!! Gonna try success finalization\n"*5
+          @quantity_confirmed =   @delivery_entry.quantity_sent  
           @delivery_entry.update_post_delivery(@admin, {
             :quantity_confirmed => @quantity_confirmed , 
             :quantity_returned => 0 ,
@@ -232,12 +230,9 @@ describe Delivery do
           
           
           @delivery_entry.errors.size.should == 0
-          
-          puts "\n\n"
-          puts "in the spec\n"*5
+         
           @delivery_entry.reload 
           
-          puts "quantity_confirmed = #{@delivery_entry.quantity_confirmed}"
           @delivery_entry.quantity_confirmed.should == @quantity_confirmed
           @delivery_entry.quantity_returned.should == 0
           @delivery_entry.quantity_lost.should == 0
@@ -246,14 +241,10 @@ describe Delivery do
           @delivery.finalize(@admin)
           @delivery.reload 
           @delivery.is_finalized.should be_true 
-
-          puts "\n POST DELIVERY FINALIZATION"
-          puts "quantity_sent: #{@delivery_entry.quantity_sent}"
-          puts "quantity_confirmed: #{@delivery_entry.quantity_confirmed}"
-          puts "quantity_returned: #{@delivery_entry.quantity_returned}"
-          puts "quantity_lost: #{@delivery_entry.quantity_lost}"
+ 
         end
         
+         
          
         context "FINALIZE: confirm all" do
           before(:each) do
@@ -286,9 +277,7 @@ describe Delivery do
           it 'should increase the fulfilled quantity by the quantity on_delivery ' do
             @final_on_delivery_item = @complete_cycle_sales_item.on_delivery 
             @delivery_entry.reload 
-            puts "confirmed quantity: #{@delivery_entry.quantity_confirmed}"
-            puts "initial_on_delivery_item: #{@initial_on_delivery_item}"
-            puts "final_on_delivery_item  : #{@final_on_delivery_item}"
+     
             delta = @initial_on_delivery_item - @final_on_delivery_item
             delta.should == @quantity_confirmed
           end
@@ -301,7 +290,7 @@ describe Delivery do
           end
           
         end # end of "confirm all"
-        # 
+
         # context "FINALIZE: confirm partial, return partial" do
         # end # end of "confirm partial, return partial"
         # 

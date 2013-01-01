@@ -58,29 +58,34 @@ class Delivery < ActiveRecord::Base
     return nil if self.is_finalized == true  
     
     # transaction block to confirm all the sales item  + sales order confirmation 
-    
-    # begin
-      ActiveRecord::Base.transaction do
-        self.finalizer_id = employee.id 
-        self.finalized_at = DateTime.now 
-        self.is_finalized = true 
-        self.save 
 
-        # why no rollback?
-        self.delivery_entries.each do |delivery_entry|
-          delivery_entry.finalize 
-        end
+    ActiveRecord::Base.transaction do
+      self.finalizer_id = employee.id 
+      self.finalized_at = DateTime.now 
+      self.is_finalized = true 
+      self.save 
 
-        # create SalesReturn
-        # create DeliveryLost
-        puts "DOING SHITE AS NORMAL, NO ROLLBACK"
+      # why no rollback?
+      self.delivery_entries.each do |delivery_entry|
+        delivery_entry.finalize 
       end
-    # rescue ActiveRecord::ActiveRecordError ,ActiveRecord::Rollback 
-    #   puts "ROLLBACK is happening"
-    # else
-    # end
-    
-    
+
+      # create SalesReturn
+      
+      if self.any_sales_return? 
+        SalesReturn.create_by_employee( employee  , self  ) 
+      end
+      
+      # create DeliveryLost
+      if self.any_delivery_lost? 
+        DeliveryLost.create_by_employee( employee, self )
+      end
+      
+      
+      puts "DOING SHITE AS NORMAL, NO ROLLBACK"
+    end 
+
+   
     
   end
     
