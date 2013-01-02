@@ -49,7 +49,7 @@ class ProductionOrder < ActiveRecord::Base
   def ProductionOrder.generate_sales_return_production_order( sales_return_entry )
     
     ProductionOrder.create(
-      :sales_item_id            => sales_return_entry.sales_item_id       ,
+      :sales_item_id            => sales_return_entry.delivery_entry.sales_item_id       ,
       :case                     => PRODUCTION_ORDER[:sales_return]     ,
       :quantity                 => sales_return_entry.quantity_for_production     ,
 
@@ -58,5 +58,6 @@ class ProductionOrder < ActiveRecord::Base
       :source_document          => sales_return_entry.sales_return.class.to_s          ,
       :source_document_id       => sales_return_entry.sales_return_id
     ) 
+     
   end
 end

@@ -82,7 +82,7 @@ class Delivery < ActiveRecord::Base
       #  end
       
       
-      puts "DOING SHITE AS NORMAL, NO ROLLBACK"
+      # puts "DOING SHITE AS NORMAL, NO ROLLBACK"
     end 
   end
   

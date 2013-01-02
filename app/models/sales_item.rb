@@ -161,7 +161,8 @@ class SalesItem < ActiveRecord::Base
 
   def update_pending_production
     to_be_produced = self.production_orders.sum("quantity" )
-    produced = self.production_histories.sum('ok_quantity')
+    produced = self.production_histories.where(:is_confirmed => true ) . sum('ok_quantity')  + 
+                    self.production_histories.where(:is_confirmed => true ) . sum('repairable_quantity')  
     
     self.pending_production = to_be_produced - produced 
     self.save 
@@ -209,17 +210,26 @@ class SalesItem < ActiveRecord::Base
     end
   end
   
+  
+=begin
+  There are 3 types of production:
+  1. production => post production (by request) => ready 
+  2. production => post production (repair broken production) => ready 
+  3. production => ready ( no need to repair, and not asked to do post production @ sales item)
+=end
   def update_production_statistics 
-    # :pending_production  
-    
+  
+    # :pending_production   
     self.pending_production = self.production_orders.sum("quantity") - 
                               self.production_finished_quantity
          
     # :pending_post_production  
     self.pending_post_production = self.post_production_orders.sum("quantity") -  
                                   self.post_production_histories.sum("ok_quantity")
+    
     # :ready                    
-    self.update_ready_statistics 
+    self.update_ready_statistics  # ready == pending delivery
+    
     
     # number_of_production
     self.number_of_production = self.production_histories.sum("processed_quantity")
@@ -251,6 +261,19 @@ class SalesItem < ActiveRecord::Base
  
   def post_production_failure_production_orders
     self.production_orders.where(:case => PRODUCTION_ORDER[:post_production_failure])
+  end
+  
+  def update_pending_post_production
+    to_be_produced = self.post_production_orders.sum("quantity" )
+    produced = self.post_production_histories.sum('ok_quantity')
+    
+    # puts "IN THE SALES ITEM: to_be_produced: #{to_be_produced}"
+    # puts "IN THE SALES ITEM: produced: #{produced}"
+    
+    self.pending_post_production = to_be_produced - produced 
+    # puts "IN THE SALES ITEM: pending_production: #{pending_production}"
+    
+    self.save 
   end
  
 =begin
@@ -355,10 +378,10 @@ class SalesItem < ActiveRecord::Base
     # puts "size of confirmed entries: #{all_confirmed_entries.length}"
     # puts "size of finalized entries: #{all_finalized_entries.length}"
     # puts "!!!!!!!!!!!!!!!!!!!!!!!! UPDATE on DELIVERY STATISTICS\n"*2
-    puts "total_items_going_out: #{total_items_going_out}"
-    puts "total_items_approved (confirmed): #{total_items_approved}"
-    puts "total_items_returned: #{total_items_returned}"
-    puts "total_items_lost: #{total_items_lost}"
+    # puts "total_items_going_out: #{total_items_going_out}"
+    # puts "total_items_approved (confirmed): #{total_items_approved}"
+    # puts "total_items_returned: #{total_items_returned}"
+    # puts "total_items_lost: #{total_items_lost}"
     
     self.on_delivery = total_items_going_out  - 
                         total_items_approved  -

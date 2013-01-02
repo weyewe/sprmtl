@@ -39,4 +39,21 @@ class SalesReturn < ActiveRecord::Base
       SalesReturnEntry.create_by_employee( employee ,self,  delivery_entry )
     end
   end
+  
+  def confirm(employee) 
+    return nil if employee.nil? 
+    return nil if self.is_confirmed == true  
+    
+    # transaction block to confirm all the sales item  + sales order confirmation 
+    ActiveRecord::Base.transaction do
+      self.confirmer_id = employee.id 
+      self.confirmed_at = DateTime.now 
+      self.is_confirmed = true 
+      self.save 
+      
+      self.sales_return_entries.each do |sales_return_entry|
+        sales_return_entry.confirm 
+      end
+    end 
+  end
 end

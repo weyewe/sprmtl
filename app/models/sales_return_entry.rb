@@ -2,6 +2,7 @@ class SalesReturnEntry < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_item 
   belongs_to :delivery_entry 
+  belongs_to :sales_return
   
   def SalesReturnEntry.create_by_employee( employee, sales_return, delivery_entry)
     
@@ -13,10 +14,27 @@ class SalesReturnEntry < ActiveRecord::Base
     new_object.save 
   end
   
+  def update_return_handling( params ) 
+    self.quantity_for_production  =  params[:quantity_for_production]
+    self.weight_for_production    =  BigDecimal( params[:weight_for_production] )
+    
+    self.quantity_for_post_production = params[:quantity_for_post_production]
+    self.weight_for_post_production   = BigDecimal( params[:weight_for_post_production] )
+    
+    self.validate_return_handling 
+    
+    if self.errors.size > 0 
+      return self
+    end
+    
+    self.save 
+    return self 
+  end
+  
   def quantity_returned 
     self.delivery_entry.quantity_returned
   end
-  
+    
   def validate_total_quantity_is_equal_to_the_sales_return_quantity
     if quantity_for_production  + quantity_for_post_production != self.quantity_returned
       msg = "Jumlah retur: #{self.quantity_returned}."+ 
@@ -51,7 +69,7 @@ class SalesReturnEntry < ActiveRecord::Base
   end
   
   
-  def validate_sales_return_confirmation
+  def validate_return_handling
     validate_total_quantity_is_equal_to_the_sales_return_quantity
     
     validate_the_sales_return_quantity_to_be_processed_is_valid
@@ -63,7 +81,7 @@ class SalesReturnEntry < ActiveRecord::Base
     return nil if self.is_confirmed == true 
     
     
-    self.validate_sales_return_confirmation 
+    self.validate_return_handling 
     
     if  self.errors.size != 0 
       # puts("AAAAAAAAAAAAAAAA THe sibe kia is NOT  valid")
@@ -79,14 +97,17 @@ class SalesReturnEntry < ActiveRecord::Base
     end
     
     ProductionOrder.generate_sales_return_production_order( self  )
-    PostProductionOrder.generate
+    PostProductionOrder.generate_sales_return_repair_post_production_order( self ) 
     
     self.reload
     
     
     
-    sales_item = self.sales_item
-    sales_item.update_pending_production
+    sales_item = self.delivery_entry.sales_item 
+    sales_item.reload 
+   
+    sales_item.update_pending_production 
+    sales_item.reload 
     sales_item.update_pending_post_production
     
   end
