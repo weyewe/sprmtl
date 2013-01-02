@@ -1,4 +1,12 @@
 class PreProductionHistoriesController < ApplicationController
+  
+  def generate_pre_production_history
+    @sales_item   =  SalesItem.find_by_id params[:selected_sales_item_id]
+    @histories    = @sales_item.pre_production_histories.order("created_at DESC")
+    @sales_order  = @sales_item.sales_order
+    @new_object   = PreProductionHistory.new
+  end
+  
   def new
     # no idea about shite.. looking forward to get a sales item ID from you
   end

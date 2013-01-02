@@ -34,6 +34,7 @@ class PreProductionHistory < ActiveRecord::Base
   
   def PreProductionHistory.create_history( employee, sales_item , param ) 
     return nil if employee.nil?  or sales_item.nil? 
+    return nil if sales_item.has_unconfirmed_pre_production_history?
     
     new_object  = PreProductionHistory.new
     

@@ -10,62 +10,38 @@
 		
 		<div class="row">
 			
-			<div class="span12">
-				
-				<%= link_to new_sales_order_url, :class => "new_entry btn btn-primary" do %>
-					<i class="icon-plus"></i>Sales Order Baru
-				<% end %> 
-				<hr />
-				 
-				
-				<%#= render :partial => "customers/new_object_form", :locals => {
-					:new_object => @new_object , 
-					:url => customers_url
-				}%>
-
-
-				<table class="table table-bordered table-striped table-highlight" id='tableview'>
-					<thead>
-						<tr>
-							<th>Code</th>
-							<th>Customer</th>
-							<th>Tanggal Order</th>  
-							<th>Status</th>  
-							<th>Total Sales Item</th>  
-							<th colspan='2'>Action</th>
-						</tr>
-					</thead>
-					<tbody> 
-						<% @objects.each do |object| %>
-							<%= render :partial =>  'sales_orders/entry', :locals => {
-								:object => object 
-							} %> 
-						<% end %>
-					</tbody>
-				</table>
-
-				
-				
-				
+			<div class="span8">
+				<div id="history_wrapper" style="display:none;">
+				</div>
 			 
+				<div id="history_dummy">
+					please select the sales item to be managed
+				</div>
 				
-			</div> <!-- /.span12 -->
+			</div> <!-- /.span8 -->
 			
 			
-			<!-- <div class="span4">
+			<div class="span4">
 				
+						 
+
+					<div id="myTabContent" class="tab-content" style='overflow:visible;'>
+						<div class="tab-pane fade active in" id="tab1"> 
+							<%= simple_form_for :sales_item, { url: generate_pre_production_history_url, 
+										:html => {:id=>"add_product_trigger_form" } } do |f| %>
+							  <%= f.input :search_sales_item_id , :label => "Sales Item Code"  %> 
+								<%=	 hidden_field_tag 'selected_sales_item_id', '' %>  
+								<%= hidden_field_tag 'search_url', "#{search_sales_item_url}"  %>
+							<% end %>
+
+							
+							<div id='summary_wrapper'> 
+							</div>
+						</div> 
+					</div>
 						
-				<a href="javascript:;" class="btn btn-large btn-primary btn-block btn-big-block">Tree View</a>	
 				
-				
-				<a href="javascript:;" class="btn btn-large btn-tertiary btn-block btn-big-block">Contact Support</a>
-				
-				
-				<div>
-				</div>  
-						
-				
-			</div>  --><!-- /.span4 -->
+			</div> <!-- /.span4 -->
 			
 		</div> <!-- /.row -->
 		
@@ -77,7 +53,7 @@
 
 <div class="modal fade hide" id="editEntry">
   <div class="modal-header">
-    <h3>Edit Sales Order</h3>
+    <h3>Edit Pre Production Progress</h3>
   </div>
   <div class="modal-body"> 
 	<!-- content -->
@@ -90,7 +66,7 @@
 
 <div class="modal fade hide" id="newEntry">
   <div class="modal-header">
-    <h3>New Sales Order</h3>
+    <h3>New Pre Production Progress</h3>
   </div>
   <div class="modal-body"> 
 	<!-- content -->
@@ -115,8 +91,39 @@
 
 <% content_for :additional_js do %> 
   <%= javascript_include_tag "common_order/entry_creation","jquery.tokeninput" 	%> 
-	<script type="text/javascript"> 
 
+	<script type="text/javascript"> 
+		$(document).ready(function() {
+			// sales_item_search_sales_item_id
+				var $search_box = $("#sales_item_search_sales_item_id");
+				var $form = $search_box.parents("form"); 
+				var search_url = $("#search_url").val(); 
+		    $search_box.tokenInput( search_url , {
+						propertyToSearch: "code",
+						tokenLimit: 1, 
+		        onAdd: function (item) {
+								$form.spin("large", "black"); 
+								$("#selected_sales_item_id").attr( 'value',  item['id'] );
+
+								$.ajax({
+								      url: $form.attr("action"),
+								      type: "POST",
+								      data: $form.serialize(),
+								      dataType: 'script',
+								      success: function(response){ 
+
+								      }
+								    }); 
+		        } ,
+						onDelete: function(item){
+							$("#summary").remove();
+							$("#history").remove();
+							
+							$("#history_wrapper").hide();
+							$("#history_dummy").show();
+						}
+		    }); 
+		});
   </script>
 <% end %>
 

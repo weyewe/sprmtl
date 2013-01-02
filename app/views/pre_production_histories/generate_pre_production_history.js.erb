@@ -1,0 +1,46 @@
+$(document).ready(function(){
+	var $form = $("#add_product_trigger_form");
+	
+	$form.spin(false);
+	
+	
+	
+	<% summary = escape_javascript( render :partial => "pre_production_histories/summary", 
+		:locals => {
+	    :sales_item => @sales_item 
+  })%>
+
+	<% history = escape_javascript( render :partial => "pre_production_histories/histories", 
+		:locals => {
+	    :sales_item => @sales_item ,
+			:histories 		=> @histories
+  })%>
+
+
+	// var $add_product_form=  $("#add_product_form");
+	var $summary = $("#summary");
+	// var $form_wrapper = $("#add_product_form_wrapper");
+	var $summary_wrapper = $("#summary_wrapper");
+	
+	var $history = $("#history")
+	var $history_wrapper = $("#history_wrapper");
+	var $history_dummy = $("#history_dummy");
+	
+	// 1. the total statistic
+	if($summary.length == 0 ){
+		$summary_wrapper.append('<%= summary %>');
+	}else {
+		$summary.replaceWith('<%= summary %>');
+	}
+	// 2. the viewer + add shite
+	if($history.length == 0 ){
+		$history_wrapper.append('<%= history %>');
+	}else{
+		$history.replaceWith('<%= history %>')
+	}
+	
+	$history_wrapper.show();
+	$history_dummy.hide();
+
+	jQuery('.prevent_double_submit').preventDoubleSubmit();
+});

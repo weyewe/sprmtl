@@ -1,80 +1,36 @@
  
+
+<!-- <th>Code</th>
+<th>Sukses</th>  
+<th>Gagal</th>    
+<th>Tanggal Mulai</th>
+<th>Tanggal Selesai</th>
+
+	<th colspan='2'>Action</th>
+ -->
+
 <tr id="entry-<%= object.id %>">
 	<td>
 		<%= object.code %>
 	</td>
 	<td>
-		<b><%= object.name %></b><br />
-		<p>
-			<%= object.description %>
-		</p>
+		<%= object.ok_quantity%>
 	</td>
 	
 	<td>
-		<ul style='list-style:none;'>
-			<li>
-				Kuantitas: <b><%= object.quantity %></b>
-			</li>
-			
-			<li>
-				Berat Satuan: <b><%= object.weight_per_piece %></b> kg
-			</li>
-			
-			<li>
-				Harga Satuan: <b><%= print_money( object.price_per_piece)  %></b>
-			</li>
-		</ul>
+		<%= object.broken_quantity%>
 	</td>
 	 
  	<td>
- 		<ul style='list-style:none;'>
-			<li>
-				Pattern:  
-				<% if object.is_pre_production == true %>
-					<span class="label label-primary">YES</span>
-				<% else %>
-					<span class="label label-tertiary">NO</span>
-				<% end %>
-			</li>
-			
-			<li>
-				Casting: 
-				<% if object.is_production == true %>
-					<span class="label label-primary">YES</span>
-				<% else %>
-					<span class="label label-tertiary">NO</span>
-				<% end %> 
-			</li>
-			
-			<li>
-				Machining:  
-				<% if object.is_post_production == true %>
-					<span class="label label-primary">YES</span>
-				<% else %>
-					<span class="label label-tertiary">NO</span>
-				<% end %>
-			</li>
-			
-			<li>
-				Delivery:  
-				<% if object.is_delivered == true %>
-					<span class="label label-primary">YES</span>
-				<% else %>
-					<span class="label label-tertiary">NO</span>
-				<% end %>
-			</li>
-			
-			
-			<% if object.is_delivered %>
-			
-			<hr />
-			<%= object.delivery_address %>
-			<% end %>
-		</ul>
+ 	 <%= print_date( object.start_date ) %>
+	</td>
+	
+	<td>
+ 	 <%= print_date( object.finish_date ) %>
 	</td>
 	
 	
-	<% if not parent.is_confirmed? %>
+	<% if not object.is_confirmed? %>
 		<td>
 			<%= link_to root_url, :class =>"delete_entry", 
 				:style => "cursor:pointer; text-decoration:none;" do %>

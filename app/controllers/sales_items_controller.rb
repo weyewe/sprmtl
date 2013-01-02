@@ -18,6 +18,7 @@ class SalesItemsController < ApplicationController
     
   end
   
+  
    
   
   def edit
@@ -35,5 +36,20 @@ class SalesItemsController < ApplicationController
   def delete_sales_item
     @object = SalesItem.find_by_id params[:object_to_destroy_id]
     @object.delete 
+  end
+  
+  
+  def search_sales_item
+    search_params = params[:q]
+    
+    @objects = [] 
+    query = '%' + search_params + '%'
+    # on PostGre SQL, it is ignoring lower case or upper case 
+    @objects = SalesItem.where{ (code =~ query)  & (is_deleted.eq false) }.map{|x| {:code => x.code, :id => x.id }}
+    
+    respond_to do |format|
+      format.html # show.html.erb 
+      format.json { render :json => @objects }
+    end
   end
 end

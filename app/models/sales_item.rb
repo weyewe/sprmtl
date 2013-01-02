@@ -75,6 +75,7 @@ class SalesItem < ActiveRecord::Base
     self.save 
     return self 
   end
+  
   def delete
     self.is_deleted = true 
     self.save 
@@ -153,6 +154,10 @@ class SalesItem < ActiveRecord::Base
   
   def stop_at_post_production?
     self.is_post_production == true 
+  end
+  
+  def has_unconfirmed_pre_production_history?
+    self.pre_production_histories.where(:is_confirmed => false ).count != 0 
   end
   
   

@@ -146,8 +146,11 @@ ActiveRecord::Schema.define(:version => 20130102074637) do
     t.integer  "broken_quantity"
     t.date     "start_date"
     t.date     "finish_date"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.boolean  "is_confirmed",       :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
   end
 
   create_table "production_histories", :force => true do |t|
