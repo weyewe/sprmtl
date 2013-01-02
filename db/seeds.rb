@@ -6,6 +6,34 @@ copper = Material.create :name => MATERIAL[:copper]
 alumunium = Material.create :name => MATERIAL[:alumunium]
 iron = Material.create :name => MATERIAL[:iron]
 
+
+# ADDING SALES ORDER + SALES ITEMS 
+
+sales_order   = SalesOrder.create_by_employee( admin , {
+  :customer_id    => customer_1.id,          
+  :payment_term   => PAYMENT_TERM[:cash],    
+  :order_date     => Date.new(2012, 12, 15)   
+})
+
+quantity_in_sales_item = 50 
+has_production_sales_item = SalesItem.create_sales_item( admin, sales_order,  {
+    :material_id => copper.id, 
+    :is_pre_production => true , 
+    :is_production     => true, 
+    :is_post_production => true, 
+    :is_delivered => true, 
+    :delivery_address => "Perumahan Citra Garden 1 Blok AC2/3G",
+    :quantity => quantity_in_sales_item,
+    :description => "Bla bla bla bla bla", 
+    :delivery_address => "Yeaaah babyy", 
+    :requested_deadline => Date.new(2013, 3,5 ),
+    :price_per_piece => "90000", 
+    :weight_per_piece   => '15',
+    :name => "Sales Item"
+  })
+  
+sales_order.confirm( admin )
+
 # 
 # sales_order_1   = SalesOrder.create_by_employee( admin , {
 #   :customer_id    => customer_1.id,          

@@ -69,7 +69,7 @@ class SalesOrder < ActiveRecord::Base
       self.confirmed_at = DateTime.now 
       self.is_confirmed = true 
       self.save 
-      self.sales_items.each do |sales_item|
+      self.active_sales_items.each do |sales_item|
         sales_item.confirm 
       end
     end 
