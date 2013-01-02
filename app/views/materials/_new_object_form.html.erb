@@ -1,0 +1,31 @@
+<% if new_object.persisted? %>
+	<% id = 'edit_object'%>
+<% else %>
+	<% id = 'new_object'%>
+<% end %>
+
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => " prevent_double_submit ajax-form   no_content_form",
+        :id => "#{id}"}) do |f| %>
+
+	 
+
+
+  <%= f.input :name  , :input_html => {:class => "input-xlarge "}, 
+  			:label => "Material" %>
+ 
+
+  <div class="form-actions">
+	
+		<% if new_object.persisted? %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update  Material" %>
+		<% else %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Material" %>
+		<% end %>
+		
+  </div>
+<% end %>
+
+
+ 

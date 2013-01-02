@@ -3,8 +3,32 @@ class SalesOrder < ActiveRecord::Base
   validates_presence_of :creator_id
   validates_presence_of :customer_id  
   has_many :sales_items 
-   
   
+  belongs_to :customer 
+   
+  def self.active_objects
+    self.where(:is_deleted => false ).order("created_at DESC")
+  end
+  
+  def delete
+    self.is_active = false 
+    self.save 
+  end
+  
+  def active_sales_items 
+    self.sales_items.where(:is_deleted => false )
+  end
+  
+  def update_by_employee( employee, params ) 
+    self.customer_id = params[:customer_id]
+    self.save
+    return self 
+  end
+  
+  
+=begin
+  BASIC
+=end
   def self.create_by_employee( employee, params ) 
     return nil if employee.nil? 
     
@@ -12,7 +36,10 @@ class SalesOrder < ActiveRecord::Base
     new_object.creator_id = employee.id
     new_object.customer_id = params[:customer_id]
     new_object.payment_term = params[:payment_term]
-    new_object.order_date   = params[:order_date]
+    
+    # today_date_time = DateTime.now 
+    # 
+    # new_object.order_date   = 
     
     if new_object.save
       new_object.generate_code

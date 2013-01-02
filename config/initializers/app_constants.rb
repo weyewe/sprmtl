@@ -102,19 +102,24 @@ IMAGE_ASSET_URL = {
 =begin
   ITEM CONSTANT
 =end
-MATERIAL     = {
-  :steel     => {
-    :value   => 1, 
-    :name    => "Steel" 
-  } ,
-  :copper    =>  {
-    :value   => 2, 
-    :name    => "Tembaga"
-  }, 
-  :alumunium => {
-    :value   => 3, 
-    :name    => "Aluminium"
-  }
+# MATERIAL     = {
+#   :steel     => {
+#     :value   => 1, 
+#     :name    => "Steel" 
+#   } ,
+#   :copper    =>  {
+#     :value   => 2, 
+#     :name    => "Tembaga"
+#   }, 
+#   :alumunium => {
+#     :value   => 3, 
+#     :name    => "Aluminium"
+#   }
+# }
+
+MATERIAL = {
+  :alumunium => "Alumunium",
+  :copper   => 'Copper'
 }
 
 

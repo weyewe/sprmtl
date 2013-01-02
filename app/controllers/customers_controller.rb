@@ -1,6 +1,6 @@
 class CustomersController < ApplicationController
   def new
-    @objects = Customer.active_customers
+    @objects = Customer.active_objects
     @new_object = Customer.new 
   end
   

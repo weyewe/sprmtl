@@ -4,7 +4,7 @@ describe PostProductionHistory do
   before(:each) do
     @admin = FactoryGirl.create(:user, :email => "admin@gmail.com", :password => "willy1234", :password_confirmation => "willy1234")
   
-    
+    @copper = Material.create :name => MATERIAL[:copper]
     @customer = FactoryGirl.create(:customer,  :name => "Weyewe",
                                             :contact_person => "Willy" )
                                             
@@ -20,7 +20,7 @@ describe PostProductionHistory do
     
     @quantity_in_sales_item = 50 
     @complete_cycle_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
-        :material_id => MATERIAL[:steel][:value], 
+        :material_id => @copper.id, 
         :is_pre_production => true , 
         :is_production     => true, 
         :is_post_production => true, 

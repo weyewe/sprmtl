@@ -80,10 +80,34 @@ BREADCRUMB
   end
   
 =begin
-  SELLING PRICE
+  MATERIAL SELECTION
 =end
+  def all_selectable_materials
+    categories  = Category.order("depth  ASC ")
+    
+    # MATERIAL     = {
+    #   :steel     => {
+    #     :value   => 1, 
+    #     :name    => "Steel" 
+    #   } ,
+    #   :copper    =>  {
+    #     :value   => 2, 
+    #     :name    => "Tembaga"
+    #   }, 
+    #   :alumunium => {
+    #     :value   => 3, 
+    #     :name    => "Aluminium"
+    #   }
+    # }
+    # 
+    
+    result = []
+    MATERIAL.each do |material| 
+      result << [ "#{category.name}" , 
+                      category.id ]  
+    end
+    return result
+  end
  
   
-end
-module ApplicationHelper
-end
+end 

@@ -1,0 +1,52 @@
+<% if new_object.persisted? %>
+	<% id = 'edit_object'%>
+<% else %>
+	<% id = 'new_object'%>
+<% end %>
+
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => " prevent_double_submit ajax-form   no_content_form",
+        :id => "#{id}"}) do |f| %>
+
+	 
+
+
+  <%= f.input :customer_id  , :input_html => {:class => "input-xlarge "}, 
+  			:label => "Customer" %>
+ 
+
+  <div class="form-actions">
+	
+		<% if new_object.persisted? %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update Sales Order" %>
+		<% else %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Sales Order" %>
+		<% end %>
+		
+  </div>
+<% end %>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	 $("#sales_order_customer_id").tokenInput('<%=	search_customer_url %>', {
+		prePopulate:   	[
+				<% if not new_object.customer_id.nil? %> 
+				{id: <%= new_object.customer_id %>, name: '<%= new_object.customer.name %>'}
+				<% end %>
+			],
+		zindex: 9999,
+		propertyToSearch: "name",
+		tokenLimit: 1
+	});
+
+
+ 
+	
+	
+});
+</script>

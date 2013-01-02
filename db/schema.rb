@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121231141550) do
+ActiveRecord::Schema.define(:version => 20130102074637) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -99,6 +99,13 @@ ActiveRecord::Schema.define(:version => 20121231141550) do
     t.boolean  "is_deleted", :default => false
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
+  end
+
+  create_table "materials", :force => true do |t|
+    t.string   "name"
+    t.boolean  "is_active",  :default => true
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   create_table "post_production_histories", :force => true do |t|
@@ -203,7 +210,7 @@ ActiveRecord::Schema.define(:version => 20121231141550) do
     t.string   "code"
     t.boolean  "is_repeat_order",                                                 :default => false
     t.string   "past_sales_item_id"
-    t.integer  "material_id",                                                     :default => 1
+    t.integer  "material_id"
     t.boolean  "is_pre_production",                                               :default => false
     t.boolean  "is_production",                                                   :default => false
     t.boolean  "is_post_production",                                              :default => false
@@ -213,6 +220,7 @@ ActiveRecord::Schema.define(:version => 20121231141550) do
     t.integer  "quantity"
     t.text     "delivery_address"
     t.boolean  "is_sales_order_delivery_address",                                 :default => false
+    t.string   "name"
     t.text     "description"
     t.date     "requested_deadline"
     t.date     "estimated_internal_deadline"
@@ -230,6 +238,7 @@ ActiveRecord::Schema.define(:version => 20121231141550) do
     t.integer  "on_delivery",                                                     :default => 0
     t.integer  "fulfilled_order",                                                 :default => 0
     t.boolean  "is_confirmed",                                                    :default => false
+    t.boolean  "is_active",                                                       :default => true
     t.datetime "created_at",                                                                         :null => false
     t.datetime "updated_at",                                                                         :null => false
   end
@@ -244,6 +253,7 @@ ActiveRecord::Schema.define(:version => 20121231141550) do
     t.boolean  "is_confirmed",                                      :default => false
     t.integer  "confirmer_id"
     t.datetime "confirmed_at"
+    t.boolean  "is_deleted",                                        :default => false
     t.datetime "created_at",                                                           :null => false
     t.datetime "updated_at",                                                           :null => false
   end

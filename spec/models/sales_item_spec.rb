@@ -4,7 +4,7 @@ describe SalesItem do
   before(:each) do
     @admin = FactoryGirl.create(:user, :email => "admin@gmail.com", :password => "willy1234", :password_confirmation => "willy1234")
   
-    
+    @copper = Material.create :name => MATERIAL[:copper]
     @customer = FactoryGirl.create(:customer,  :name => "Weyewe",
                                             :contact_person => "Willy" )  
                                             
@@ -18,7 +18,7 @@ describe SalesItem do
      
   it 'should create sales item if ther ei admin and sales order' do 
     sales_item_1 = SalesItem.create_sales_item( @admin, @sales_order,  {
-      :material_id => MATERIAL[:steel][:value], 
+      :material_id => @copper.id, 
       :is_pre_production => true , 
       :is_production     => true, 
       :is_post_production => true, 
@@ -42,7 +42,7 @@ describe SalesItem do
     before(:each) do 
       @has_production_quantity = 50 
       @has_production_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
-        :material_id => MATERIAL[:steel][:value], 
+        :material_id => @copper.id, 
         :is_pre_production => true , 
         :is_production     => true, 
         :is_post_production => true, 
@@ -57,7 +57,7 @@ describe SalesItem do
       })
       
       @only_machining_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
-        :material_id => MATERIAL[:steel][:value], 
+        :material_id => @copper.id, 
         :is_pre_production => true , 
         :is_production     => false, 
         :is_post_production => true, 

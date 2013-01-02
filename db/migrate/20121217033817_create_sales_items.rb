@@ -10,7 +10,7 @@ class CreateSalesItems < ActiveRecord::Migration
       t.string  :past_sales_item_id   
       
       
-      t.integer :material_id , :default                         => MATERIAL[:steel][:value]
+      t.integer :material_id  
       
       t.boolean :is_pre_production    ,   :default              => false 
       t.boolean :is_production        ,   :default              => false 
@@ -25,7 +25,7 @@ class CreateSalesItems < ActiveRecord::Migration
       t.text        :delivery_address 
       t.boolean     :is_sales_order_delivery_address , :default => false 
       # if  it is true, delivery_address can be empty
-      
+      t.string      :name 
       t.text        :description 
       
       t.date        :requested_deadline
@@ -57,6 +57,8 @@ class CreateSalesItems < ActiveRecord::Migration
       t.integer :fulfilled_order                , :default =>  0 
        
      t.boolean :is_confirmed, :default => false  
+     
+     t.boolean :is_active, :default => true 
       
       
 =begin
