@@ -141,6 +141,7 @@ describe DeliveryLost do
     @initial_on_delivery_item = @complete_cycle_sales_item.on_delivery 
     @initial_fulfilled = @complete_cycle_sales_item.fulfilled_order
     
+    @initial_pending_production  =  @complete_cycle_sales_item.pending_production 
     
     @delivery.reload 
     @delivery.finalize(@admin)
@@ -149,6 +150,7 @@ describe DeliveryLost do
     # @delivery.finalize(@admin)  
     @complete_cycle_sales_item.reload
     @delivery_lost = @delivery.delivery_lost
+    
   end
   
   it 'should produce delivery_lost' do
@@ -162,9 +164,22 @@ describe DeliveryLost do
     
   end
   
-  it 'should produce extra production orders, equal to the lost delivery'
+  it 'should produce extra production orders, equal to the lost delivery' do
+    first_delivery_lost_entry = @delivery_lost.delivery_lost_entries.first 
+    ProductionOrder.where(
+      :sales_item_id => first_delivery_lost_entry.delivery_entry.sales_item_id ,
+      :case   => PRODUCTION_ORDER[:delivery_lost] , 
+      :source_document_entry_id => first_delivery_lost_entry.id ,
+      :source_document_entry => first_delivery_lost_entry.class.to_s 
+    ).count.should == 1 
+  end
   
-  it 'should update pending production'
+  it 'should update pending production' do
+    @final_pending_production = @complete_cycle_sales_item.pending_production 
+    diff = @final_pending_production - @initial_pending_production
+    
+    diff.should == @quantity_lost
+  end
   
   # question: what if they create extra production as a backup.. so that when they fail, no
   # need to create extra shite => pending production will be minus.. means excess production 

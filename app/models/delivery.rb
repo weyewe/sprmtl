@@ -77,10 +77,10 @@ class Delivery < ActiveRecord::Base
       end
       #  
       #  # create DeliveryLost
-       if self.has_delivery_lost? 
-         DeliveryLost.create_by_employee( employee, self )
-       end
-      
+      if self.has_delivery_lost? 
+        DeliveryLost.create_by_employee( employee, self )
+      end
+
       
       # puts "DOING SHITE AS NORMAL, NO ROLLBACK"
     end 
