@@ -1,0 +1,2 @@
+class ProductionHistoriesController < ApplicationController
+end

@@ -13,6 +13,10 @@ Supermetal::Application.routes.draw do
     resources :sales_items 
   end
   
+  resources :pre_production_histories
+  resources :production_histories
+  resources :post_production_histories
+  
   
 =begin
   SEARCH DATA
@@ -59,6 +63,16 @@ Supermetal::Application.routes.draw do
 ##################################################
   match 'update_sales_item/:sales_item_id' => 'sales_items#update_sales_item', :as => :update_sales_item , :method => :post 
   match 'delete_sales_item' => 'sales_items#delete_sales_item', :as => :delete_sales_item , :method => :post
+
+
+##################################################
+##################################################
+######### PRE_PRODUCTION_HISTORY
+##################################################
+##################################################
+  match 'update_pre_production_history/:pre_production_history_id' => 'pre_production_histories#update_pre_production_history', :as => :update_pre_production_history , :method => :post 
+  match 'delete_pre_production_history' => 'pre_production_histories#delete_pre_production_history', :as => :delete_pre_production_history, :method => :post
+  match 'confirm_pre_production_history/:pre_production_history_id' => "pre_production_histories#confirm_pre_production_history", :as => :confirm_pre_production_history, :method => :post 
 
 
 end

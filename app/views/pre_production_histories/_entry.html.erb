@@ -1,0 +1,46 @@
+ 
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%= link_to "#{object.code}" , new_sales_order_sales_item_url( object)%>
+	</td>
+	<td>
+		<%= "#{object.customer.name}" %>
+	</td>
+	
+	<td>
+		<%= print_date(object.created_at )%>
+	</td>
+	 
+ 	<td>
+		<% if object.is_confirmed == true %>
+			<span class="label label-primary">confirmed</span>
+		<% else %>
+			<span class="label label-tertiary">Pending</span>
+		<% end %>
+	</td>
+	
+	<td>
+		<%= object.active_sales_items.count %>
+	</td>
+	
+	
+	<% if not object.is_confirmed? %>
+		<td>
+			<%= link_to root_url, :class =>"delete_entry", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-remove'></i>Delete
+			<% end %> 
+		</td>
+
+		<td>
+			<%= link_to edit_sales_order_url(object), 
+				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-edit'></i>Edit
+			<% end %>
+		</td>
+	<% else %>
+		<td colspan='2'>
+			NA
+		</td>
+	<% end %>
+	
+</tr>
