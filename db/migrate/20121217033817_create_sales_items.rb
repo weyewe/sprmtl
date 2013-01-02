@@ -58,7 +58,7 @@ class CreateSalesItems < ActiveRecord::Migration
        
      t.boolean :is_confirmed, :default => false  
      
-     t.boolean :is_active, :default => true 
+     t.boolean :is_deleted, :default => false 
       
       
 =begin

@@ -2,6 +2,9 @@ admin = User.create_main_user(   :email => "admin@gmail.com" ,:password => "will
 
 customer_1 = Customer.create :name => "Dixzell"
 customer_2 = Customer.create :name => "Bangka Terbang"
+copper = Material.create :name => MATERIAL[:copper]
+alumunium = Material.create :name => MATERIAL[:alumunium]
+iron = Material.create :name => MATERIAL[:iron]
 
 # 
 # sales_order_1   = SalesOrder.create_by_employee( admin , {

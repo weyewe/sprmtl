@@ -119,7 +119,8 @@ IMAGE_ASSET_URL = {
 
 MATERIAL = {
   :alumunium => "Alumunium",
-  :copper   => 'Copper'
+  :copper   => 'Copper',
+  :iron => "Iron"
 }
 
 
