@@ -73,17 +73,21 @@
 		</ul>
 	</td>
 	
-	<td>
-		<%= link_to root_url, :class =>"delete_entry", :style => "cursor:pointer; text-decoration:none;" do %>
-			<i class='icon-remove'></i>Delete
-		<% end %> 
-	</td>
+	
+	<% if not parent.is_confirmed? %>
+		<td>
+			<%= link_to root_url, :class =>"delete_entry", 
+				:style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-remove'></i>Delete
+			<% end %> 
+		</td>
 
-	<td>
-		<%= link_to edit_sales_order_sales_item_url(parent, object), 
-			:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
-			<i class='icon-edit'></i>Edit
-		<% end %>
-	</td>
+		<td>
+			<%= link_to edit_sales_order_sales_item_url(parent, object), 
+				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-edit'></i>Edit
+			<% end %>
+		</td>
+	<% end %>
 	
 </tr>

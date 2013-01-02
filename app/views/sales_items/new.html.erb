@@ -12,57 +12,25 @@
 			
 			<div class="span12">
 				
-				<table class="table table-bordered table-striped table-highlight">
-					<tbody>
-						<tr>
-							<td style='text-align:left;'>
-								<%= link_to new_sales_order_sales_item_url( @parent ), 
-									:class => "new_entry btn btn-primary" do %>
-									<i class="icon-plus"></i>Sales Item Baru
-								<% end %>
-							</td>
-							
-							<td style='text-align: right;'> 
-								<%= link_to new_sales_order_sales_item_url( @parent ), 
-									:class => "new_entry btn btn-primary" do %>
-									<i class="icon-ok"></i> CONFIRM
-								<% end %>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				
-				
-				
+				<% if @parent.is_confirmed == false %>
+					<%= render :partial => "sales_items/sales_order/actionbar", :locals => {
+						:parent => @parent
+					}%>
+				<% else %>
+					<%= render :partial => "sales_items/sales_order/post_confirm_bar", :locals => {
+						:parent => @parent
+					}%>
+				<% end %>
+				 
 				
 				<hr />
 				 
-				
-				<%#= render :partial => "customers/new_object_form", :locals => {
-					:new_object => @new_object , 
-					:url => customers_url
+				 <%= render :partial => 'sales_items/sales_order/item_list', :locals => {
+					:objects => @objects, 
+					:parent => @parent
 				}%>
 
-
-				<table class="table table-bordered table-striped table-highlight" id='tableview'>
-					<thead>
-						<tr>
-							<th>Code</th>
-							<th>Nama</th>
-							<th>Spec</th>  
-							<th>Service</th>   <!--  preproduction, production, post production + delivery? -->
-							<th colspan='2'>Action</th>
-						</tr>
-					</thead>
-					<tbody> 
-						<% @objects.each do |object| %>
-							<%= render :partial =>  'sales_items/entry', :locals => {
-								:object => object ,
-								:parent => @parent 
-							} %> 
-						<% end %>
-					</tbody>
-				</table>
+				
 
 				
 				 
@@ -112,6 +80,11 @@
 <div class="hidden" id="delete_entry_form_wrapper">
   <%= form_for SalesOrder.new, :url =>delete_sales_item_url , :method => :post   do |f| %>
     <%= hidden_field_tag 'object_to_destroy_id' , ''  %> 
+  <% end %>
+</div>
+
+<div class="hidden" id="confirm_order">
+  <%= form_for SalesEntry.new, :url => confirm_sales_order_url(@parent)  do |f| %> 
   <% end %>
 </div>
 
