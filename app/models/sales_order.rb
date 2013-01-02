@@ -60,7 +60,7 @@ class SalesOrder < ActiveRecord::Base
   
   def confirm(employee) 
     return nil if employee.nil? 
-    return nil if self.sales_items.count == 0 
+    return nil if self.active_sales_items.count == 0 
     return nil if self.is_confirmed == true  
     
     # transaction block to confirm all the sales item  + sales order confirmation 

@@ -16,6 +16,7 @@ class SalesItem < ActiveRecord::Base
   has_many :delivery_lost_entries #  DeliveryLostEntry
   
   validates_presence_of :description
+  validates_presence_of :name 
   validates_presence_of :creator_id
   validates_presence_of :price_per_piece
   validates_presence_of :weight_per_piece
@@ -57,6 +58,28 @@ class SalesItem < ActiveRecord::Base
     end
   end
   
+  def update_sales_item( params ) 
+    self.material_id        = params[:material_id]       
+    self.is_pre_production  = params[:is_pre_production] 
+    self.is_production      = params[:is_production]     
+    self.is_post_production = params[:is_post_production]
+    self.is_delivered       = params[:is_delivered]      
+    self.delivery_address   = params[:delivery_address]  
+    self.price_per_piece    =  BigDecimal( params[:price_per_piece ])
+    self.weight_per_piece    =  BigDecimal( params[:weight_per_piece ])
+    self.quantity           = params[:quantity]          
+    self.description        = params[:description]   
+    self.name               = params[:name]
+    self.requested_deadline = params[:requested_deadline]
+    
+    self.save 
+    return self 
+  end
+  def delete
+    self.is_deleted = true 
+    self.save 
+  end
+  
   def SalesItem.create_sales_item( employee, sales_order, params ) 
     return nil if employee.nil?
     return nil if sales_order.nil? 
@@ -75,7 +98,8 @@ class SalesItem < ActiveRecord::Base
     new_object.weight_per_piece    =  BigDecimal( params[:weight_per_piece ])
     new_object.quantity           = params[:quantity]          
     new_object.description        = params[:description]   
-    new_object.delivery_address   = params[:delivery_address]          
+    new_object.name               = params[:name]
+
     new_object.requested_deadline = params[:requested_deadline] # Date.new( 2013, 3,5 )
     
     

@@ -26,7 +26,8 @@ describe ProductionOrder do
       :delivery_address => "Yeaaah babyy", 
       :requested_deadline => Date.new(2013, 3,5 ),
       :price_per_piece => "90000", 
-      :weight_per_piece   => '15'
+      :weight_per_piece   => '15',
+      :name => "Sales Item"
     })
   end
   
@@ -44,7 +45,8 @@ describe ProductionOrder do
           :delivery_address => "Yeaaah babyy", 
           :requested_deadline => Date.new(2013, 3,5 ),
           :price_per_piece => "90000",
-          :weight_per_piece => "15"
+          :weight_per_piece => "15",
+          :name => "has Prod"
         })
 
         @sales_order.confirm(@admin)

@@ -8,10 +8,10 @@ class SalesItemsController < ApplicationController
   def create
     # HARD CODE.. just for testing purposes 
     # params[:customer][:town_id] = Town.first.id 
-    
-    @object = SalesOrder.create_by_employee( current_user, params[:sales_order] ) 
+    @parent = SalesOrder.find_by_id params[:sales_order_id]
+    @object = SalesItem.create_sales_item( current_user, @parent, params[:sales_item] ) 
     if @object.errors.size == 0 
-      @new_object=  SalesOrder.new
+      @new_object=  SalesItem.new
     else
       @new_object= @object
     end
@@ -22,17 +22,18 @@ class SalesItemsController < ApplicationController
   
   def edit
     # @customer = Customer.find_by_id params[:id] 
-    @object = SalesOrder.find_by_id params[:id]
+    @object = SalesItem.find_by_id params[:id]
   end
   
   def update_sales_item
-    @object = SalesOrder.find_by_id params[:sales_order_id] 
-    @object.update_by_employee( current_user, params[:sales_order])
+    @object = SalesItem.find_by_id params[:sales_item_id] 
+    @parent = @object.sales_order
+    @object.update_sales_item(  params[:sales_item])
     @has_no_errors  = @object.errors.size  == 0
   end
   
   def delete_sales_item
-    @object = SalesOrder.find_by_id params[:object_to_destroy_id]
+    @object = SalesItem.find_by_id params[:object_to_destroy_id]
     @object.delete 
   end
 end

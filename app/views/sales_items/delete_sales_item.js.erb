@@ -1,11 +1,11 @@
 $(document).ready(function(){
 	
-	var $row = $("#entry-<%= @customer.id %>")
+	var $row = $("#entry-<%= @object.id %>")
 	$row.spin(false); 
 	
 	$row.remove(); 
 	
-	$.msgbox("Berhasil menghapus customer: <%= @customer.name %>");
+	$.msgbox("Berhasil menghapus sales item: <%= @object.code %>");
 	 
 	
 });

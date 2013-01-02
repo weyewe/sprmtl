@@ -29,7 +29,8 @@ describe SalesItem do
       :delivery_address => "Yeaaah babyy", 
       :requested_deadline => Date.new(2013, 3,5 ),
       :price_per_piece => "90000",
-      :weight_per_piece   => '15'
+      :weight_per_piece   => '15',
+      :name => "Sales Item"
     })
     
     @sales_order.sales_items.count.should == 1
@@ -53,7 +54,8 @@ describe SalesItem do
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
         :price_per_piece => "90000", 
-        :weight_per_piece   => '15'
+        :weight_per_piece   => '15',
+        :name => "Sales Item"
       })
       
       @only_machining_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
@@ -68,7 +70,8 @@ describe SalesItem do
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
         :price_per_piece => "80000", 
-        :weight_per_piece   => '15'
+        :weight_per_piece   => '15',
+        :name => "has Prod"
       })
       
       @initial_has_production_pending_production = @has_production_sales_item.pending_production

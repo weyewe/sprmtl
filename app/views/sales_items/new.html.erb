@@ -1,6 +1,6 @@
 <%= render :partial => "layouts/masthead" ,:locals => {
 	:title => "Sales Item",
-	:description => "Create New Sales Item for sales Order #{@parent.code}"
+	:description => "Create New Sales Item for Sales Order <b>#{@parent.code}</b>".html_safe
 }%>
 
 <div id="content">
@@ -10,12 +10,31 @@
 		
 		<div class="row">
 			
-			<div class="span8">
+			<div class="span12">
 				
-				<%= link_to new_sales_order_sales_item_url( @parent ), 
-					:class => "new_entry btn btn-primary" do %>
-					<i class="icon-plus"></i>Sales Item Baru
-				<% end %> 
+				<table class="table table-bordered table-striped table-highlight">
+					<tbody>
+						<tr>
+							<td style='text-align:left;'>
+								<%= link_to new_sales_order_sales_item_url( @parent ), 
+									:class => "new_entry btn btn-primary" do %>
+									<i class="icon-plus"></i>Sales Item Baru
+								<% end %>
+							</td>
+							
+							<td style='text-align: right;'> 
+								<%= link_to new_sales_order_sales_item_url( @parent ), 
+									:class => "new_entry btn btn-primary" do %>
+									<i class="icon-ok"></i> CONFIRM
+								<% end %>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				
+				
+				
 				<hr />
 				 
 				
@@ -38,35 +57,23 @@
 					<tbody> 
 						<% @objects.each do |object| %>
 							<%= render :partial =>  'sales_items/entry', :locals => {
-								:object => object 
+								:object => object ,
+								:parent => @parent 
 							} %> 
 						<% end %>
 					</tbody>
 				</table>
 
 				
+				 
+				
 				
 				
 			 
 				
-			</div> <!-- /.span8 -->
+			</div> <!-- /.span12 -->
 			
-			
-			<div class="span4">
-				
-						
-				<a href="javascript:;" class="btn btn-large btn-primary btn-block btn-big-block">Tree View</a>	
-				
-				
-				<a href="javascript:;" class="btn btn-large btn-tertiary btn-block btn-big-block">Contact Support</a>
-				
-				
-				<div>
-				</div> <!-- /.table wrapper -->
-						
-				
-			</div> <!-- /.span4 -->
-			
+	 
 		</div> <!-- /.row -->
 		
 	
@@ -103,7 +110,7 @@
 
 
 <div class="hidden" id="delete_entry_form_wrapper">
-  <%= form_for SalesOrder.new, :url =>delete_sales_order_url , :method => :post   do |f| %>
+  <%= form_for SalesOrder.new, :url =>delete_sales_item_url , :method => :post   do |f| %>
     <%= hidden_field_tag 'object_to_destroy_id' , ''  %> 
   <% end %>
 </div>

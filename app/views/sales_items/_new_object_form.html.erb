@@ -6,11 +6,11 @@
 
 <%= simple_form_for( new_object, :url => url,
       :method => :post , 
-      :html => {:class => " prevent_double_submit ajax-form   no_content_form",
+      :html => {:class => " form-horizontal prevent_double_submit ajax-form   no_content_form",
         :id => "#{id}"}) do |f| %>
 
 	 
-				new_object.material_id        = params[:material_id]       
+<!-- 				new_object.material_id        = params[:material_id]       
 		    new_object.is_pre_production  = params[:is_pre_production] 
 		    new_object.is_production      = params[:is_production]     
 		    new_object.is_post_production = params[:is_post_production]
@@ -23,48 +23,56 @@
 		    new_object.delivery_address   = params[:delivery_address]          
 		    new_object.requested_deadline = params[:requested_deadline]
 		
-		
+		 -->
 
-  <%= f.input :material_id  , :input_html => {:class => "input-xlarge "}, 
-  			:label => "Material" %>
+   
  
 
 	<%= f.input :material_id, :label => "Material" do %>
      <%= f.select :material_id, 
-         Category.all_selectable_categories %>
-   <% end %>
+         Material.all_selectables %>
+  <% end %>
+
+	<hr />
+		<%= f.input :name, :label =>"Nama Item", :hint => "Nama item menurut customer"   %>
+		<%= f.input :description, :label =>"Deskripsi item",
+		 			:input_html => {:class => "input-xlarge ", :rows => '5'} ,
+		 			:hint => "Deskripsi tambahan mengenai item tersebut" %>
+	
+	
+	<hr />
+		<%= f.input :quantity, :label =>"Kuantitas"   %>
+		<%= f.input :weight_per_piece, :label =>"Berat satuan", 
+				:hint => "Dalam kilogram, sensitif sampai 2 decimal. Contoh: <b>2.15</b>kg"   %>
+		<%= f.input :price_per_piece, :label =>"Harga satuan",
+		   	:hint => "Dalam rupiah. Langsung isi tanpa koma. <br />"+ 
+							"Contoh untuk isi sembilan puluh lima ribu:"  + 
+							"<b>95000</b>" 		%>
+
+	<hr />
+		<%= f.input :is_pre_production, :label =>"Pattern?", :hint => "Termasuk jasa pembuatan pattern?" %>
+		<%= f.input :is_production, :label =>"Casting?", :hint => "Termasuk jasa casting?"  %>
+		<%= f.input :is_post_production, :label =>"Machining?", :hint => "Termasuk jasa bubut?"  %>
+	
+	<hr />
+		<%= f.input :is_delivered, :label =>"Delivery", :hint => "Centang jika diantar"  %>
+		<%= f.input :delivery_address, :label =>"Alamat Delivery" ,
+		  	:input_html => {:class => "input-xlarge ", :rows => '5'}%>
+	
+		
+	
+	
 
   <div class="form-actions">
 	
 		<% if new_object.persisted? %>
-			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update Sales Order" %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update Sales Item" %>
 		<% else %>
-			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Sales Order" %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Sales Item" %>
 		<% end %>
 		
   </div>
 <% end %>
 
 
-
-
-<script type="text/javascript">
-$(document).ready(function() {
-	
-	 $("#sales_order_customer_id").tokenInput('<%=	search_customer_url %>', {
-		prePopulate:   	[
-				<% if not new_object.customer_id.nil? %> 
-				{id: <%= new_object.customer_id %>, name: '<%= new_object.customer.name %>'}
-				<% end %>
-			],
-		zindex: 9999,
-		propertyToSearch: "name",
-		tokenLimit: 1
-	});
-
-
  
-	
-	
-});
-</script>
