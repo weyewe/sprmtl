@@ -293,15 +293,15 @@ describe Delivery do
 
         context "FINALIZE: confirm partial, return partial" do
           before(:each) do
-            puts "\n"
-            puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@ The starting of partial confirmed and partial return\n "*10
-            
-            puts "The quantity sent: #{@delivery_entry.quantity_sent}\n"*5
+            # puts "\n"
+            # puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@ The starting of partial confirmed and partial return\n "*10
+            # 
+            # puts "The quantity sent: #{@delivery_entry.quantity_sent}\n"*5
             @quantity_returned = 5 
             @quantity_confirmed =   @delivery_entry.quantity_sent - @quantity_returned
             
-            puts "quantity_confirmed: #{@quantity_confirmed}"
-            puts "quantity_returned: #{@quantity_returned}"
+            # puts "quantity_confirmed: #{@quantity_confirmed}"
+            # puts "quantity_returned: #{@quantity_returned}"
             
             @delivery_entry.update_post_delivery(@admin, {
               :quantity_confirmed => @quantity_confirmed , 
@@ -366,13 +366,59 @@ describe Delivery do
         end # end of "confirm partial, return partial"
         
         
-        # 
-        # context "FINALIZE: confirm none, return partial, lost partial" do
-        # end # end of "confirm none, return partial, lost partial"
-        # 
-        # context "FINALIZE: confirm_partial, return none, lost_partial " do
-        # end # end of "confirm_partial, return none, lost_partial"
-      
+        context "non generic: only lost delivery and delivery lost" do
+          before(:each) do
+            puts "\n"
+            puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@ The starting of delivery finalize: generic case \n"*10
+            
+            puts "The quantity sent: #{@delivery_entry.quantity_sent}\n"*5
+            @quantity_returned = 0 
+            @quantity_lost = 3 
+            @quantity_confirmed =   @delivery_entry.quantity_sent - @quantity_returned  - @quantity_lost 
+        
+            
+            @delivery_entry.update_post_delivery(@admin, {
+              :quantity_confirmed => @quantity_confirmed , 
+              :quantity_returned => @quantity_returned ,
+              :quantity_returned_weight => "#{@quantity_returned*20}" ,
+              :quantity_lost => @quantity_lost  
+            }) 
+            
+            
+            @complete_cycle_sales_item.reload 
+            @initial_on_delivery_item = @complete_cycle_sales_item.on_delivery 
+            @initial_fulfilled = @complete_cycle_sales_item.fulfilled_order
+            
+            
+            @delivery.reload 
+            @delivery.finalize(@admin)
+            @delivery.reload
+            
+            # @delivery.finalize(@admin)  
+            @complete_cycle_sales_item.reload
+            @delivery_lost = @delivery.delivery_lost 
+          end
+          
+          it 'should finalize the delivery' do
+            @delivery.is_finalized.should be_true 
+          end
+        
+          
+          # for LOST DELIVERY SPECIFIC CODE
+          
+          it 'should generate DeliveryLost with corresponding DeliveryLostEntry' do
+            
+            @delivery_lost.should be_valid 
+          end
+          
+          it 'should have the same number of delivery_lost_entries as the lost quantity in delivery finalization' do
+            total_delivery_lost_entry = @delivery_lost.delivery_lost_entries.count
+            total_delivery_entry_with_quantity_lost = @delivery.delivery_entries.where{(quantity_lost.not_eq 0 )}.count 
+            
+            total_delivery_lost_entry.should == total_delivery_entry_with_quantity_lost
+          end
+          
+        end # "generic_case: with confirmation, sales return and lost delivery"
      
         
         

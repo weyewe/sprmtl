@@ -60,4 +60,17 @@ class ProductionOrder < ActiveRecord::Base
     ) 
      
   end
+  
+  def ProductionOrder.generate_delivery_lost_production_order( delivery_lost_entry  )
+    ProductionOrder.create(
+      :sales_item_id            => delivery_lost_entry.delivery_entry.sales_item_id       ,
+      :case                     => PRODUCTION_ORDER[:delivery_lost]     ,
+      :quantity                 => delivery_lost_entry.quantity_lost     ,
+
+      :source_document_entry    => delivery_lost_entry.class.to_s          ,
+      :source_document_entry_id => delivery_lost_entry.id                  ,
+      :source_document          => delivery_lost_entry.delivery_lost.class.to_s          ,
+      :source_document_id       => delivery_lost_entry.delivery_lost_id
+    )
+  end
 end

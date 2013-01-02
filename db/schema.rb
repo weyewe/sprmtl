@@ -68,13 +68,25 @@ ActiveRecord::Schema.define(:version => 20121231141550) do
 
   create_table "delivery_lost_entries", :force => true do |t|
     t.integer  "sales_item_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.integer  "creator_id"
+    t.integer  "delivery_lost_id"
+    t.integer  "delivery_entry_id"
+    t.integer  "is_confirmed",      :default => 0
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   create_table "delivery_losts", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "creator_id"
+    t.integer  "delivery_id"
+    t.string   "code"
+    t.boolean  "is_confirmed", :default => false
+    t.integer  "confirmer_id"
+    t.integer  "confirmed_at"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "employees", :force => true do |t|
