@@ -102,33 +102,37 @@ describe Delivery do
   end
   
   it 'should not create delivery entry if 0 <  quantity sent  ' do
-    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, {
         :quantity_sent => 0 , 
-        :quantity_sent_weight => "324" 
+        :quantity_sent_weight => "324",
+        :sales_item_id =>  @complete_cycle_sales_item.id 
       })
       
     @delivery_entry.should_not be_valid 
   end
   
   it 'should not create delivery entry if  quantity sent > ready ' do 
-    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery,   {
         :quantity_sent => @complete_cycle_sales_item.ready + 1  , 
-        :quantity_sent_weight => "324" 
+        :quantity_sent_weight => "324" ,
+        :sales_item_id =>  @complete_cycle_sales_item.id
       })
     @delivery_entry.should_not be_valid
   end
   
   it 'should not create delivery entry if  weight > 0 ' do 
-    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery,  {
         :quantity_sent => @complete_cycle_sales_item.ready + 1  , 
-        :quantity_sent_weight => "-5" 
+        :quantity_sent_weight => "-5" ,
+        :sales_item_id => @complete_cycle_sales_item.id 
       })
     @delivery_entry.should_not be_valid
     
     
-    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery,  {
       :quantity_sent => @complete_cycle_sales_item.ready + 1  , 
-      :quantity_sent_weight => "0" 
+      :quantity_sent_weight => "0" ,
+      :sales_item_id => @complete_cycle_sales_item.id 
       })
     @delivery_entry.should_not be_valid
   end

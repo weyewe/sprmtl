@@ -117,4 +117,13 @@ Supermetal::Application.routes.draw do
   match 'update_delivery/:delivery_id' => 'deliveries#update_delivery', :as => :update_delivery , :method => :post 
   match 'delete_delivery' => 'deliveries#delete_delivery', :as => :delete_delivery , :method => :post
   match 'confirm_delivery/:delivery_id' => "deliveries#confirm_delivery", :as => :confirm_delivery, :method => :post
+
+##################################################
+##################################################
+######### DELIVERY_ENTRY
+##################################################
+##################################################
+  match 'update_delivery_entry/:delivery_entry_id' => 'delivery_entries#update_delivery_entry', :as => :update_delivery_entry , :method => :post 
+  match 'delete_delivery_entry' => 'delivery_entries#delete_delivery_entry', :as => :delete_delivery_entry , :method => :post
+
 end

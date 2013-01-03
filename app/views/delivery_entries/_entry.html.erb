@@ -1,0 +1,49 @@
+ 
+
+<!-- <th>Code</th>
+<th>Sukses</th>  
+<th>Gagal</th>    
+<th>Tanggal Mulai</th>
+<th>Tanggal Selesai</th>
+
+	<th colspan='2'>Action</th>
+ -->
+
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%= object.sales_item.code %>
+	</td>
+	<td>
+		<%= object.sales_item.name %>
+	</td>
+	
+	<td>
+		<%= object.broken_quantity%>
+	</td>
+	 
+ 	<td>
+ 	 <%= print_date( object.start_date ) %>
+	</td>
+	
+	<td>
+ 	 <%= print_date( object.finish_date ) %>
+	</td>
+	
+	
+	<% if not object.is_confirmed? %>
+		<td>
+			<%= link_to root_url, :class =>"delete_entry", 
+				:style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-remove'></i>Delete
+			<% end %> 
+		</td>
+
+		<td>
+			<%= link_to edit_sales_order_sales_item_url(parent, object), 
+				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-edit'></i>Edit
+			<% end %>
+		</td>
+	<% end %>
+	
+</tr>

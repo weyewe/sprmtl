@@ -8,6 +8,8 @@ class DeliveryEntry < ActiveRecord::Base
   
   validate   :quantity_sent_is_not_zero_and_less_than_ready_quantity
   validate   :quantity_sent_weight_is_not_zero_and_less_than_ready_quantity 
+  validate   :uniqueness_of_sales_item
+  validate   :customer_ownership_to_sales_item
   
   def quantity_sent_is_not_zero_and_less_than_ready_quantity
     sales_item = self.sales_item
@@ -22,14 +24,32 @@ class DeliveryEntry < ActiveRecord::Base
     end
   end
   
-  def DeliveryEntry.create_delivery_entry( employee, delivery, sales_item,  params ) 
+  def uniqueness_of_sales_item
+    parent  = self.delivery
+    sales_item_id_list = parent.delivery_entries.map{|x| x.sales_item_id }
+    post_uniq_sales_item_id_list = sales_item_id_list.uniq 
+    
+    if sales_item_id_list.length !=  post_uniq_sales_item_id_list.length
+      errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
+    end 
+  end
+  
+  def customer_ownership_to_sales_item
+    parent = self.delivery
+    if delivery.customer_id != self.sales_item.sales_order.customer_id 
+      errors.add(:sales_item_id , "Sales item #{self.sales_item.code} tidak terdaftar di daftar penjualan." ) 
+    end
+  end
+  
+  
+  
+  def DeliveryEntry.create_delivery_entry( employee, delivery,  params ) 
     return nil if employee.nil?
-    return nil if sales_item.nil? 
     
     new_object = DeliveryEntry.new
     new_object.creator_id = employee.id 
     new_object.delivery_id = delivery.id 
-    new_object.sales_item_id = sales_item.id 
+    new_object.sales_item_id = params[:sales_item_id] 
     
     new_object.quantity_sent        = params[:quantity_sent]       
     new_object.quantity_sent_weight = BigDecimal( params[:quantity_sent_weight ])

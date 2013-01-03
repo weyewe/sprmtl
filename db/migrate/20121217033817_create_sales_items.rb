@@ -61,6 +61,8 @@ class CreateSalesItems < ActiveRecord::Migration
      t.boolean :is_confirmed, :default => false  
      
      t.boolean :is_deleted, :default => false 
+     
+     # how to declare if it is finished
       
       
 =begin

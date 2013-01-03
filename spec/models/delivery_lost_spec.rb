@@ -110,9 +110,10 @@ describe DeliveryLost do
       @quantity_sent = @pending_delivery - 1 
     end
     
-    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, @complete_cycle_sales_item,  {
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery,   {
         :quantity_sent => @quantity_sent, 
-        :quantity_sent_weight => "#{@quantity_sent * 10}" 
+        :quantity_sent_weight => "#{@quantity_sent * 10}" ,
+        :sales_item_id => @complete_cycle_sales_item.id 
       })
       
     #confirm delivery

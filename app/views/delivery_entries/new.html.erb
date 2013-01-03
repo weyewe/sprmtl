@@ -13,11 +13,11 @@
 			<div class="span12">
 				
 				<% if @parent.is_confirmed == false %>
-					<%= render :partial => "sales_items/sales_order/actionbar", :locals => {
+					<%= render :partial => "delivery_entries/delivery/actionbar", :locals => {
 						:parent => @parent
 					}%>
 				<% else %>
-					<%= render :partial => "sales_items/sales_order/post_confirm_bar", :locals => {
+					<%= render :partial => "delivery_entries/delivery/post_confirm_bar", :locals => {
 						:parent => @parent
 					}%>
 				<% end %>
@@ -25,7 +25,7 @@
 				
 				<hr />
 				 
-				 <%= render :partial => 'sales_items/sales_order/item_list', :locals => {
+				 <%= render :partial => 'delivery_entries/delivery/item_list', :locals => {
 					:objects => @objects, 
 					:parent => @parent
 				}%>
@@ -52,7 +52,7 @@
 
 <div class="modal fade hide" id="editEntry">
   <div class="modal-header">
-    <h3>Edit Sales Item</h3>
+    <h3>Edit Delivery Entry</h3>
   </div>
   <div class="modal-body"> 
 	<!-- content -->
@@ -65,7 +65,7 @@
 
 <div class="modal fade hide" id="newEntry">
   <div class="modal-header">
-    <h3>New Sales Item</h3>
+    <h3>New Delivery Entry</h3>
   </div>
   <div class="modal-body"> 
 	<!-- content -->
@@ -78,13 +78,13 @@
 
 
 <div class="hidden" id="delete_entry_form_wrapper">
-  <%= form_for SalesOrder.new, :url =>delete_sales_item_url , :method => :post   do |f| %>
+  <%= form_for SalesOrder.new, :url =>delete_delivery_entry_url , :method => :post   do |f| %>
     <%= hidden_field_tag 'object_to_destroy_id' , ''  %> 
   <% end %>
 </div>
 
 <div class="hidden" id="confirm_order">
-  <%= form_for SalesEntry.new, :url => confirm_sales_order_url(@parent)  do |f| %> 
+  <%= form_for SalesEntry.new, :url => confirm_delivery_url(@parent)  do |f| %> 
   <% end %>
 </div>
 
