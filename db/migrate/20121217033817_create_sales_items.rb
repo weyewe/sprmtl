@@ -37,6 +37,8 @@ class CreateSalesItems < ActiveRecord::Migration
       
       # statistics  ( internal )
       t.integer :number_of_pre_production             , :default    =>  0  # PreProductionHistory 
+      
+      
       t.integer :number_of_production                 , :default   =>  0  # ProductionHistory
       t.integer :number_of_post_production            , :default   =>  0  # PostProductionHistory
       t.integer :number_of_delivery                   , :default   =>  0  # DeliveryEntry 

@@ -9,4 +9,11 @@ $(document).ready(function(){
 				" tanggal record: <%= print_date(@object_identifier) %>");
 	 
 	
+	
+	// update summary 
+	<%= render :file => "pre_production_histories/update_summary", :locals => {
+		:sales_item => @parent 
+	}%>
+ 
+
 });

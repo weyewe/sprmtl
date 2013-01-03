@@ -57,6 +57,7 @@ class PreProductionHistoriesController < ApplicationController
   def delete_pre_production_history 
     @object = PreProductionHistory.find_by_id params[:object_to_destroy_id]
     @object_identifier = @object.created_at 
+    @parent= @object.sales_item
     @object_id = @object.id 
     @object.delete(current_user ) 
   end

@@ -32,6 +32,11 @@ $(document).ready(function(){
 
 			
 			$modal.modal('hide'); 
+ 
+			// update summary
+			<%= render :file => "pre_production_histories/update_summary", :locals => {
+				:sales_item => @parent 
+			}%>
 
 
 		<% elsif  not @has_no_errors %> 

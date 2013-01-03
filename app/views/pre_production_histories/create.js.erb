@@ -25,11 +25,24 @@ $(document).ready(function(){
 					{type: "info"});
 		$modal.modal('hide'); 
 		$form.remove();
+		
+		
+		// update summary 
+
+		
+		<%= render :file => "pre_production_histories/update_summary", :locals => {
+			:sales_item => @parent 
+		}%>
+		
+		
 	<% else %>
 		$form.replaceWith('<%= new_form %>');
 		 $.msgbox("Gagal membuat Pre Production Progress baru.", 
 					{type: "error"});
 	<% end %>
+	
+	
+	
 	
 	
 	// else, display error.. 
