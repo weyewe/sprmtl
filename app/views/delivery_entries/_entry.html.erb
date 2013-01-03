@@ -14,7 +14,7 @@
   
 	
 	
-	<% if not object.is_confirmed? %>
+	<% if not parent.is_confirmed? %>
 		<td>
 			<%= link_to root_url, :class =>"delete_entry", 
 				:style => "cursor:pointer; text-decoration:none;" do %>
@@ -28,6 +28,26 @@
 				<i class='icon-edit'></i>Edit
 			<% end %>
 		</td>
+	<% elsif parent.is_confirmed  and not parent.is_finalized? %>
+	
+		<td>
+			Terkirim: 	5<br />
+			Berat: 
+			<hr />
+			
+			Retur :	3<br />
+			Berat:
+			<hr />
+			Hilang: 
+		</td>
+
+		<td>
+			<%= link_to edit_delivery_delivery_entry_url(parent, object), 
+				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-edit'></i> Isi Hasil Pengiriman
+			<% end %>
+		</td>
+		
 	<% end %>
 	
 </tr>

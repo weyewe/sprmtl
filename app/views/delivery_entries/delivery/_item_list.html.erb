@@ -6,6 +6,9 @@
 			<th>Jumlah Kirim</th>
 			<% if not parent.is_confirmed? %>
 				<th colspan='2'>Action</th>
+			<% elsif parent.is_confirmed? and not parent.is_finalized? %>
+				<th>Jumlah Konfirmasi</th>
+				<th>Action</th>
 			<% end %>
 		</tr>
 	</thead>
