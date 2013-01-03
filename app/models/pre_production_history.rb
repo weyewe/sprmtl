@@ -81,6 +81,27 @@ class PreProductionHistory < ActiveRecord::Base
     return self 
   end
   
+  def delete(employee)
+    return nil if employee.nil?
+    self.destroy if self.is_confirmed == false 
+  end
+  
+  
+  def confirm(employee)
+    return nil if employee.nil? 
+    return nil if self.is_confirmed == true 
+    
+    ActiveRecord::Base.transaction do
+      self.update_processed_quantity 
+      sales_item = self.sales_item
+      sales_item.update_pre_production_statistics
+      self.is_confirmed = true 
+      self.confirmer_id = employee.id
+      self.confirmed_at = DateTime.now 
+      self.save
+    end
+  end
+  
   def update_processed_quantity
     self.processed_quantity = ok_quantity + broken_quantity 
     self.save 

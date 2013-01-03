@@ -1,11 +1,12 @@
 $(document).ready(function(){
 	
-	var $row = $("#entry-<%= @object.id %>")
+	var $row = $("#entry-<%= @object_id %>")
 	$row.spin(false); 
 	
 	$row.remove(); 
 	
-	$.msgbox("Berhasil menghapus sales order: <%= @object.code %>");
+	$.msgbox("Berhasil menghapus pre production progress dengan"+ 
+				" tanggal record: <%= print_date(@object_identifier) %>");
 	 
 	
 });

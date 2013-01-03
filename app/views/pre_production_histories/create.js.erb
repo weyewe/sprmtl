@@ -20,7 +20,7 @@ $(document).ready(function(){
 		$("#tableview tbody").prepend('<%= new_entry %>');
 		
 		$.msgbox("Pre Production Progress dengan ok: <%= @object.ok_quantity %> "+
-		 					" dan rusak: <%= @object.broken_quantity %> "
+		 					" dan rusak: <%= @object.broken_quantity %> " + 
 						" sukses dibuat.", 
 					{type: "info"});
 		$modal.modal('hide'); 

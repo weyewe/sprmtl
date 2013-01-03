@@ -84,6 +84,11 @@
   <% end %>
 </div>
 
+<div class="hidden" id="confirm_entry">
+  <%= form_for SalesOrder.new, :url => delete_pre_production_history_url , :method => :post   do |f| %>
+  <% end %>
+</div>
+
 
 <%# content_for :additional_js do %> 
 	<%#= javascript_include_tag "common_order/entry_creation"  	%>

@@ -1,13 +1,23 @@
 $(document).ready(function(){
 	  
+	
+	<% if @parent.has_unconfirmed_pre_production_history? %>
+		
+		$.msgbox("Gagal membuat Pre Production Progress baru. Masih ada yang belum di konfirmasi.", 
+					{type: "error"});
+		var $modal = $("#newEntry");
+		$modal.modal('hide') ;			
+	<% else %>
 		<% new_form = escape_javascript(  render :partial => "pre_production_histories/new_object_form", :locals => {
 	    :new_object => @new_object , 
 			:url => sales_item_pre_production_histories_url(@parent) 
 	  })%>
- 
-	$("#newEntry .modal-body").append('<%= new_form %>');
-	
-	jQuery('.prevent_double_submit').preventDoubleSubmit();
+
+		$("#newEntry .modal-body").append('<%= new_form %>');
+
+		jQuery('.prevent_double_submit').preventDoubleSubmit();
+	<% end %>
+		
 	
 	// $('.datepicker').datepicker({
 	// 	format : 'dd/mm/yyyy'

@@ -56,7 +56,9 @@ class PreProductionHistoriesController < ApplicationController
   
   def delete_pre_production_history 
     @object = PreProductionHistory.find_by_id params[:object_to_destroy_id]
-    @object.delete 
+    @object_identifier = @object.created_at 
+    @object_id = @object.id 
+    @object.delete(current_user ) 
   end
   
 =begin
@@ -65,7 +67,9 @@ class PreProductionHistoriesController < ApplicationController
   def confirm_pre_production_history
     @pre_production_history = PreProductionHistory.find_by_id params[:pre_production_history_id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
-    @pre_production_history.confirm( current_user  )  
+    @pre_production_history.confirm( current_user  ) 
+    @object =  @pre_production_history
+    @parent = @object.sales_item 
   end
 end
 

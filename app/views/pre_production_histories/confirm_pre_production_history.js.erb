@@ -1,45 +1,30 @@
 $(document).ready(function(){
-	var $form_wrapper = $("#action_button"); 
-	$form_wrapper.spin(false); 
+	
+	var $row = $("#entry-<%= @object.id %>" );
+	$row.spin(false); 
  
 
-	<% if  @sales_order.is_confirmed?  %>
-	 
-	// replace the actionbar  with postConfirmBar => to delete the sales order 
-		<% post_confirm_bar = escape_javascript(  render :partial => "sales_items/sales_order/post_confirm_bar", 
-		:locals => {
-	    :parent => @sales_order  
-	  })%>
-		
-		$("#actionbar").replaceWith('<%=  post_confirm_bar %>');
-	
-	// refresh the itemList => no edit or delete 
-		<% item_list = escape_javascript(  render :partial => "sales_items/sales_order/item_list", 
-		:locals => {
-	    :parent => @sales_order ,
-			:objects => @sales_order.active_sales_items 
+	<% if  @object.is_confirmed?  %>
+ 
+		<% new_entry = escape_javascript(  render :partial => "pre_production_histories/entry", :locals => {
+	    :object => @object  ,
+			:parent => @parent 
 	  })%>
 	
-		$("#tableview").replaceWith('<%= item_list %>');
-		
-		
+		$row.replaceWith('<%= new_entry %>');
+	
 	
 	// alert msgbox: success confirming 
-		$.msgbox("Berhasil Konfirmasi Sales Order: <%= @sales_order.code %>", 
-						{type: "info"});
+		$.msgbox("Berhasil Konfirmasi Pre Production Progress dengan ok: <%= @object.ok_quantity %> "+
+		 					" dan rusak: <%= @object.broken_quantity %> "  , 
+					{type: "info"});
 						 
 		
 		
 	<% else %> 
-		// replace the form, show the edit 
-		<% actionbar = escape_javascript(  render :partial => "sales_items/sales_order/actionbar", 
-		:locals => {
-	    :parent => @sales_order  
-	  })%>
-	
-		$("#actionbar").replaceWith("<%= actionbar %>");
-		 
-		$.msgbox("Error konfirmasi  sales order: <%= @sales_order.code %>", 
+ 
+	 
+		$.msgbox("Gagal konfirmasi  Pre Production Progress", 
 					{type: "error"});
 	<% end %>
  

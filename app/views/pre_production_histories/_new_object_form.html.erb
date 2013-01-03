@@ -1,13 +1,13 @@
 <% if new_object.persisted? %>
 	<% id = 'edit_object'%>
-	<% method = :post %>
+	<%# method = :post %>
 <% else %>
 	<% id = 'new_object'%>
-	<% method = :post %>
+	<%# method = :post %>
 <% end %>
 
 <%= simple_form_for( new_object, :url => url,
-      :method => method , 
+      :method => :post , 
       :html => {:class => " prevent_double_submit ajax-form   no_content_form",
         :id => "#{id}"}) do |f| %>
 
