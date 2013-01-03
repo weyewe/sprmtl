@@ -90,7 +90,7 @@
 <%# end %>
 
 <% content_for :additional_js do %> 
-  <%= javascript_include_tag "common_order/entry_creation","jquery.tokeninput" 	%> 
+  <%= javascript_include_tag "common_order/entry_creation","jquery.tokeninput"  %> 
 
 	<script type="text/javascript"> 
 		$(document).ready(function() {
@@ -123,6 +123,8 @@
 							$("#history_dummy").show();
 						}
 		    }); 
+		
+				 
 		});
   </script>
 <% end %>

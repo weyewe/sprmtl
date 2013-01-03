@@ -1,11 +1,21 @@
 $(document).ready(function(){
 	  
-		<% new_form = escape_javascript(  render :partial => "sales_orders/new_object_form", :locals => {
+		<% new_form = escape_javascript(  render :partial => "pre_production_histories/new_object_form", :locals => {
 	    :new_object => @new_object , 
-			:url => sales_orders_url 
+			:url => sales_item_pre_production_histories_url(@parent) 
 	  })%>
  
 	$("#newEntry .modal-body").append('<%= new_form %>');
 	
 	jQuery('.prevent_double_submit').preventDoubleSubmit();
+	
+	// $('.datepicker').datepicker({
+	// 	format : 'dd/mm/yyyy'
+	// });
+	
+	// $('.datepicker').datepicker( {
+	// 	autoclose: true 
+	// });
+	
+	// $('.datepicker').datepicker(  );
 });

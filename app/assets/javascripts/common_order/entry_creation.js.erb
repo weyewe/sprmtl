@@ -138,6 +138,41 @@ $(document).ready(function(){
 		return false; 
 	});
 	
+	$(".confirm_entry").live('click', function(){  
+		// console.log("clicked the confirm");
+		var yes_value = "Yes"; 
+		var cancel_value = 'false';
+		var $confirm = $(this);
+		// return false; 
+		
+		$.msgbox("Yakin untuk konfirmasi sales invoice?"  , {
+		  type: "confirm",
+		  buttons : [
+		    {type: "submit", value: yes_value}, 
+		    {type: "cancel", value: "Cancel"}
+		  ]
+		}, function(result) { 
+			if( result == yes_value){ 
+
+				var $form_wrapper = $confirm.parents("tr");
+				$form_wrapper.spin("large", "black"); 
+				var $form = $("#confirm_entry form");
+				var post_url = $confirm.attr('href');
+
+		    $.ajax({
+					url: post_url,
+					type: "POST",
+					data: $form.serialize(),
+					dataType: 'script',
+					success: function(response){ 
+						// it is live.. ajax-form class
+					}
+				});
+			}
+		}); 
+		return false; 
+	});
+	
 	
 	$("#delete").live('click', function(){  
 		var yes_value = "Yes"; 

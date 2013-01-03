@@ -79,6 +79,15 @@ BREADCRUMB
     end
   end
   
+  def print_date_input(datetime)
+    if datetime.nil? 
+      return ""
+    else
+      return "#{datetime.day}/#{datetime.month}/#{datetime.year}"
+    end
+  end
+  
+  
 =begin
   MATERIAL SELECTION
 =end

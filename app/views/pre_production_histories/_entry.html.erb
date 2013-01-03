@@ -1,26 +1,22 @@
  
 <tr id="entry-<%= object.id %>">
 	<td>
-		<%=  "#{object.code}" %>
+		<%=  print_date( object.created_at ) %>
 	</td>
 	<td>
-		<%= "#{object.customer.name}" %>
+		<%=  object.ok_quantity  %>
 	</td>
 	
 	<td>
-		<%= print_date(object.created_at )%>
+		<%=  object.broken_quantity  %>
 	</td>
 	 
  	<td>
-		<% if object.is_confirmed == true %>
-			<span class="label label-primary">confirmed</span>
-		<% else %>
-			<span class="label label-tertiary">Pending</span>
-		<% end %>
+		<%= print_date( object.start_date )%>
 	</td>
 	
 	<td>
-		<%= object.active_sales_items.count %>
+		<%= print_date( object.finish_date )%>
 	</td>
 	
 	
@@ -32,13 +28,20 @@
 		</td>
 
 		<td>
-			<%= link_to edit_sales_order_url(object), 
+			<%= link_to edit_sales_item_pre_production_history_url(parent, object), 
 				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
 				<i class='icon-edit'></i>Edit
 			<% end %>
 		</td>
+		
+		<td>
+			<%= link_to confirm_pre_production_history_url(object), 
+				:class =>"confirm_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-ok'></i>Confirm
+			<% end %>
+		</td>
 	<% else %>
-		<td colspan='2'>
+		<td colspan='3'>
 			NA
 		</td>
 	<% end %>

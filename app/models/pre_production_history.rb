@@ -3,11 +3,12 @@ class PreProductionHistory < ActiveRecord::Base
   #                  :order_date , :finish_date 
   belongs_to :sales_item
   
-  validates_presence_of  :processed_quantity, :ok_quantity, :broken_quantity,  
+  validates_presence_of   :ok_quantity, :broken_quantity,  
                            :start_date, :finish_date
                            
   validates_numericality_of :ok_quantity, :broken_quantity               
   validate :no_negative_quantity, :no_zero_sum 
+  validate :start_date_must_not_be_later_than_finish_date
   
 
   def no_negative_quantity 
@@ -29,10 +30,16 @@ class PreProductionHistory < ActiveRecord::Base
     end
   end
   
+  def start_date_must_not_be_later_than_finish_date
+    if (not start_date.nil?) and (not finish_date.nil? )  and  (start_date > finish_date)
+      errors.add(:start_date , "Tanggal mulai tidak boleh sesudah tanggal selesai" ) 
+    end
+  end
+  
   
 
   
-  def PreProductionHistory.create_history( employee, sales_item , param ) 
+  def PreProductionHistory.create_history( employee, sales_item , params ) 
     return nil if employee.nil?  or sales_item.nil? 
     return nil if sales_item.has_unconfirmed_pre_production_history?
     
@@ -47,11 +54,31 @@ class PreProductionHistory < ActiveRecord::Base
     new_object.finish_date        =  params[:finish_date]
     
     if new_object.save  
-      new_object.update_processed_quantity 
-      sales_item.update_pre_production_statistics 
+      # new_object.update_processed_quantity 
+      # sales_item.update_pre_production_statistics 
     end
     
     return new_object 
+  end
+  
+  def update_history( employee, sales_item , params ) 
+    return nil if employee.nil?  or sales_item.nil? 
+    
+    
+    
+    self.creator_id         =  employee.id
+    self.sales_item_id      =  sales_item.id
+    self.ok_quantity        =  params[:ok_quantity]
+    self.broken_quantity    =  params[:broken_quantity]  
+    self.start_date         =  params[:start_date]
+    self.finish_date        =  params[:finish_date]
+
+    if self.save  
+      # new_object.update_processed_quantity 
+      # sales_item.update_pre_production_statistics 
+    end
+    
+    return self 
   end
   
   def update_processed_quantity

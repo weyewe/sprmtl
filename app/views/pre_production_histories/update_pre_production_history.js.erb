@@ -18,13 +18,16 @@ $(document).ready(function(){
 			// clean the add product form
 			$form.remove(); 
 
-			<% new_entry  = escape_javascript( render :partial =>  'sales_orders/entry', :locals => {
-				:object => @object 
+			<% new_entry  = escape_javascript( render :partial =>  'pre_production_histories/entry', :locals => {
+				:object => @object ,
+				:parent => @parent
 			} )%>
 
 			$("#entry-<%= @object.id %>").replaceWith('<%= new_entry %>') 
 
-			$.msgbox("Berhasil update SalesOrder: <%= @object.code %>", 
+			$.msgbox("Pre Production Progress dengan ok: <%= @object.ok_quantity %> "+
+			 					" dan rusak: <%= @object.broken_quantity %> " + 
+							" sukses dibuat.", 
 						{type: "info"});
 
 			
@@ -32,14 +35,16 @@ $(document).ready(function(){
 
 
 		<% elsif  not @has_no_errors %> 
-			<% new_form = escape_javascript(   render :partial => "sales_orders/new_object_form", :locals => {
+		
+			<% new_form = escape_javascript(  render :partial => "pre_production_histories/new_object_form", :locals => {
 		    :new_object => @object , 
-				:url => update_sales_order_url(@object)  
+				:url => update_pre_production_history_url(@object) 
 		  })%>
+	 
 			//replace the form, show the edit
 			$form.replaceWith("<%= new_form %>"); 
 
-			$.msgbox("Error dalam update sales order: <%= @object.code %>", 
+			$.msgbox("Gagal membuat Pre Production Progress baru.", 
 						{type: "error"});
 		<% end %>
 

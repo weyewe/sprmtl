@@ -9,13 +9,23 @@ class PreProductionHistoriesController < ApplicationController
   
   def new
     # no idea about shite.. looking forward to get a sales item ID from you
+    respond_to do |format|
+      format.html {}
+      format.js do 
+        @parent = SalesItem.find_by_id params[:sales_item_id] 
+        @new_object = PreProductionHistory.new
+      end
+    end
   end
   
   def create
     # HARD CODE.. just for testing purposes 
     # params[:customer][:town_id] = Town.first.id 
     
-    @object = PreProductionHistory.create_by_employee( current_user, params[:pre_production_history] ) 
+    params[:pre_production_history][:start_date] = parse_date( params[:pre_production_history][:start_date] )
+    params[:pre_production_history][:finish_date] = parse_date( params[:pre_production_history][:finish_date] )
+    @parent = SalesItem.find_by_id params[:sales_item_id] 
+    @object = PreProductionHistory.create_history( current_user, @parent, params[:pre_production_history] ) 
     if @object.errors.size == 0 
       @new_object=  PreProductionHistory.new
     else
@@ -27,12 +37,20 @@ class PreProductionHistoriesController < ApplicationController
   
   def edit
     # @customer = Customer.find_by_id params[:id] 
+    
+    
+    @parent = SalesItem.find_by_id params[:sales_item_id] 
     @object = PreProductionHistory.find_by_id params[:id]
   end
   
   def update_pre_production_history
+    params[:pre_production_history][:start_date] = parse_date( params[:pre_production_history][:start_date] )
+    params[:pre_production_history][:finish_date] = parse_date( params[:pre_production_history][:finish_date] )
+    
+    
     @object = PreProductionHistory.find_by_id params[:pre_production_history_id] 
-    @object.update_by_employee( current_user, params[:pre_production_history])
+    @parent = @object.sales_item 
+    @object.update_history( current_user, @parent,  params[:pre_production_history])
     @has_no_errors  = @object.errors.size  == 0
   end
   

@@ -47,6 +47,35 @@ Supermetal::Application.configure do
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   # config.assets.precompile += %w( search.js )
+  config.assets.precompile += %w( modernizr-2.5.3.min.js
+                                excanvas.min.js 
+                                jquery.flot.js
+                                jquery.flot.pie.js 
+                                jquery.flot.orderBars.js
+                                jquery.flot.tooltip.min.js 
+                                jquery.flot.resize.js
+                                
+                                pages/dashboard.css
+                                pages/pricing.css
+                                pages/reports.css
+                                
+                                signin.js
+                                
+                                jquery.msgbox.css 
+                                jquery.msgbox.min.js
+                                
+                                jquery.tokeninput.js
+                                token-input.css
+                                token-input-facebook.css
+                                
+                                common_order/entry_creation.js
+                                date.js 
+                                daterangepicker.js 
+                                daterangepicker.css
+                                
+                                datepicker.js
+                                datepicker.css
+                  )
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
