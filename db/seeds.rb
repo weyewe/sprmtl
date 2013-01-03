@@ -29,7 +29,7 @@ has_production_sales_item = SalesItem.create_sales_item( admin, sales_order,  {
     :requested_deadline => Date.new(2013, 3,5 ),
     :price_per_piece => "90000", 
     :weight_per_piece   => '15',
-    :name => "Sales Item"
+    :name => "Nama dari sales item ini ( menurut customer)"
   })
   
 sales_order.confirm( admin )

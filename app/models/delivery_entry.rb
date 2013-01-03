@@ -66,6 +66,32 @@ class DeliveryEntry < ActiveRecord::Base
     return new_object 
   end
   
+  def update_delivery_entry( employee, delivery,  params ) 
+    return nil if employee.nil?
+    
+   
+    self.creator_id           = employee.id 
+    self.delivery_id          = delivery.id 
+    self.sales_item_id        = params[:sales_item_id] 
+    self.quantity_sent        = params[:quantity_sent]       
+    self.quantity_sent_weight = BigDecimal( params[:quantity_sent_weight ])
+    
+
+    
+    
+    if self.save 
+    end
+    
+    return self 
+  end
+  
+  def delete( employee )
+    return nil if employee.nil?
+    return nil if self.is_confirmed? 
+    
+    self.destroy 
+  end
+  
   def validate_post_production_quantity 
     if quantity_confirmed.nil? or quantity_confirmed < 0 
       self.errors.add(:quantity_confirmed , "Tidak boleh kurang dari 0" ) 

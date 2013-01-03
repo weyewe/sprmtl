@@ -2,10 +2,35 @@
 	<tbody>
 		<tr> 
 			<td style='text-align: center;'>  
-				<%= link_to confirm_sales_order_url(parent),
+				<%= link_to confirm_delivery_url(parent),
 					:id => 'confirm' , 
 					:class => " btn btn-primary" do %>
-					<i class="icon-ok"></i> Download Sales Order
+					<i class="icon-envelope"></i> Download Surat Jalan
+				<% end %>
+			</td>
+			
+			<td style='text-align: center;'>  
+				<%= link_to confirm_delivery_url(parent),
+					:id => 'confirm' , 
+					:class => " btn btn-primary" do %>
+					<i class="icon-file"></i> Buat Invoice
+				<% end %>
+			</td>
+			
+			<td style='text-align: center;'>  
+				<%= link_to confirm_delivery_url(parent),
+					:id => 'confirm' , 
+					:class => " btn btn-primary" do %>
+					<i class="icon-thumbs-up"></i> Finalisasi Surat Jalan
+				<% end %>
+			</td>
+			
+			
+			<td style='text-align: center;'>  
+				<%= link_to confirm_delivery_url(parent),
+					:id => 'confirm' , 
+					:class => " btn btn-primary" do %>
+					<i class="icon-refresh"></i> Sales Return
 				<% end %>
 			</td>
 		</tr>

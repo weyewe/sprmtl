@@ -18,30 +18,30 @@ class DeliveryEntriesController < ApplicationController
       @new_object= @object
     end
     
-  end
-  
-  
-   
+  end 
   
   def edit
     # @customer = Customer.find_by_id params[:id] 
     @object = DeliveryEntry.find_by_id params[:id]
+    @parent = @object.delivery
+    @customer = @parent.customer 
   end
   
-  def update_sales_item
+  def update_delivery_entry
     @object = DeliveryEntry.find_by_id params[:delivery_entry_id] 
-    @parent = @object.sales_order
-    @object.update_sales_item(  params[:delivery_entry])
+    @parent = @object.delivery
+    @object.update_delivery_entry(current_user, @parent,   params[:delivery_entry])
+    @customer = @parent.customer
     @has_no_errors  = @object.errors.size  == 0
   end
   
-  def delete_sales_item
+  def delete_delivery_entry
     @object = DeliveryEntry.find_by_id params[:object_to_destroy_id]
-    @object.delete 
+    @object.delete(current_user)
   end
   
   
-  def search_sales_item
+  def search_delivery_entry
     search_params = params[:q]
     
     @objects = [] 
