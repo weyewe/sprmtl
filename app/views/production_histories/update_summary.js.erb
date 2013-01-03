@@ -1,0 +1,15 @@
+// update summary 
+<% summary = escape_javascript( render :partial => "production_histories/summary", 
+	:locals => {
+    :sales_item => @parent 
+ })%>
+
+var $summary = $("#summary");
+// var $form_wrapper = $("#add_product_form_wrapper");
+var $summary_wrapper = $("#summary_wrapper");
+
+if($summary.length == 0 ){
+	$summary_wrapper.append('<%= summary %>');
+}else {
+	$summary.replaceWith('<%= summary %>');
+}

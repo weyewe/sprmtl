@@ -81,4 +81,15 @@ Supermetal::Application.routes.draw do
   match 'confirm_pre_production_history/:pre_production_history_id' => "pre_production_histories#confirm_pre_production_history", :as => :confirm_pre_production_history, :method => :post 
 
   match 'generate_pre_production_history' => 'pre_production_histories#generate_pre_production_history', :as => :generate_pre_production_history, :method => :post 
+  
+##################################################
+##################################################
+######### PRODUCTION_HISTORY
+##################################################
+##################################################
+  match 'update_production_history/:production_history_id' => 'production_histories#update_production_history', :as => :update_production_history , :method => :post 
+  match 'delete_production_history' => 'production_histories#delete_production_history', :as => :delete_production_history, :method => :post
+  match 'confirm_production_history/:production_history_id' => "production_histories#confirm_production_history", :as => :confirm_production_history, :method => :post 
+
+  match 'generate_production_history' => 'production_histories#generate_production_history', :as => :generate_production_history, :method => :post
 end

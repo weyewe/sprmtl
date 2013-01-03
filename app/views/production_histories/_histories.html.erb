@@ -1,0 +1,29 @@
+<div id="history">
+	<%= link_to new_sales_item_production_history_url( sales_item), 
+			:class => "new_entry btn btn-primary" do %>
+		<i class="icon-plus"></i>Production Progress Baru
+	<% end %>
+	<hr />
+
+	<table class="table table-bordered table-striped table-highlight" id='tableview'>
+		<thead>
+			<tr>
+				<th>Tanggal Record</th>
+				<th>Sukses</th>  
+				<th>Perbaiki</th>   <!--  preproduction, production, post production + delivery? -->
+				<th>Gagal</th>   <!--  preproduction, production, post production + delivery? -->
+	 			<th>Tanggal Mulai</th>
+				<th>Tanggal Selesai</th>
+					<th colspan='3'>Action</th>
+			</tr>
+		</thead>
+		<tbody> 
+			<% histories.each do |object| %>
+				<%= render :partial =>  'production_histories/entry', :locals => {
+					:object => object ,
+					:parent => sales_item 
+				} %> 
+			<% end %>
+		</tbody>
+	</table>
+</div>

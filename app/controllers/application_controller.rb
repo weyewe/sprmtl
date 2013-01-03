@@ -62,7 +62,11 @@ class ApplicationController < ActionController::Base
   def parse_date(date)
     return nil if date.nil? or date.length == 0  
     date_array = date.split("/")
-    return Date.new(date_array[2].to_i,date_array[1].to_i,date_array[0].to_i ) 
+    begin
+      return Date.new(date_array[2].to_i,date_array[1].to_i,date_array[0].to_i ) 
+    rescue ArgumentError
+      return nil
+    end
   end
   
   

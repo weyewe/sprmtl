@@ -63,6 +63,7 @@ class PreProductionHistory < ActiveRecord::Base
   
   def update_history( employee, sales_item , params ) 
     return nil if employee.nil?  or sales_item.nil? 
+    return nil if self.is_confirmed == true 
     
     
     

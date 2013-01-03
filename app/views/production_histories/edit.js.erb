@@ -1,0 +1,11 @@
+$(document).ready(function(){
+	  
+		<% new_form = escape_javascript(  render :partial => "production_histories/new_object_form", :locals => {
+	    :new_object => @object , 
+			:url => update_production_history_url(  @object) 
+	  })%>
+ 
+	$("#editEntry .modal-body").append('<%= new_form %>');
+	
+	jQuery('.prevent_double_submit').preventDoubleSubmit();
+});
