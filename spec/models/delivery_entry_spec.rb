@@ -111,6 +111,7 @@ describe Delivery do
     @delivery_entry.should_not be_valid 
   end
   
+  
   it 'should not create delivery entry if  quantity sent > ready ' do 
     @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery,   {
         :quantity_sent => @complete_cycle_sales_item.ready + 1  , 
@@ -134,6 +135,25 @@ describe Delivery do
       :quantity_sent_weight => "0" ,
       :sales_item_id => @complete_cycle_sales_item.id 
       })
+    @delivery_entry.should_not be_valid
+  end
+  
+  it 'should not create double delivery entries' do
+    second_delivery_quantity = 1
+    first_delivery_quantity = @complete_cycle_sales_item.ready - second_delivery_quantity
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery,  {
+      :quantity_sent => first_delivery_quantity , 
+      :quantity_sent_weight => "#{first_delivery_quantity*10}" ,
+      :sales_item_id => @complete_cycle_sales_item.id 
+    })
+    @delivery_entry.should be_valid
+    
+    
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery,  {
+      :quantity_sent => second_delivery_quantity  , 
+      :quantity_sent_weight => "#{second_delivery_quantity*10}" ,
+      :sales_item_id => @complete_cycle_sales_item.id 
+    })
     @delivery_entry.should_not be_valid
   end
  

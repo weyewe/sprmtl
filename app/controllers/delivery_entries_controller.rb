@@ -11,6 +11,7 @@ class DeliveryEntriesController < ApplicationController
     # params[:customer][:town_id] = Town.first.id 
     @parent = Delivery.find_by_id params[:delivery_id]
     @object = DeliveryEntry.create_delivery_entry( current_user, @parent, params[:delivery_entry] ) 
+    @customer = @parent.customer
     if @object.errors.size == 0 
       @new_object=  DeliveryEntry.new
     else

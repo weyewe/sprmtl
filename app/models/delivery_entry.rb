@@ -28,10 +28,13 @@ class DeliveryEntry < ActiveRecord::Base
     parent  = self.delivery
     sales_item_id_list = parent.delivery_entries.map{|x| x.sales_item_id }
     post_uniq_sales_item_id_list = sales_item_id_list.uniq 
+   
     
-    if sales_item_id_list.length !=  post_uniq_sales_item_id_list.length
-      errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
-    end 
+    if not self.persisted? and post_uniq_sales_item_id_list.include?( self.sales_item_id)
+        errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
+    elsif self.persisted? and sales_item_id_list.length !=  post_uniq_sales_item_id_list.length
+        errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
+    end
   end
   
   def customer_ownership_to_sales_item

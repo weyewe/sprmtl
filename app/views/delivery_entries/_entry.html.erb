@@ -18,16 +18,11 @@
 	</td>
 	
 	<td>
-		<%= object.broken_quantity%>
+		Kuantitas: <b><%= object.quantity_sent %></b> <br />
+		Berat		: <b><%= object.quantity_sent_weight.to_s %></b> kg
 	</td>
 	 
- 	<td>
- 	 <%= print_date( object.start_date ) %>
-	</td>
-	
-	<td>
- 	 <%= print_date( object.finish_date ) %>
-	</td>
+  
 	
 	
 	<% if not object.is_confirmed? %>
@@ -39,7 +34,7 @@
 		</td>
 
 		<td>
-			<%= link_to edit_sales_order_sales_item_url(parent, object), 
+			<%= link_to edit_delivery_delivery_entry_url(parent, object), 
 				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
 				<i class='icon-edit'></i>Edit
 			<% end %>
