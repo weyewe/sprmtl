@@ -17,19 +17,7 @@ class SalesOrdersController < ApplicationController
     
   end
   
-  def search_customer
-    search_params = params[:q]
-    
-    @objects = [] 
-    query = '%' + search_params + '%'
-    # on PostGre SQL, it is ignoring lower case or upper case 
-    @objects = Customer.where{ (name =~ query)  & (is_deleted.eq false) }.map{|x| {:name => x.name, :id => x.id }}
-    
-    respond_to do |format|
-      format.html # show.html.erb 
-      format.json { render :json => @objects }
-    end
-  end
+   
   
   def edit
     # @customer = Customer.find_by_id params[:id] 

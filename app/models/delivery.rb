@@ -3,6 +3,8 @@ class Delivery < ActiveRecord::Base
   
   validates_presence_of :creator_id
   validates_presence_of :customer_id 
+  
+  belongs_to :customer 
   has_one :delivery_lost 
   has_one :sales_return 
   
@@ -22,6 +24,31 @@ class Delivery < ActiveRecord::Base
     end
     
     return new_object 
+  end
+  
+  def delete(employee)
+    return nil if employee.nil?
+    return nil if self.is_confirmed?
+    
+    self.delivery_entries.each do |delivery_entry|
+      delivery_entry.destroy 
+    end
+    self.destroy 
+  end
+  
+  def update_by_employee( employee, params ) 
+    return nil if employee.nil? 
+    
+    self.creator_id                 = employee.id
+    self.customer_id                = params[:customer_id]
+    self.delivery_address           = params[:delivery_address]
+    self.delivery_date              = params[:delivery_date]
+    
+    
+    if self.save
+    end
+    
+    return self 
   end
   
   def generate_code
@@ -45,6 +72,11 @@ class Delivery < ActiveRecord::Base
       self.confirmed_at = DateTime.now 
       self.is_confirmed = true 
       self.save 
+      
+      if  self.errors.size != 0  
+        raise ActiveRecord::Rollback, "Call tech support!" 
+      end
+      
       self.delivery_entries.each do |delivery_entry|
         delivery_entry.confirm 
       end
@@ -64,6 +96,11 @@ class Delivery < ActiveRecord::Base
       self.finalized_at = DateTime.now 
       self.is_finalized = true 
       self.save 
+      
+      if  self.errors.size != 0  
+        raise ActiveRecord::Rollback, "Call tech support!" 
+      end
+
 
       # why no rollback?
       self.delivery_entries.each do |delivery_entry|

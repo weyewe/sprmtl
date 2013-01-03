@@ -2,6 +2,8 @@ class Customer < ActiveRecord::Base
   attr_accessible :name, :contact_person, :phone, :mobile , :email, :bbm_pin, :address, :town_id , :office_address, :delivery_address
   
   has_many :sales_orders 
+  has_many :deliveries
+  
   has_many :vehicles 
   
   

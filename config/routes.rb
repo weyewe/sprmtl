@@ -22,6 +22,10 @@ Supermetal::Application.routes.draw do
   resources :production_histories
   resources :post_production_histories
   
+  resources :deliveries do
+    resources :delivery_entries 
+  end
+  
   
 =begin
   SEARCH DATA
@@ -104,4 +108,13 @@ Supermetal::Application.routes.draw do
   match 'confirm_post_production_history/:post_production_history_id' => "post_production_histories#confirm_post_production_history", :as => :confirm_post_production_history, :method => :post 
 
   match 'generate_post_production_history' => 'post_production_histories#generate_post_production_history', :as => :generate_post_production_history, :method => :post
+  
+##################################################
+##################################################
+######### DELIVERY
+##################################################
+##################################################
+  match 'update_delivery/:delivery_id' => 'deliveries#update_delivery', :as => :update_delivery , :method => :post 
+  match 'delete_delivery' => 'deliveries#delete_delivery', :as => :delete_delivery , :method => :post
+  match 'confirm_delivery/:delivery_id' => "deliveries#confirm_delivery", :as => :confirm_delivery, :method => :post
 end

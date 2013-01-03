@@ -129,6 +129,10 @@ class DeliveryEntry < ActiveRecord::Base
     self.is_confirmed = true 
     self.save 
     
+    if  self.errors.size != 0  
+      raise ActiveRecord::Rollback, "Call tech support!" 
+    end
+    
     sales_item = self.sales_item 
     
     sales_item.update_ready_statistics
