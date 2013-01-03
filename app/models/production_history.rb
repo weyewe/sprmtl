@@ -147,18 +147,24 @@ class ProductionHistory < ActiveRecord::Base
     
     ActiveRecord::Base.transaction do
       self.update_processed_quantity
+      
+      
+      self.is_confirmed = true 
+      self.confirmer_id = employee.id
+      self.confirmed_at = DateTime.now 
+      self.save
+      
+      if  self.errors.size != 0  
+        raise ActiveRecord::Rollback, "Call tech support!" 
+      end
+      
       sales_item = self.sales_item
       
        
       # if only post production
       
       sales_item.generate_next_phase_after_production( self ) 
-      sales_item.update_production_statistics 
-      
-      self.is_confirmed = true 
-      self.confirmer_id = employee.id
-      self.confirmed_at = DateTime.now 
-      self.save
+      sales_item.update_production_statistics
        
     end
     

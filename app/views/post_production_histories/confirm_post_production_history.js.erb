@@ -1,0 +1,37 @@
+$(document).ready(function(){
+	
+	var $row = $("#entry-<%= @object.id %>" );
+	$row.spin(false); 
+ 
+
+	<% if  @object.is_confirmed?  %>
+ 
+		<% new_entry = escape_javascript(  render :partial => "post_production_histories/entry", :locals => {
+	    :object => @object  ,
+			:parent => @parent 
+	  })%>
+	
+		$row.replaceWith('<%= new_entry %>');
+	
+	
+	// alert msgbox: success confirming 
+		$.msgbox("Berhasil Konfirmasi Post Production Progress dengan ok: <%= @object.ok_quantity %> "+
+		 					" dan rusak: <%= @object.broken_quantity %> "  , 
+					{type: "info"});
+						 
+		// update summary
+		<%= render :file => "post_production_histories/update_summary", :locals => {
+			:sales_item => @parent 
+		}%>
+		
+	<% else %> 
+ 
+	 
+		$.msgbox("Gagal konfirmasi  Post Production Progress", 
+					{type: "error"});
+	<% end %>
+ 
+	jQuery('.prevent_double_submit').preventDoubleSubmit();
+});
+
+

@@ -1,0 +1,49 @@
+
+<% post_production_histories = sales_item.post_production_histories %>
+<% confirmed_post_production_histories = sales_item.
+																							post_production_histories.
+																							where(:is_confirmed => true )%>
+<!-- we have variable sales_item -->
+<table class="table table-bordered table-striped table-highlight" id='summary'> 
+	<thead>
+		<tr >
+			<th colspan='2' style='text-align:center; font-color: white;'>
+				Summary
+			</th>
+		</tr>
+	</thead>
+	<tbody> 
+		<tr>
+			<td>
+				Total Post Production
+			</td>
+			<td>
+				<%= sales_item.number_of_post_production %>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				Total Success
+			</td>
+			<td>
+				<%= confirmed_post_production_histories.sum("ok_quantity") %>  
+				<% if sales_item.has_unconfirmed_post_production_history? 	%>
+					( <%= post_production_histories.sum("ok_quantity") %>)
+				<% end %>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Total Fail
+			</td>
+			<td>
+				<%= confirmed_post_production_histories.sum("broken_quantity") %>  
+				
+				<% if sales_item.has_unconfirmed_post_production_history? %>
+					( <%= post_production_histories.sum("broken_quantity") %>)
+				<% end %>
+			</td>
+		</tr>
+	</tbody>
+</table>

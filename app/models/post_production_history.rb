@@ -94,6 +94,34 @@ class PostProductionHistory < ActiveRecord::Base
     return new_object 
   end
   
+  def update_history( employee, sales_item , params ) 
+    return nil if employee.nil?  or sales_item.nil? 
+    return nil if self.is_confirmed == true 
+    
+    
+    
+    self.creator_id         =  employee.id
+    self.sales_item_id      =  sales_item.id
+    self.ok_quantity        =  params[:ok_quantity]
+    self.broken_quantity    =  params[:broken_quantity]  
+    self.ok_weight           = params[:ok_weight] 
+    self.broken_weight       = params[:broken_weight]
+    self.start_date         =  params[:start_date]
+    self.finish_date        =  params[:finish_date]
+
+    if self.save  
+      # new_object.update_processed_quantity 
+      # sales_item.update_pre_production_statistics 
+    end
+    
+    return self 
+  end
+  
+  def delete(employee)
+    return nil if employee.nil?
+    self.destroy if self.is_confirmed == false 
+  end
+  
   
   def update_processed_quantity 
     self.processed_quantity = self.ok_quantity  + 
@@ -105,9 +133,19 @@ class PostProductionHistory < ActiveRecord::Base
   
   def confirm( employee )
     return nil if employee.nil? 
+    return nil if self.is_confirmed == true 
     
     ActiveRecord::Base.transaction do
       self.update_processed_quantity
+      
+      self.is_confirmed = true 
+      self.confirmer_id = employee.id
+      self.confirmed_at = DateTime.now 
+      self.save
+      if  self.errors.size != 0  
+        raise ActiveRecord::Rollback, "Call tech support!" 
+      end
+      
       sales_item = self.sales_item
       
        
@@ -116,10 +154,7 @@ class PostProductionHistory < ActiveRecord::Base
       sales_item.generate_next_phase_after_post_production( self ) 
       sales_item.update_post_production_statistics( self )  
       
-      self.is_confirmed = true 
-      self.confirmer_id = employee.id
-      self.confirmed_at = DateTime.now 
-      self.save
+      
        
     end
     

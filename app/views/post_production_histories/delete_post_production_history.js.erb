@@ -1,0 +1,19 @@
+$(document).ready(function(){
+	
+	var $row = $("#entry-<%= @object_id %>")
+	$row.spin(false); 
+	
+	$row.remove(); 
+	
+	$.msgbox("Berhasil menghapus post production progress dengan"+ 
+				" tanggal record: <%= print_date(@object_identifier) %>");
+	 
+	
+	
+	// update summary 
+	<%= render :file => "post_production_histories/update_summary", :locals => {
+		:sales_item => @parent 
+	}%>
+ 
+
+});

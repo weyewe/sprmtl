@@ -1,0 +1,51 @@
+ 
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%=  print_date( object.created_at ) %>
+	</td>
+	<td>
+		<%=  object.ok_quantity  %><br />
+		<b><%= object.ok_weight.to_s%> kg </b>
+	</td>
+	
+	<td>
+		<%=  object.broken_quantity  %><br />
+		<b><%= object.broken_weight.to_s%> kg </b>
+	</td>
+	 
+ 	<td>
+		<%= print_date( object.start_date )%>
+	</td>
+	
+	<td>
+		<%= print_date( object.finish_date )%>
+	</td>
+	
+	
+	<% if not object.is_confirmed? %>
+		<td>
+			<%= link_to root_url, :class =>"delete_entry", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-remove'></i>Delete
+			<% end %> 
+		</td>
+
+		<td>
+			<%= link_to edit_sales_item_post_production_history_url(parent, object), 
+				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-edit'></i>Edit
+			<% end %>
+		</td>
+		
+		<td>
+			<%= link_to confirm_post_production_history_url(object), 
+				:class =>"confirm_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-ok'></i>Confirm
+			<% end %>
+		</td>
+	<% else %>
+		<td colspan='3'>
+			CONFIRMED
+		</td>
+	<% end %>
+	
+</tr>

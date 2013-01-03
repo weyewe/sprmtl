@@ -94,12 +94,17 @@ class PreProductionHistory < ActiveRecord::Base
     
     ActiveRecord::Base.transaction do
       self.update_processed_quantity 
-      sales_item = self.sales_item
-      sales_item.update_pre_production_statistics
       self.is_confirmed = true 
       self.confirmer_id = employee.id
       self.confirmed_at = DateTime.now 
       self.save
+      
+      if  self.errors.size != 0  
+        raise ActiveRecord::Rollback, "Call tech support!" 
+      end
+      
+      sales_item = self.sales_item
+      sales_item.update_pre_production_statistics
     end
   end
   

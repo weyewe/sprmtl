@@ -34,7 +34,43 @@ has_production_sales_item = SalesItem.create_sales_item( admin, sales_order,  {
   
 sales_order.confirm( admin )
 
-# 
+
+# ADDING PRE_PRODUCTION 
+pre_production_history =  PreProductionHistory.create_history( admin, has_production_sales_item, {
+  :ok_quantity        =>  5
+  :broken_quantity    =>  1  
+  :start_date         =>  Date.new(2012,7,14)
+  :finish_date        =>  Date.new(2012,7,20)
+}) 
+pre_production_history.confirm( admin ) 
+
+
+# ADDING PRODUCTION 
+production_history =  ProductionHistory.create_history( admin, has_production_sales_item, {
+  :ok_quantity         => 20
+  :repairable_quantity => 2
+  :broken_quantity     => 1
+  :ok_weight           => 200
+  :repairable_weight   => 20
+  :broken_weight       => 10
+  :start_date          => Date.new(2012,8,14) 
+  :finish_date         => Date.new(2012,8,21) 
+})
+
+production_history.confirm( admin )
+
+# ADDING POST_PRODUCTION 
+post_production_history =  PostProductionHistory.create_history( admin, has_production_sales_item, {
+  :ok_quantity         => 10
+  :broken_quantity     => 1
+  :ok_weight           => 90
+  :broken_weight       => 8
+  :start_date          => Date.new(2012,10,14) 
+  :finish_date         => Date.new(2012,10,25) 
+})
+
+post_production_history.confirm( admin )
+
 # sales_order_1   = SalesOrder.create_by_employee( admin , {
 #   :customer_id    => customer_1.id,          
 #   :payment_term   => PAYMENT_TERM[:cash],    

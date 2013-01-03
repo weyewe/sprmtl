@@ -4,6 +4,7 @@ class CreatePostProductionHistories < ActiveRecord::Migration
       t.integer :sales_item_id
       
       t.integer      :creator_id          
+      
       t.integer      :processed_quantity  
       
       t.integer      :ok_quantity         
