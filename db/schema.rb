@@ -11,9 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130102074637) do
+ActiveRecord::Schema.define(:version => 20130104071655) do
 
   create_table "banks", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "cash_accounts", :force => true do |t|
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -101,11 +106,52 @@ ActiveRecord::Schema.define(:version => 20130102074637) do
     t.datetime "updated_at",                    :null => false
   end
 
+  create_table "invoice_payments", :force => true do |t|
+    t.integer  "invoice_id"
+    t.integer  "payment_id"
+    t.decimal  "amount_paid",  :precision => 11, :scale => 2, :default => 0.0
+    t.boolean  "is_confirmed",                                :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.datetime "created_at",                                                     :null => false
+    t.datetime "updated_at",                                                     :null => false
+  end
+
+  create_table "invoices", :force => true do |t|
+    t.integer  "delivery_id"
+    t.integer  "creator_id"
+    t.string   "code"
+    t.decimal  "amount_payable",     :precision => 11, :scale => 2, :default => 0.0
+    t.date     "due_date"
+    t.boolean  "is_confirmed",                                      :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.boolean  "is_finalized",                                      :default => false
+    t.boolean  "is_paid",                                           :default => false
+    t.integer  "paid_declarator_id"
+    t.datetime "paid_at"
+    t.datetime "created_at",                                                           :null => false
+    t.datetime "updated_at",                                                           :null => false
+  end
+
   create_table "materials", :force => true do |t|
     t.string   "name"
     t.boolean  "is_active",  :default => true
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
+  end
+
+  create_table "payments", :force => true do |t|
+    t.integer  "creator_id"
+    t.string   "code"
+    t.decimal  "amount_paid",    :precision => 11, :scale => 2, :default => 0.0
+    t.integer  "payment_method"
+    t.boolean  "is_confirmed",                                  :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.text     "note"
+    t.datetime "created_at",                                                       :null => false
+    t.datetime "updated_at",                                                       :null => false
   end
 
   create_table "post_production_histories", :force => true do |t|

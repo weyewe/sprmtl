@@ -8,6 +8,8 @@ class Delivery < ActiveRecord::Base
   has_one :delivery_lost 
   has_one :sales_return 
   
+  has_one :invoice
+  
   
   def self.create_by_employee( employee, params ) 
     return nil if employee.nil? 
@@ -80,6 +82,9 @@ class Delivery < ActiveRecord::Base
       self.delivery_entries.each do |delivery_entry|
         delivery_entry.confirm 
       end
+      
+      Invoice.create_by_employee( employee  , self  ) 
+      
     end 
   end
   
@@ -96,6 +101,8 @@ class Delivery < ActiveRecord::Base
       self.finalized_at = DateTime.now 
       self.is_finalized = true 
       self.save 
+      
+      invoice = self.invoice 
       
       if  self.errors.size != 0  
         raise ActiveRecord::Rollback, "Call tech support!" 
@@ -117,6 +124,8 @@ class Delivery < ActiveRecord::Base
       if self.has_delivery_lost? 
         DeliveryLost.create_by_employee( employee, self )
       end
+      
+      invoice.update_amount_payable
 
       
       # puts "DOING SHITE AS NORMAL, NO ROLLBACK"

@@ -178,7 +178,17 @@ PAYMENT_TERM = {
   :credit                  => 2, # create invoice on delivery 
   :credit_with_downpayment => 3  # partially paid in advance, will be deducted at the end of the term
 }
+
+PAYMENT_METHOD = {
+  :bank_transfer => 1, 
+  :cash => 2, 
+  :giro => 3 
+}
  
+CASH_ACCOUNT_CASE = {
+  :bank => 1, 
+  :non_bank => 2 
+}
 
 
 
