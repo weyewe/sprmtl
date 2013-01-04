@@ -87,6 +87,8 @@ class InvoicePayment < ActiveRecord::Base
     if self.errors.size !=  0   
       raise ActiveRecord::Rollback, "Call tech support!" 
     end
+    
+    self.invoice.update_paid_status(employee)
     # do some post payment update , such as updating the payment
     
   end

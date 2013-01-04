@@ -187,6 +187,15 @@ describe Invoice do
   
       invoice.amount_payable.should == total_amount
     end
+    
+    context "on payment confirmation" do 
+      
+      it 'should deduct the confirmed_amount_payable' 
+      
+      it 'should change the is_paid to true if confirmed_amount payable is 0' 
+      
+    end# "on payment confirmation"
+    
   end
      
   

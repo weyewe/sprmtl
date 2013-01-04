@@ -55,6 +55,16 @@ class Invoice < ActiveRecord::Base
  
   end
   
+  def update_paid_status(employee)
+    self.reload
+    if self.confirmed_pending_payment == BigDecimal("0")
+      self.is_paid = true 
+      self.paid_declarator_id = employee.id 
+      self.paid_at = DateTime.now
+      self.save 
+    end
+  end
+  
   def pending_payment
     amount_payable - self.invoice_payments.sum("amount_paid") 
   end
