@@ -150,25 +150,74 @@ describe InvoicePayment do
     # @delivery.finalize(@admin)  
     @complete_cycle_sales_item.reload
     
-    @amount_paid = "50000"
+    @pending_payment =  @delivery.invoice.confirmed_pending_payment
+    @amount_paid = ( @pending_payment*0.1 ).to_s
+     
     @payment = Payment.create_by_employee(@admin, {
       :payment_method => PAYMENT_METHOD[:bank_transfer],
       :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
-      :amount_paid => @amount_paid
+      :amount_paid => @amount_paid,
+      :customer_id => @customer.id
     })
   end
   
+  it 'shoud allow payment if 0 <  payment amount < confirmed_pending_payment' do
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
+      :invoice_id  => @delivery.invoice.id ,
+      :payment_id  => @payment.id ,
+      :amount_paid => @amount_paid
+    } ) 
+    
+    invoice_payment.should be_valid
+  end
   
   it 'should not allow less than or equal to zero payment amount' do
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
+      :invoice_id  => @delivery.invoice.id ,
+      :payment_id  => @payment.id ,
+      :amount_paid => '0'
+    } ) 
+    
+    invoice_payment.should_not be_valid 
+    
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
+      :invoice_id  => @delivery.invoice.id ,
+      :payment_id  => @payment.id ,
+      :amount_paid => '-1'
+    } ) 
+    
+    invoice_payment.should_not be_valid
+  end
+  
+  it 'should not allow payment that exceed the pending payment amount' do
+    @exceed_pending_payment  = @pending_payment + BigDecimal("10000")
+    
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
+      :invoice_id  => @delivery.invoice.id ,
+      :payment_id  => @payment.id ,
+      :amount_paid =>    @exceed_pending_payment.to_s
+    } ) 
+    
+    invoice_payment.should_not be_valid
+    
+  end
+  
+  it 'should not allow duplicate invoice' do
     invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
       :invoice_id  => @delivery.invoice.id ,
       :payment_id  => @payment.id ,
       :amount_paid => '10000'
     } ) 
     
-    invoice_payment.should be_valid 
+    invoice_payment.should be_valid
+    
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
+      :invoice_id  => @delivery.invoice.id ,
+      :payment_id  => @payment.id ,
+      :amount_paid => '10000'
+    } ) 
+    
+    invoice_payment.should_not be_valid
   end
-  
-  it 'should not allow duplicate invoice'
   
 end

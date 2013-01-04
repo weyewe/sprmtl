@@ -16,7 +16,7 @@ class CreateInvoices < ActiveRecord::Migration
       t.datetime :confirmed_at 
       
       
-      # just a guard 
+      # just a guard  => when delivery cost is finalized
       t.boolean :is_finalized, :default => false 
       
        

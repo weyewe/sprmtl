@@ -154,6 +154,7 @@ describe Payment do
   it 'should allow payment creation' do
     payment = Payment.create_by_employee(@admin, {
       :payment_method => PAYMENT_METHOD[:bank_transfer],
+      :customer_id    => @customer.id , 
       :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
       :amount_paid => "50000"
     })
@@ -161,44 +162,66 @@ describe Payment do
     payment.should be_valid
   end
   
-  # it 'should not allow confirmation if there is no invoice payment' do
-  #   payment = Payment.create_by_employee(@admin, {
-  #     :payment_method => PAYMENT_METHOD[:bank_transfer],
-  #     :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij"
-  #   })
-  #    
-  #   
-  #   payment.confirm( @admin) 
-  #   payment.is_confirmed.should  be_false 
-  # end
+  it 'should not allow confirmation if there is no invoice payment' do
+    payment = Payment.create_by_employee(@admin, {
+      :payment_method => PAYMENT_METHOD[:bank_transfer],
+      :customer_id    => @customer.id , 
+      :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
+      :amount_paid => "50000"
+    })
+     
+    
+    payment.confirm( @admin) 
+    payment.is_confirmed.should  be_false 
+  end
   
-  # context 'after creating payment, need to add invoice payment' do
-  #   before(:each) do
-  #     @payment = Payment.create_by_employee(@admin, {
-  #       :payment_method => PAYMENT_METHOD[:bank_transfer],
-  #       :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij"
-  #     })
-  #   end
-  #   
-  #   it 'should produce valid payment' do
-  #     @payment.should be_valid 
-  #   end
-  #   
-  #   it 'should  allow confirmation if total amount of invoice payments is not 0' do 
-  #     
-  #     invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment, {
-  #       :invoice_id  => @delivery.invoice.id ,
-  #       :payment_id  => @payment.id ,
-  #       :amount_paid => '10000'
-  #     } ) 
-  #     
-  #     invoice_payment.should be_valid 
-  #     
-  #     @payment.confirm( @admin) 
-  #     @payment.is_confirmed.should  be_true 
-  #   end 
-  # end
+  context 'after creating payment, need to add invoice payment' do
+    before(:each) do
+      @pending_payment =  @delivery.invoice.confirmed_pending_payment
+      @total_sum = ( @pending_payment*0.1 ).to_s
+      @payment = Payment.create_by_employee(@admin, {
+        :payment_method => PAYMENT_METHOD[:bank_transfer],
+        :customer_id    => @customer.id , 
+        :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
+        :amount_paid => @total_sum
+      })
+    end
+    
+    it 'should produce valid payment' do
+      puts "$$$$$$$$$$$$$$$$$$$$ checking the pending amount\n"*10
+      puts "Pending Amount: #{@delivery.invoice.confirmed_pending_payment.to_s}"
+      @payment.should be_valid 
+    end
+    
+    it 'should  allow confirmation if total amount of invoice payments is not 0 and the total sum is equal' do 
+      
+      invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
+        :invoice_id  => @delivery.invoice.id ,
+        :payment_id  => @payment.id ,
+        :amount_paid => @total_sum
+      } ) 
+      
+      invoice_payment.should be_valid 
+      
+      @payment.confirm( @admin) 
+      @payment.is_confirmed.should  be_true 
+    end 
+    
+    it 'should  not allow confirmation if total amount of invoice payments is not 0 and the total sum is not equal' do 
+      
+      invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
+        :invoice_id  => @delivery.invoice.id ,
+        :payment_id  => @payment.id ,
+        :amount_paid => '10000'
+      } ) 
+      
+      invoice_payment.should be_valid 
+      
+      @payment.confirm( @admin) 
+      @payment.is_confirmed.should  be_false  
+    end
+  end
   
   
-  
+  # WARNING! we haven't checked the validation of single customer 
 end

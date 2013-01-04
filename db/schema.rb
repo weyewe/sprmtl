@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(:version => 20130104071655) do
   create_table "invoice_payments", :force => true do |t|
     t.integer  "invoice_id"
     t.integer  "payment_id"
+    t.integer  "creator_id"
     t.decimal  "amount_paid",  :precision => 11, :scale => 2, :default => 0.0
     t.boolean  "is_confirmed",                                :default => false
     t.integer  "confirmer_id"
@@ -143,6 +144,7 @@ ActiveRecord::Schema.define(:version => 20130104071655) do
 
   create_table "payments", :force => true do |t|
     t.integer  "creator_id"
+    t.integer  "customer_id"
     t.string   "code"
     t.decimal  "amount_paid",    :precision => 11, :scale => 2, :default => 0.0
     t.integer  "payment_method"

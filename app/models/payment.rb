@@ -5,10 +5,10 @@ class Payment < ActiveRecord::Base
   
   validates_presence_of :creator_id , :amount_paid, :payment_method, :customer_id 
   
-  validate :amount_paid_must_less_or_equal_than_zero
+  validate :amount_paid_must_be_greater_than_zero
   
-  def amount_paid_must_less_or_equal_than_zero
-    if payment_method.present? and amount_paid <= BigDecimal("0")
+  def amount_paid_must_be_greater_than_zero
+    if amount_paid.present? and amount_paid <= BigDecimal("0")
       errors.add(:amount_paid , "Jumlah yang dibayar harus lebih dari 0" )  
     end
   end
@@ -17,11 +17,12 @@ class Payment < ActiveRecord::Base
     return nil if employee.nil? 
     
     new_object = Payment.new
-    new_object.creator_id = employee.id
     
-    new_object.customer_id     = params[:customer_id]
+    new_object.creator_id     = employee.id 
+    new_object.customer_id    = params[:customer_id]
     new_object.amount_paid    = BigDecimal( params[:amount_paid] ) 
     new_object.payment_method = params[:payment_method]
+
                                 
 
     
@@ -52,5 +53,37 @@ class Payment < ActiveRecord::Base
               
     self.code =  string 
     self.save 
+  end
+  
+  def verify_amount_paid_equals_total_sum
+    total_sum = BigDecimal("0")
+    self.invoice_payments.each do |ip|
+      total_sum += ip.amount_paid
+    end
+    
+    if total_sum != self.amount_paid
+      errors.add(:amount_paid , "Jumlah yang dibayar #{self.amount_paid} tidak sesuai dengan jumlah details (#{total_sum})" ) 
+    end
+  end
+  
+  def confirm(employee) 
+    return nil if employee.nil? 
+    return nil if self.invoice_payments.count == 0 
+    return nil if self.is_confirmed == true  
+    
+    verify_amount_paid_equals_total_sum
+    
+    return self if self.errors.size != 0  
+    
+    # transaction block to confirm all the sales item  + sales order confirmation 
+    ActiveRecord::Base.transaction do
+      self.confirmer_id = employee.id 
+      self.confirmed_at = DateTime.now 
+      self.is_confirmed = true 
+      self.save 
+      self.invoice_payments.each do |ip|
+        ip.confirm( employee )
+      end
+    end 
   end
 end

@@ -54,4 +54,12 @@ class Invoice < ActiveRecord::Base
     self.save 
  
   end
+  
+  def pending_payment
+    amount_payable - self.invoice_payments.sum("amount_paid") 
+  end
+  
+  def confirmed_pending_payment
+    amount_payable - self.invoice_payments.where(:is_confirmed => true ).sum("amount_paid") 
+  end
 end

@@ -3,6 +3,7 @@ class CreateInvoicePayments < ActiveRecord::Migration
     create_table :invoice_payments do |t|
       t.integer :invoice_id 
       t.integer :payment_id 
+      t.integer :creator_id
       
       t.decimal :amount_paid , :precision   => 11, :scale => 2 , :default => 0 
       

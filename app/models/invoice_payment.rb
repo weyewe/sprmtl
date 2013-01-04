@@ -4,10 +4,20 @@ class InvoicePayment < ActiveRecord::Base
   belongs_to :payment 
   
   validates_presence_of :invoice_id, :payment_id, :creator_id , :amount_paid
-  validate :amount_paid_must_be_greater_than_zero
+  validate :amount_paid_must_be_greater_than_zero_and_less_than_remaining_payable
+  # validate :amount_paid_must_not_exceed_total_payable_in_the_invoice
   validate :uniqueness_of_invoice_payment 
   validate  :customer_ownership_to_invoice
   
+  def amount_paid_must_be_greater_than_zero_and_less_than_remaining_payable
+    if amount_paid.present? and 
+        ( amount_paid <= BigDecimal("0") or 
+          amount_paid > invoice.confirmed_pending_payment    )
+      errors.add(:amount_paid , "Jumlah yang dibayar harus lebih dari 0 "+ 
+                          "dan kurang dari #{invoice.confirmed_pending_payment}" )  
+    end
+  end
+   
   def uniqueness_of_invoice_payment
     parent  = self.payment
     invoice_id_list  = parent.invoice_payments.map{|x| x.invoice_id }
@@ -66,5 +76,18 @@ class InvoicePayment < ActiveRecord::Base
     return nil if self.payment.is_confirmed? 
     
     self.destroy 
+  end
+  
+  def confirm( employee ) 
+    self.is_confirmed = true 
+    self.confirmed_at = DateTime.now
+    self.confirmer_id = employee.id
+    self.save 
+    
+    if self.errors.size !=  0   
+      raise ActiveRecord::Rollback, "Call tech support!" 
+    end
+    # do some post payment update , such as updating the payment
+    
   end
 end
