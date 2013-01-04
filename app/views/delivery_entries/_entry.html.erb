@@ -31,23 +31,32 @@
 	<% elsif parent.is_confirmed  and not parent.is_finalized? %>
 	
 		<td>
-			Terkirim: 	5<br />
-			Berat: 
+			Terkirim: <b><%= object.quantity_confirmed %></b> 
 			<hr />
 			
-			Retur :	3<br />
-			Berat:
+			Retur:	<b><%= object.quantity_returned %></b><br />
+			Berat: <b><%= object.quantity_returned_weight %></b>
 			<hr />
-			Hilang: 
+			Hilang: 	<b><%= object.quantity_lost %></b>
 		</td>
 
 		<td>
-			<%= link_to edit_delivery_delivery_entry_url(parent, object), 
+			<%= link_to edit_post_delivery_delivery_entry_url(  object), 
 				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
 				<i class='icon-edit'></i> Isi Hasil Pengiriman
 			<% end %>
 		</td>
 		
+	<% elsif  parent.is_confirmed? and parent.is_finalized? %>
+		<td>
+			Terkirim: <b><%= object.quantity_confirmed %></b> 
+			<hr />
+			
+			Retur:	<b><%= object.quantity_returned %></b><br />
+			Berat: <b><%= object.quantity_returned_weight %></b>
+			<hr />
+			Hilang: 	<b><%= object.quantity_lost %></b>
+		</td>
 	<% end %>
 	
 </tr>

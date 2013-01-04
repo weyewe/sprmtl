@@ -44,4 +44,11 @@ class DeliveriesController < ApplicationController
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @delivery.confirm( current_user  )  
   end
+  
+  def finalize_delivery
+    @delivery = Delivery.find_by_id params[:delivery_id]
+    # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company
+    sleep 3 
+    @delivery.finalize( current_user  )
+  end
 end

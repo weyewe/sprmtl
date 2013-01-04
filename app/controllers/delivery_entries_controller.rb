@@ -54,5 +54,20 @@ class DeliveryEntriesController < ApplicationController
       format.json { render :json => @objects }
     end
   end
+  
+  def edit_post_delivery_delivery_entry
+    @object = DeliveryEntry.find_by_id params[:delivery_entry_id]
+    @parent = @object.delivery 
+    
+  end
+  
+  def update_post_delivery_delivery_entry
+    @object = DeliveryEntry.find_by_id params[:delivery_entry_id]
+    @parent = @object.delivery
+    
+    @object.update_post_delivery( current_user, params[:delivery_entry] )
+    @customer = @parent.customer
+    @has_no_errors  = @object.errors.size  == 0
+  end
 end
 

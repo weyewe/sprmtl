@@ -9,6 +9,8 @@
 			<% elsif parent.is_confirmed? and not parent.is_finalized? %>
 				<th>Jumlah Konfirmasi</th>
 				<th>Action</th>
+			<% elsif parent.is_confirmed? and parent.is_finalized? %>
+				<th>Jumlah Konfirmasi</th>
 			<% end %>
 		</tr>
 	</thead>

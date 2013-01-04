@@ -3,15 +3,19 @@ $(document).ready(function(){
 	$form_wrapper.spin(false); 
  
 
-	<% if  @delivery.is_confirmed?  %>
+	
+	<% post_confirm_bar = escape_javascript(  render :partial => "delivery_entries/delivery/post_confirm_bar", 
+		:locals => {
+	    :parent => @delivery  
+  })%>
+	
+	$("#actionbar").replaceWith('<%=  post_confirm_bar %>');
+	
+	
+	<% if  @delivery.is_finalized?  %>
 	 
 	// replace the actionbar  with postConfirmBar => to delete the sales order 
-		<% post_confirm_bar = escape_javascript(  render :partial => "delivery_entries/delivery/post_confirm_bar", 
-			:locals => {
-		    :parent => @delivery  
-	  })%>
 		
-		$("#actionbar").replaceWith('<%=  post_confirm_bar %>');
 	
 	// refresh the itemList => no edit or delete 
 		<% item_list = escape_javascript(  render :partial => "delivery_entries/delivery/item_list", 
@@ -25,21 +29,16 @@ $(document).ready(function(){
 		
 	
 	// alert msgbox: success confirming 
-		$.msgbox("Berhasil Konfirmasi surat jalan: <%= @delivery.code %>", 
+		$.msgbox("Berhasil Finalisasi surat jalan: <%= @delivery.code %>", 
 						{type: "info"});
 						 
 		
 		
 	<% else %> 
 		// replace the form, show the edit 
-		<% actionbar = escape_javascript(  render :partial => "delivery_entries/delivery/actionbar", 
-		:locals => {
-	    :parent => @delivery  
-	  })%>
-	
-		$("#actionbar").replaceWith("<%= actionbar %>");
+	 
 		 
-		$.msgbox("Error konfirmasi  surat jalan: <%= @delivery.code %>", 
+		$.msgbox("Error Finalisasi  surat jalan: <%= @delivery.code %>", 
 					{type: "error"});
 	<% end %>
  

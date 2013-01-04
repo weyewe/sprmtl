@@ -9,23 +9,26 @@
 				<% end %>
 			</td>
 			
-			<td style='text-align: center;'>  
-				<%= link_to confirm_delivery_url(parent),
-					:id => 'confirm' , 
-					:class => " btn btn-primary" do %>
-					<i class="icon-file"></i> Buat Invoice
-				<% end %>
-			</td>
+		<!-- 			<td style='text-align: center;'>  
+						<%= link_to confirm_delivery_url(parent),
+							:id => 'confirm' , 
+							:class => " btn btn-primary" do %>
+							<i class="icon-file"></i> Buat Invoice
+						<% end %>
+					</td> -->
 			
+		<% if parent.is_confirmed? and not parent.is_finalized? %>
 			<td style='text-align: center;'>  
 				<%= link_to confirm_delivery_url(parent),
-					:id => 'confirm' , 
+					:id => 'finalize' , 
 					:class => " btn btn-primary" do %>
 					<i class="icon-thumbs-up"></i> Finalisasi Surat Jalan
 				<% end %>
 			</td>
+		<% end %>
 			
 			
+		<% if parent.is_confirmed? and parent.is_finalized? and not parent.sales_return.nil? %>	
 			<td style='text-align: center;'>  
 				<%= link_to confirm_delivery_url(parent),
 					:id => 'confirm' , 
@@ -33,6 +36,7 @@
 					<i class="icon-refresh"></i> Sales Return
 				<% end %>
 			</td>
+		<% end %>
 		</tr>
 	</tbody>
 </table>
