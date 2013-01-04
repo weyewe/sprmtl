@@ -1,0 +1,48 @@
+ 
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%= object.delivery_entry.sales_item.code %>
+	</td>
+	<td>
+		<%= object.quantity_returned %>
+	</td>
+	<td> 
+		<ul style='list-style:none;'>
+			<li>
+				Kuantitas: <b><%= object.quantity_for_post_production %></b>
+			</li>
+			
+			<li>
+				Berat: <b><%= object.weight_for_post_production.to_s %></b> kg
+			</li>
+			
+		 
+		</ul>
+	 
+	</td>
+	
+	<td>
+		<ul style='list-style:none;'>
+			<li>
+				Kuantitas: <b><%= object.quantity_for_production %></b>
+			</li>
+			
+			<li>
+				Berat: <b><%= object.weight_for_production.to_s %></b> kg
+			</li>
+			
+		 
+		</ul>
+	</td>
+ 
+	
+	<% if not parent.is_confirmed? %> 
+		<td>
+			<%= link_to edit_sales_return_sales_return_entry_url(parent, object), 
+				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-edit'></i>Edit
+			<% end %>
+		</td>
+	<% end %>
+	
+</tr>

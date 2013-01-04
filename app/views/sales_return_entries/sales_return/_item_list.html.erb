@@ -1,0 +1,21 @@
+<table class="table table-bordered table-striped table-highlight" id='tableview'>
+	<thead>
+		<tr>
+			<th>Item Code</th> 
+			<th>Total Retur</th>  
+			<th>Perbaiki</th>  
+			<th>Buat Ulang</th>   <!--  preproduction, production, post production + delivery? -->
+			<% if not parent.is_confirmed? %>
+				<th>Action</th>
+			<% end %>
+		</tr>
+	</thead>
+	<tbody> 
+		<% objects.each do |object| %>
+			<%= render :partial =>  'sales_return_entries/entry', :locals => {
+				:object => object ,
+				:parent => parent 
+			} %> 
+		<% end %>
+	</tbody>
+</table>

@@ -51,9 +51,15 @@ class SalesReturnEntry < ActiveRecord::Base
       self.errors.add(:quantity_for_production , "Jumlah tidak boleh kurang dari 0" )  
     end
     
+    
+    
+    # post production
+    
     if not quantity_for_post_production.present?  or quantity_for_post_production < 0 
       self.errors.add(:quantity_for_post_production , "Jumlah tidak boleh kurang dari 0" )  
     end
+    
+    
   end
   
   def validate_the_weight_to_be_valid
@@ -62,9 +68,19 @@ class SalesReturnEntry < ActiveRecord::Base
        self.errors.add(:weight_for_production , "Berat total tidak boleh 0" )     
     end
     
+    if  quantity_for_production.present?  and quantity_for_production == 0  and 
+              weight_for_production > BigDecimal('0')
+      self.errors.add(:weight_for_production , "Berat harus 0 karena kuantitas lebur ulang = 0" )  
+    end
+    
     if quantity_for_post_production.present? and quantity_for_post_production > 0  and
         weight_for_post_production <= BigDecimal('0')
        self.errors.add(:weight_for_post_production , "Berat total tidak boleh 0" )     
+    end
+    
+    if  quantity_for_post_production.present?  and quantity_for_post_production == 0  and 
+              weight_for_post_production > BigDecimal('0')
+      self.errors.add(:weight_for_post_production , "Berat harus 0 karena kuantitas perbaiki  = 0" )  
     end
   end
   

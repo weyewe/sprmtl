@@ -120,6 +120,9 @@ $(document).ready(function(){
 			if( result == yes_value){ 
 
 				var $form_wrapper = $("#action_button");
+				if($form_wrapper.length == 0){
+					$form_wrapper = $("#actionbar");
+				}
 				$form_wrapper.spin("large", "black"); 
 				var $form = $("#confirm_order form");
 				var post_url = $form.attr('action');

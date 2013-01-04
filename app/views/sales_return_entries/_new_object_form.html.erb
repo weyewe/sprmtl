@@ -1,0 +1,43 @@
+<% if new_object.persisted? %>
+	<% id = 'edit_object'%>
+<% else %>
+	<% id = 'new_object'%>
+<% end %>
+
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => " form-horizontal prevent_double_submit ajax-form   no_content_form",
+        :id => "#{id}"}) do |f| %>
+
+ 
+
+	<h2>
+		<%= new_object.delivery_entry.sales_item.code %>
+	</h2>  
+ 
+  
+	<hr />
+		<%= f.input :quantity_for_post_production, :label =>"Jumlah diperbaiki"   %>
+		<%= f.input :weight_for_post_production, :label =>"Berat  diperbaiki", 
+				:hint => "Dalam kilogram, sensitif sampai 2 decimal. Contoh: <b>2.15</b>kg"   %> 
+				
+	<hr />
+		<%= f.input :quantity_for_production, :label =>"Jumlah Lebur Ulang"   %>
+		<%= f.input :weight_for_production, :label =>"Berat Lebur Ulang", 
+				:hint => "Dalam kilogram, sensitif sampai 2 decimal. Contoh: <b>2.15</b>kg"   %>
+ 
+	
+
+  <div class="form-actions">
+	
+		<% if new_object.persisted? %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update Sales Return Entry" %>
+		<% else %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Sales Return Entry" %>
+		<% end %>
+		
+  </div>
+<% end %>
+
+
+ 

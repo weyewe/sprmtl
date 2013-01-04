@@ -26,6 +26,10 @@ Supermetal::Application.routes.draw do
     resources :delivery_entries 
   end
   
+  resources :sales_returns do
+    resources :sales_return_entries
+  end
+  
   
 =begin
   SEARCH DATA
@@ -129,4 +133,18 @@ Supermetal::Application.routes.draw do
   match 'edit_post_delivery_delivery_entry/:delivery_entry_id'  => 'delivery_entries#edit_post_delivery_delivery_entry', :as => :edit_post_delivery_delivery_entry , :method => :get
   match 'update_post_delivery_delivery_entry/:delivery_entry_id'  => 'delivery_entries#update_post_delivery_delivery_entry', :as => :update_post_delivery_delivery_entry , :method => :post
   
+  
+##################################################
+##################################################
+######### Sales RETURN
+##################################################
+##################################################
+  match 'confirm_sales_return/:sales_return_id' => "sales_returns#confirm_sales_return", :as => :confirm_sales_return, :method => :post
+  
+##################################################
+##################################################
+######### Sales RETURN Entry
+##################################################
+##################################################
+  match 'update_sales_return_entry/:sales_return_entry_id' => 'sales_return_entries#update_sales_return_entry', :as => :update_sales_return_entry , :method => :post 
 end

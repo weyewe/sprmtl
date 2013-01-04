@@ -1,0 +1,28 @@
+ 
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%= link_to "#{object.code}" , new_sales_return_sales_return_entry_url( object)%>
+	</td>
+	<td>
+		<%=  object.delivery.code  %>
+	</td>
+	
+	<td>
+		<%=  object.sales_return_entries.count  %>
+	</td>
+	 
+ 	<td>
+	 <%=  object.delivery.delivery_entries.sum("quantity_returned")  %>
+	</td>
+	
+	<td>
+		<% if object.is_confirmed? %>
+			<span class="label label-success">YES</span>
+		<% else %>
+			<span class="label label-important">NO</span>
+		<% end %>
+		
+	</td>
+	 
+	
+</tr>

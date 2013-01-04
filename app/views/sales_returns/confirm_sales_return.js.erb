@@ -1,0 +1,49 @@
+$(document).ready(function(){
+	var $form_wrapper = $("#actionbar"); 
+	$form_wrapper.spin(false); 
+ 
+
+	<% if  @sales_return.is_confirmed?  %>
+	 
+	// replace the actionbar  with postConfirmBar => to delete the sales order 
+		<% post_confirm_bar = escape_javascript(  render :partial => "sales_return_entries/sales_return/post_confirm_bar", 
+		:locals => {
+	    :parent => @sales_return  
+	  })%>
+		
+		$("#actionbar").replaceWith('<%=  post_confirm_bar %>');
+	
+	// refresh the itemList => no edit or delete 
+		<% item_list = escape_javascript(  render :partial => "sales_return_entries/sales_return/item_list", 
+		:locals => {
+	    :parent => @sales_return ,
+			:objects => @sales_return.sales_return_entries
+	  })%>
+	
+		$("#tableview").replaceWith('<%= item_list %>');
+		
+		
+	
+	// alert msgbox: success confirming 
+		$.msgbox("Berhasil Konfirmasi Sales Return: <%= @sales_return.code %>", 
+						{type: "info"});
+						 
+		
+		
+	<% else %> 
+		// replace the form, show the edit 
+		<% actionbar = escape_javascript(  render :partial => "sales_return_entries/sales_return/actionbar", 
+		:locals => {
+	    :parent => @sales_return  
+	  })%>
+	
+		$("#actionbar").replaceWith("<%= actionbar %>");
+		 
+		$.msgbox("Error konfirmasi  Sales Return: <%= @sales_return.code %>", 
+					{type: "error"});
+	<% end %>
+ 
+	jQuery('.prevent_double_submit').preventDoubleSubmit();
+});
+
+
