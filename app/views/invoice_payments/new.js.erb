@@ -1,0 +1,13 @@
+$(document).ready(function(){
+	  
+		<% new_form = escape_javascript(  render :partial => "invoice_payments/new_object_form", :locals => {
+	    :new_object => @new_object , 
+			:url => payment_invoice_payments_url(@parent) ,
+			:parent => @parent ,
+			:customer => @customer 
+	  })%>
+ 
+	$("#newEntry .modal-body").append('<%= new_form %>');
+	
+	jQuery('.prevent_double_submit').preventDoubleSubmit();
+});

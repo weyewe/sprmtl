@@ -8,11 +8,37 @@ class Payment < ActiveRecord::Base
   validates_presence_of :creator_id , :amount_paid, :payment_method, :customer_id , :cash_account_id 
   
   validate :amount_paid_must_be_greater_than_zero
+  validate :payment_method_and_cash_account_case_must_match
   
   def amount_paid_must_be_greater_than_zero
     if amount_paid.present? and amount_paid <= BigDecimal("0")
       errors.add(:amount_paid , "Jumlah yang dibayar harus lebih dari 0" )  
     end
+  end
+  
+  def payment_method_and_cash_account_case_must_match
+    if not cash_account.nil? and cash_account.case  == CASH_ACCOUNT_CASE[:bank][:value]
+      if not self.bank_payment_method?
+        errors.add(:payment_method , "Harus sesuai dengan tipe cash account" )  
+      end
+    elsif not cash_account.nil? and cash_account.case  == CASH_ACCOUNT_CASE[:cash][:value]
+      if not self.cash_payment_method?
+        errors.add(:payment_method , "Harus sesuai dengan tipe cash account" )  
+      end
+    end
+  end
+  
+  def bank_payment_method?
+    [
+      PAYMENT_METHOD_CASE[:bank_transfer][:value],
+      PAYMENT_METHOD_CASE[:giro][:value]
+      ].include?( self.payment_method )
+  end
+  
+  def cash_payment_method?
+    [
+      PAYMENT_METHOD_CASE[:cash][:value] 
+      ].include?( self.payment_method )
   end
   
   def Payment.create_by_employee(employee, params)
@@ -89,5 +115,16 @@ class Payment < ActiveRecord::Base
         ip.confirm( employee )
       end
     end 
+  end
+  
+  
+  def Payment.selectable_payment_methods
+    result = []
+    PAYMENT_METHOD_CASE.each do |key, cac | 
+
+      result << [ "#{cac[:name]}" , 
+                      cac[:value] ]  
+    end
+    return result
   end
 end

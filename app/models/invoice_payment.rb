@@ -19,6 +19,9 @@ class InvoicePayment < ActiveRecord::Base
   end
    
   def uniqueness_of_invoice_payment
+    puts "$$$$$$$$$$$$ Inside the uniqueness_of_invoice_payment\n"*5
+    puts "the parent_id : #{self.payment_id}"
+    
     parent  = self.payment
     invoice_id_list  = parent.invoice_payments.map{|x| x.invoice_id }
     post_uniq_invoice_id_list = invoice_id_list.uniq 
@@ -39,15 +42,17 @@ class InvoicePayment < ActiveRecord::Base
   end
   
   
-  def InvoicePayment.create_invoice_payment( employee , params)
+  def InvoicePayment.create_invoice_payment( employee ,payment,  params)
     return nil if employee.nil? 
+    return nil if payment.nil? 
+    
     
     new_object = InvoicePayment.new
-    new_object.creator_id = employee.id 
     
-    
+    new_object.creator_id   = employee.id  
+    new_object.payment_id  = payment.id
     new_object.invoice_id  = params[:invoice_id]
-    new_object.payment_id  = params[:payment_id] 
+    
     new_object.amount_paid = BigDecimal( params[:amount_paid]   )  
     
     if new_object.save 
@@ -57,13 +62,12 @@ class InvoicePayment < ActiveRecord::Base
     return new_object
   end
   
-  def update_invoice_payment( employee , params ) 
+  def update_invoice_payment( employee , payment ,  params ) 
     return nil if employee.nil?
     return nil if self.payment.is_confirmed? 
     
     self.creator_id  = employee.id 
-    self.invoice_id  = params[:invoice_id]
-    self.payment_id  = params[:payment_id] 
+    self.invoice_id  = payment.id  
     self.amount_paid = BigDecimal( params[:amount_paid]   )
     
 

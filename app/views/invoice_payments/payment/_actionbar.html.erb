@@ -1,0 +1,24 @@
+<table class="table table-bordered table-striped table-highlight" id='actionbar'>
+	<tbody>
+		<tr>
+			<td style='text-align:left;'>
+				<%= link_to new_payment_invoice_payment_url( parent ), 
+					:class => "new_entry btn btn-primary" do %>
+					<i class="icon-plus"></i>Invoice Payment Baru
+				<% end %>
+			</td>
+			
+			<td style='text-align: right;'> 
+				
+			 
+				
+				
+				<%= link_to confirm_payment_url(parent),
+					:id => 'confirm' , 
+					:class => " btn btn-primary" do %>
+					<i class="icon-ok"></i> Confirm
+				<% end %>
+			</td>
+		</tr>
+	</tbody>
+</table>

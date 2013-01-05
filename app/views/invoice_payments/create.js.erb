@@ -4,27 +4,29 @@ $(document).ready(function(){
 	var $form = $("form", $modal );
 	$form.spin(false);
 	
-	<% new_form = escape_javascript(  render :partial => "payments/new_object_form", :locals => {
+	<% new_form = escape_javascript(  render :partial => "invoice_payments/new_object_form", :locals => {
     :new_object => @new_object , 
-		:url => payments_url,
+		:url => payment_invoice_payments_url(@parent),
+		:customer => @customer
   })%>
 
  
 	
 	<% if @object.errors.size == 0  %>
 		// show the growl. save. done. 
-		<% new_entry = escape_javascript(  render :partial => "payments/entry", :locals => {
-	    :object => @object  
+		<% new_entry = escape_javascript(  render :partial => "invoice_payments/entry", :locals => {
+	    :object => @object,
+	  	:parent => @parent 
 	  })%>
 		$("#tableview tbody").prepend('<%= new_entry %>');
 		
-		$.msgbox("Payment <b><%= @object.code %></b> is created.", 
+		$.msgbox("Invoice Payment <b><%= @object.invoice.code %></b> is created.", 
 					{type: "info"});
 		$modal.modal('hide'); 
 		$form.remove();
 	<% else %>
 		$form.replaceWith('<%= new_form %>');
-		 $.msgbox("Gagal membuat Payment baru.", 
+		 $.msgbox("Gagal membuat Invoice Payment baru.", 
 					{type: "error"});
 	<% end %>
 	

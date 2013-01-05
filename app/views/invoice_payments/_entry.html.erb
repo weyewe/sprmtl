@@ -1,0 +1,29 @@
+ 
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%= object.invoice.code %>
+	</td>
+ 
+	
+	<td>
+		<%= print_money( object.amount_paid)  %>
+	</td>
+	 
+	
+	<% if not parent.is_confirmed? %>
+		<td>
+			<%= link_to root_url, :class =>"delete_entry", 
+				:style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-remove'></i>Delete
+			<% end %> 
+		</td>
+
+		<td>
+			<%= link_to edit_payment_invoice_payment_url(parent, object), 
+				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-edit'></i>Edit
+			<% end %>
+		</td>
+	<% end %>
+	
+</tr>

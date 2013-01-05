@@ -8,7 +8,7 @@
 
 <tr id="entry-<%= object.id %>">
 	<td>
-		<%= link_to "#{object.code}" ,  '#'%>
+		<%= link_to "#{object.code}" ,   new_payment_invoice_payment_url(object) %>
 	</td>
 	<td>
 		<%= "#{object.customer.name}" %>
@@ -33,6 +33,10 @@
 		<% elsif object.payment_method == PAYMENT_METHOD[:giro] %>
 			Giro 
 		<% end %>
+		
+		<hr />
+		 Akun Kas Pembayaran: 
+		<%= object.cash_account.name %>
 	</td>
 	
 	<td>

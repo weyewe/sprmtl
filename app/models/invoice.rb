@@ -3,6 +3,7 @@ class Invoice < ActiveRecord::Base
   
   # attr_accessible :title, :body
   belongs_to :delivery 
+  belongs_to :customer 
   
   has_many :invoice_payments
   has_many :payments, :through => :invoice_payments 
@@ -17,6 +18,7 @@ class Invoice < ActiveRecord::Base
     new_object = Invoice.new 
     new_object.creator_id   = employee.id 
     new_object.delivery_id  = delivery.id 
+    new_object.customer_id = delivery.customer_id 
 
     if new_object.save
       new_object.generate_code

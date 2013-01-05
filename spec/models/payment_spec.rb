@@ -203,9 +203,8 @@ describe Payment do
     
     it 'should  allow confirmation if total amount of invoice payments is not 0 and the total sum is equal' do 
       
-      invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
-        :invoice_id  => @delivery.invoice.id ,
-        :payment_id  => @payment.id ,
+      invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment,  {
+        :invoice_id  => @delivery.invoice.id , 
         :amount_paid => @total_sum
       } ) 
       
@@ -217,9 +216,8 @@ describe Payment do
     
     it 'should  not allow confirmation if total amount of invoice payments is not 0 and the total sum is not equal' do 
       
-      invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
+      invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment,  {
         :invoice_id  => @delivery.invoice.id ,
-        :payment_id  => @payment.id ,
         :amount_paid => '10000'
       } ) 
       

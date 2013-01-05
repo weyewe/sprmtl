@@ -14,11 +14,22 @@
 
   <%= f.input :customer_id  , :input_html => {:class => "input-xlarge "}, 
   			:label => "Customer" %>
- 
 
+	<%= f.input :amount_paid  , :input_html => {:class => "input-xlarge "}, 
+  			:label => "Jumlah yang dibayar",
+ 				:as => :string,
+				:hint => "Dalam rupiah (tanpa tanda baca). Contoh: <b>15500</b> == Rp 15,000 " %>
+ 
+<hr />
 	<%= f.input :cash_account_id, :label => "Tujuan Pembayaran" do %>
      <%= f.select :cash_account_id, 
          CashAccount.all_selectables %>
+  <% end %>
+
+
+	<%= f.input :payment_method, :label => "Metode Pembayaran" do %>
+     <%= f.select :payment_method, 
+         Payment.selectable_payment_methods %>
   <% end %>
 
   <div class="form-actions">

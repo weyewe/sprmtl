@@ -32,7 +32,9 @@ Supermetal::Application.routes.draw do
   
   resources :invoices 
   
-  resources :payments 
+  resources :payments  do
+    resources :invoice_payments 
+  end
   resources :cash_accounts
   
   
@@ -182,5 +184,14 @@ Supermetal::Application.routes.draw do
   match 'delete_payment' => 'payments#delete_payment', :as => :delete_payment , :method => :post
   match 'confirm_payment/:payment_id' => "payments#confirm_payment", :as => :confirm_payment, :method => :post
   match 'finalize_payment/:payment_id' => "payments#finalize_payment", :as => :finalize_payment, :method => :post
+
+
+##################################################
+##################################################
+######### Invoice Payments
+##################################################
+##################################################
+  match 'update_invoice_payment/:invoice_payment_id' => 'invoice_payments#update_invoice_payment', :as => :update_invoice_payment , :method => :post 
+  match 'delete_invoice_payment' => 'invoice_payments#delete_invoice_payment', :as => :delete_invoice_payment , :method => :post
 
 end

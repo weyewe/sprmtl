@@ -1,0 +1,42 @@
+<% if new_object.persisted? %>
+	<% id = 'edit_object'%>
+<% else %>
+	<% id = 'new_object'%>
+<% end %>
+
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => " form-horizontal prevent_double_submit ajax-form   no_content_form",
+        :id => "#{id}"}) do |f| %>
+
+	  
+   
+ 
+
+	<%= f.input :invoice_id, :label => "Invoice", :input_html => {:class => "input-xlarge  "} do %>
+     <%= f.select :invoice_id, 
+         customer.all_selectable_unpaid_invoices  %>
+  <% end %>
+ 
+	
+	<hr />
+		<%= f.input :amount_paid, :label =>"Jumlah pembayaran", 
+				:hint =>  "Dalam rupiah (tanpa tanda baca). Contoh: <b>15500</b> == Rp 15,000 "   %>
+  
+		
+	
+	
+
+  <div class="form-actions">
+	
+		<% if new_object.persisted? %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update Invoice Payment" %>
+		<% else %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Invoice Payment" %>
+		<% end %>
+		
+  </div>
+<% end %>
+
+
+ 

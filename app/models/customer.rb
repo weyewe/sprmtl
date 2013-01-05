@@ -4,6 +4,7 @@ class Customer < ActiveRecord::Base
   has_many :sales_orders 
   has_many :deliveries
   has_many :payments
+  has_many :invoices 
   
   has_many :vehicles 
   
@@ -83,6 +84,16 @@ class Customer < ActiveRecord::Base
     result = []
     selectables.each do |selectable| 
       result << [ "#{selectable.code} | Ready: #{selectable.ready}" , 
+                      selectable.id ]  
+    end
+    return result
+  end
+  
+  def all_selectable_unpaid_invoices
+    selectables  =  self.invoices.where(:is_paid => false ).order("created_at ASC") 
+    result = []
+    selectables.each do |selectable| 
+      result << [ "#{selectable.code} |  #{selectable.confirmed_pending_payment.to_s}" , 
                       selectable.id ]  
     end
     return result

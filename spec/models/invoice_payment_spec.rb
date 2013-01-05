@@ -169,9 +169,8 @@ describe InvoicePayment do
   end
   
   it 'shoud allow payment if 0 <  payment amount < confirmed_pending_payment' do
-    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
-      :invoice_id  => @delivery.invoice.id ,
-      :payment_id  => @payment.id ,
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment,  {
+      :invoice_id  => @delivery.invoice.id , 
       :amount_paid => @amount_paid
     } ) 
     
@@ -179,17 +178,15 @@ describe InvoicePayment do
   end
   
   it 'should not allow less than or equal to zero payment amount' do
-    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
-      :invoice_id  => @delivery.invoice.id ,
-      :payment_id  => @payment.id ,
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment,  {
+      :invoice_id  => @delivery.invoice.id , 
       :amount_paid => '0'
     } ) 
     
     invoice_payment.should_not be_valid 
     
-    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
-      :invoice_id  => @delivery.invoice.id ,
-      :payment_id  => @payment.id ,
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  @payment,  {
+      :invoice_id  => @delivery.invoice.id , 
       :amount_paid => '-1'
     } ) 
     
@@ -199,9 +196,8 @@ describe InvoicePayment do
   it 'should not allow payment that exceed the pending payment amount' do
     @exceed_pending_payment  = @pending_payment + BigDecimal("10000")
     
-    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
-      :invoice_id  => @delivery.invoice.id ,
-      :payment_id  => @payment.id ,
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment,  {
+      :invoice_id  => @delivery.invoice.id , 
       :amount_paid =>    @exceed_pending_payment.to_s
     } ) 
     
@@ -210,17 +206,15 @@ describe InvoicePayment do
   end
   
   it 'should not allow duplicate invoice' do
-    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
-      :invoice_id  => @delivery.invoice.id ,
-      :payment_id  => @payment.id ,
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment,  {
+      :invoice_id  => @delivery.invoice.id , 
       :amount_paid => '10000'
     } ) 
     
     invoice_payment.should be_valid
     
-    invoice_payment = InvoicePayment.create_invoice_payment( @admin,  {
-      :invoice_id  => @delivery.invoice.id ,
-      :payment_id  => @payment.id ,
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment,   {
+      :invoice_id  => @delivery.invoice.id , 
       :amount_paid => '10000'
     } ) 
     
