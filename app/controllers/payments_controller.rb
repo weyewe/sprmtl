@@ -32,7 +32,7 @@ class PaymentsController < ApplicationController
   
   def delete_payment
     @object = Payment.find_by_id params[:object_to_destroy_id]
-    @object.delete 
+    @object.delete(current_user ) 
   end
   
 =begin

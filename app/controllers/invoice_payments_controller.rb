@@ -43,7 +43,7 @@ class InvoicePaymentsController < ApplicationController
   def delete_invoice_payment
     @object = InvoicePayment.find_by_id params[:object_to_destroy_id]
     @object_identifier = @object.invoice.code 
-    @object.delete 
+    @object.delete(current_user )
   end
   
   

@@ -3,21 +3,21 @@ $(document).ready(function(){
 	$form_wrapper.spin(false); 
  
 
-	<% if  @sales_order.is_confirmed?  %>
+	<% if  @payment.is_confirmed?  %>
 	 
 	// replace the actionbar  with postConfirmBar => to delete the sales order 
-		<% post_confirm_bar = escape_javascript(  render :partial => "sales_items/sales_order/post_confirm_bar", 
+		<% post_confirm_bar = escape_javascript(  render :partial => "invoice_payments/payment/post_confirm_bar", 
 		:locals => {
-	    :parent => @sales_order  
+	    :parent => @payment  
 	  })%>
 		
 		$("#actionbar").replaceWith('<%=  post_confirm_bar %>');
 	
 	// refresh the itemList => no edit or delete 
-		<% item_list = escape_javascript(  render :partial => "sales_items/sales_order/item_list", 
+		<% item_list = escape_javascript(  render :partial => "invoice_payments/payment/item_list", 
 		:locals => {
-	    :parent => @sales_order ,
-			:objects => @sales_order.active_sales_items 
+	    :parent => @payment ,
+			:objects => @payment.invoice_payments  
 	  })%>
 	
 		$("#tableview").replaceWith('<%= item_list %>');
@@ -25,21 +25,21 @@ $(document).ready(function(){
 		
 	
 	// alert msgbox: success confirming 
-		$.msgbox("Berhasil Konfirmasi Sales Order: <%= @sales_order.code %>", 
+		$.msgbox("Berhasil Konfirmasi Payment: <%= @payment.code %>", 
 						{type: "info"});
 						 
 		
 		
 	<% else %> 
 		// replace the form, show the edit 
-		<% actionbar = escape_javascript(  render :partial => "sales_items/sales_order/actionbar", 
+		<% actionbar = escape_javascript(  render :partial => "invoice_payments/payment/actionbar", 
 		:locals => {
-	    :parent => @sales_order  
+	    :parent => @payment  
 	  })%>
 	
 		$("#actionbar").replaceWith("<%= actionbar %>");
 		 
-		$.msgbox("Error konfirmasi  sales order: <%= @sales_order.code %>", 
+		$.msgbox("Error konfirmasi  payment: <%= @payment.code %>", 
 					{type: "error"});
 	<% end %>
  

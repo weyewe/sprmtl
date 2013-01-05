@@ -117,6 +117,17 @@ class Payment < ActiveRecord::Base
     end 
   end
   
+  def delete( current_user ) 
+    return nil if current_user.nil?
+    return nil if self.is_confirmed? 
+    
+    self.invoice_payments.each do |ip|
+      ip.delete( current_user ) 
+    end
+    
+    self.destroy 
+  end
+  
   
   def Payment.selectable_payment_methods
     result = []

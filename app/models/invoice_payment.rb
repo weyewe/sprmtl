@@ -10,6 +10,7 @@ class InvoicePayment < ActiveRecord::Base
   validate  :customer_ownership_to_invoice
   
   def amount_paid_must_be_greater_than_zero_and_less_than_remaining_payable
+    invoice = self.invoice 
     if amount_paid.present? and 
         ( amount_paid <= BigDecimal("0") or 
           amount_paid > invoice.confirmed_pending_payment    )
@@ -67,7 +68,8 @@ class InvoicePayment < ActiveRecord::Base
     return nil if self.payment.is_confirmed? 
     
     self.creator_id  = employee.id 
-    self.invoice_id  = payment.id  
+    self.payment_id  = payment.id  
+    self.invoice_id = params[:invoice_id]
     self.amount_paid = BigDecimal( params[:amount_paid]   )
     
 
