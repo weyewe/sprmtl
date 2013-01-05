@@ -15,7 +15,7 @@ class CashAccount < ActiveRecord::Base
   end
   
   def self.all_selectables
-    selectables  =  CashAccounts.order("created_at DESC") 
+    selectables  =  CashAccount.order("created_at DESC") 
     result = []
     selectables.each do |selectable| 
       result << [ "#{selectable.name}" , 

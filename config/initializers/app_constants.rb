@@ -188,9 +188,23 @@ PAYMENT_METHOD = {
 # CASH_ACCOUNT_CASE = {
 #   :bank => 1, 
 #   :cash => 2 
-# }
-  
-  
+# } 
+
+PAYMENT_METHOD_CASE = {
+  :bank_transfer => {
+    :value => 1 , 
+    :name => "Bank Transfer"
+  },
+  :cash => {
+    :value => 2, 
+    :name => "Cash"
+  },
+  :giro => {
+    :value => 3, 
+    :name => "Giro"
+  }
+}
+
 CASH_ACCOUNT_CASE     = {
   :bank     => {
     :value   => 1, 
