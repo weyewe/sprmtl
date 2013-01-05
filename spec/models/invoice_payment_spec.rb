@@ -10,6 +10,12 @@ describe InvoicePayment do
                                             
     @joko = FactoryGirl.create(:employee,  :name => "Joko" )
     @joni = FactoryGirl.create(:employee,  :name => "Joni" )
+    
+    @bank_mandiri = CashAccount.create({
+      :case =>  CASH_ACCOUNT_CASE[:bank][:value]  ,
+      :name => "Bank mandiri 234325321",
+      :description => "Spesial untuk non taxable payment"
+    })
                                             
     @sales_order   = SalesOrder.create_by_employee( @admin , {
       :customer_id    => @customer.id,          
@@ -157,7 +163,8 @@ describe InvoicePayment do
       :payment_method => PAYMENT_METHOD[:bank_transfer],
       :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
       :amount_paid => @amount_paid,
-      :customer_id => @customer.id
+      :customer_id => @customer.id,
+      :cash_account_id => @bank_mandiri.id
     })
   end
   

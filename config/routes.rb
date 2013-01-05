@@ -30,6 +30,11 @@ Supermetal::Application.routes.draw do
     resources :sales_return_entries
   end
   
+  resources :invoices 
+  
+  resources :payments 
+  resources :cash_accounts
+  
   
 =begin
   SEARCH DATA
@@ -58,6 +63,16 @@ Supermetal::Application.routes.draw do
 ##################################################
   match 'update_customer/:customer_id' => 'customers#update_customer', :as => :update_customer , :method => :post 
   match 'delete_customer' => 'customers#delete_customer', :as => :delete_customer , :method => :post
+
+
+##################################################
+##################################################
+######### CASH_ACCOUNT
+##################################################
+##################################################
+  match 'update_cash_account/:cash_account_id' => 'cash_accounts#update_cash_account', :as => :update_cash_account , :method => :post 
+  match 'delete_cash_account' => 'cash_accounts#delete_cash_account', :as => :delete_cash_account , :method => :post
+
 
 
 ##################################################
@@ -147,4 +162,25 @@ Supermetal::Application.routes.draw do
 ##################################################
 ##################################################
   match 'update_sales_return_entry/:sales_return_entry_id' => 'sales_return_entries#update_sales_return_entry', :as => :update_sales_return_entry , :method => :post 
+  
+  
+##################################################
+##################################################
+######### Invoice
+##################################################
+##################################################
+  match 'update_invoice/:invoice_id' => 'invoices#update_invoice', :as => :update_invoice , :method => :post 
+  match 'confirm_invoice/:invoice_id' => "invoices#confirm_invoice", :as => :confirm_invoice, :method => :post
+
+
+##################################################
+##################################################
+######### PAYMENT
+##################################################
+##################################################
+  match 'update_payment/:payment_id' => 'payments#update_payment', :as => :update_payment , :method => :post 
+  match 'delete_payment' => 'payments#delete_payment', :as => :delete_payment , :method => :post
+  match 'confirm_payment/:payment_id' => "payments#confirm_payment", :as => :confirm_payment, :method => :post
+  match 'finalize_payment/:payment_id' => "payments#finalize_payment", :as => :finalize_payment, :method => :post
+
 end

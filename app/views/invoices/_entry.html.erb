@@ -1,0 +1,39 @@
+ 
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%#= link_to "#{object.code}" , new_sales_order_sales_item_url( object)%>
+		<%= object.code %>
+	</td>
+	<td>
+		<%= "#{object.delivery.customer.name}" %>
+	</td>
+	
+	<td>
+		<%= print_date(object.due_date )%>
+	</td>
+	 
+ 	<td>
+		<%= print_money( object.amount_payable) %>
+	</td>
+	
+	<td>
+		<%= print_money(object.confirmed_pending_payment)%>
+		
+		<% if object.has_pending_payment_confirmation? %>
+			( <%= print_money(object.pending_payment) %>)
+		<% end %>
+	</td>
+	
+	<% if not object.is_paid? %> 
+
+		<td>
+			<%= link_to edit_invoice_url(object), 
+				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-edit'></i>Edit
+			<% end %>
+		</td> 
+		
+		
+	<% end %>
+	 
+</tr>

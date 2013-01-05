@@ -6,6 +6,11 @@ copper = Material.create :name => MATERIAL[:copper]
 alumunium = Material.create :name => MATERIAL[:alumunium]
 iron = Material.create :name => MATERIAL[:iron]
 
+bank_mandiri = CashAccount.create({
+  :case =>  CASH_ACCOUNT_CASE[:bank][:value]  ,
+  :name => "Bank mandiri 234325321",
+  :description => "Spesial untuk non taxable payment"
+})
 
 # ADDING SALES ORDER + SALES ITEMS 
 
@@ -70,6 +75,25 @@ post_production_history =  PostProductionHistory.create_history( admin, has_prod
 })
 
 post_production_history.confirm( admin )
+
+# ADDING DELIVERY 
+delivery = Delivery.create_by_employee( admin, {
+  :customer_id => customer_1.id ,
+  :delivery_address => "This is delivery address",
+  :delivery_date    => Date.new( 2012,12,12)
+} )  
+
+has_production_sales_item.reload 
+
+delivery_entry = DeliveryEntry.create_delivery_entry( admin, delivery,  {
+  :sales_item_id => has_production_sales_item.id ,
+  :quantity_sent => has_production_sales_item.ready - 5,
+  :quantity_sent_weight =>  ((has_production_sales_item.ready - 5)*20).to_s
+} ) 
+ 
+ 
+delivery.confirm( admin )  
+
 
 # sales_order_1   = SalesOrder.create_by_employee( admin , {
 #   :customer_id    => customer_1.id,          

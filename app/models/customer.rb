@@ -3,8 +3,10 @@ class Customer < ActiveRecord::Base
   
   has_many :sales_orders 
   has_many :deliveries
+  has_many :payments
   
   has_many :vehicles 
+  
   
   
   validates_presence_of :name 

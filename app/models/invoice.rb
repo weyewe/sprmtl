@@ -1,4 +1,6 @@
 class Invoice < ActiveRecord::Base
+  # can only be printed if the invoice has due date 
+  
   # attr_accessible :title, :body
   belongs_to :delivery 
   
@@ -22,6 +24,21 @@ class Invoice < ActiveRecord::Base
     end
 
     return new_object 
+  end
+  
+  def update_due_date( employee, due_date)
+    return nil if employee.nil?
+    
+    
+    if due_date.nil? 
+      errors.add(:due_date , "Tanggal Jatuh Tempo harus diisi" )  
+      return self 
+    end
+    
+    self.due_date = due_date 
+    self.save 
+    return self 
+    
   end
   
   
@@ -71,5 +88,9 @@ class Invoice < ActiveRecord::Base
   
   def confirmed_pending_payment
     amount_payable - self.invoice_payments.where(:is_confirmed => true ).sum("amount_paid") 
+  end
+  
+  def has_pending_payment_confirmation?
+    self.invoice_payments.where(:is_confirmed => false ).count != 0
   end
 end

@@ -17,6 +17,11 @@ describe Payment do
       :order_date     => Date.new(2012, 12, 15)   
     })
    
+    @bank_mandiri = CashAccount.create({
+      :case =>  CASH_ACCOUNT_CASE[:bank][:value]  ,
+      :name => "Bank mandiri 234325321",
+      :description => "Spesial untuk non taxable payment"
+    })
     
     @quantity_in_sales_item = 50 
     @complete_cycle_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
@@ -156,7 +161,8 @@ describe Payment do
       :payment_method => PAYMENT_METHOD[:bank_transfer],
       :customer_id    => @customer.id , 
       :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
-      :amount_paid => "50000"
+      :amount_paid => "50000",
+      :cash_account_id => @bank_mandiri.id
     })
     
     payment.should be_valid
@@ -167,7 +173,8 @@ describe Payment do
       :payment_method => PAYMENT_METHOD[:bank_transfer],
       :customer_id    => @customer.id , 
       :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
-      :amount_paid => "50000"
+      :amount_paid => "50000",
+      :cash_account_id => @bank_mandiri.id
     })
      
     
@@ -183,7 +190,8 @@ describe Payment do
         :payment_method => PAYMENT_METHOD[:bank_transfer],
         :customer_id    => @customer.id , 
         :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
-        :amount_paid => @total_sum
+        :amount_paid => @total_sum,
+        :cash_account_id => @bank_mandiri.id
       })
     end
     

@@ -2,6 +2,7 @@ class CreatePayments < ActiveRecord::Migration
   def change
     create_table :payments do |t|
       t.integer :creator_id 
+      t.integer :cash_account_id 
       
       t.integer :customer_id
       

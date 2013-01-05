@@ -184,10 +184,22 @@ PAYMENT_METHOD = {
   :cash => 2, 
   :giro => 3 
 }
- 
-CASH_ACCOUNT_CASE = {
-  :bank => 1, 
-  :non_bank => 2 
+
+# CASH_ACCOUNT_CASE = {
+#   :bank => 1, 
+#   :cash => 2 
+# }
+  
+  
+CASH_ACCOUNT_CASE     = {
+  :bank     => {
+    :value   => 1, 
+    :name    => "Bank" 
+  } ,
+  :cash    =>  {
+    :value   => 2, 
+    :name    => "Cash"
+  } 
 }
 
 

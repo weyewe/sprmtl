@@ -2,8 +2,10 @@ class Payment < ActiveRecord::Base
   # attr_accessible :title, :body
   has_many :invoices, :through => :invoice_payments 
   has_many :invoice_payments 
+  belongs_to :customer 
+  belongs_to :cash_account 
   
-  validates_presence_of :creator_id , :amount_paid, :payment_method, :customer_id 
+  validates_presence_of :creator_id , :amount_paid, :payment_method, :customer_id , :cash_account_id 
   
   validate :amount_paid_must_be_greater_than_zero
   
@@ -22,6 +24,7 @@ class Payment < ActiveRecord::Base
     new_object.customer_id    = params[:customer_id]
     new_object.amount_paid    = BigDecimal( params[:amount_paid] ) 
     new_object.payment_method = params[:payment_method]
+    new_object.cash_account_id = params[:cash_account_id]
 
                                 
 
@@ -39,6 +42,7 @@ class Payment < ActiveRecord::Base
     self.customer_id    = params[:customer_id]
     self.amount_paid    = BigDecimal( params[:amount_paid] ) 
     self.payment_method = params[:payment_method]
+    self.cash_account_id = params[:cash_account_id]
 
     self.save 
     

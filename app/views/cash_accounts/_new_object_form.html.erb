@@ -9,19 +9,22 @@
       :html => {:class => " prevent_double_submit ajax-form   no_content_form",
         :id => "#{id}"}) do |f| %>
 
-	 
- 
+	<%= f.input :case, :label => "Tipe Kas Akun" do %>
+     <%= f.select :case, 
+         CashAccount.all_selectable_cases %>
+  <% end %>
+
 
   <%= f.input :name  , :input_html => {:class => "input-xlarge "}, 
-  			:label => "Material" %>
+  			:label => "Nama Akun Kas" %>
  
 
   <div class="form-actions">
 	
 		<% if new_object.persisted? %>
-			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update  Material" %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update  Cash Account" %>
 		<% else %>
-			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Material" %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Cash Account" %>
 		<% end %>
 		
   </div>

@@ -19,8 +19,11 @@ ActiveRecord::Schema.define(:version => 20130104071655) do
   end
 
   create_table "cash_accounts", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "case",        :default => 1
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
   create_table "customers", :force => true do |t|
@@ -144,16 +147,17 @@ ActiveRecord::Schema.define(:version => 20130104071655) do
 
   create_table "payments", :force => true do |t|
     t.integer  "creator_id"
+    t.integer  "cash_account_id"
     t.integer  "customer_id"
     t.string   "code"
-    t.decimal  "amount_paid",    :precision => 11, :scale => 2, :default => 0.0
+    t.decimal  "amount_paid",     :precision => 11, :scale => 2, :default => 0.0
     t.integer  "payment_method"
-    t.boolean  "is_confirmed",                                  :default => false
+    t.boolean  "is_confirmed",                                   :default => false
     t.integer  "confirmer_id"
     t.datetime "confirmed_at"
     t.text     "note"
-    t.datetime "created_at",                                                       :null => false
-    t.datetime "updated_at",                                                       :null => false
+    t.datetime "created_at",                                                        :null => false
+    t.datetime "updated_at",                                                        :null => false
   end
 
   create_table "post_production_histories", :force => true do |t|
