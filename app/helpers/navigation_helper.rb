@@ -16,8 +16,8 @@ module NavigationHelper
           :icon => "icon-plus-sign",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
+              :controller => "cash_accounts",
+              :action     => "new"
             },
             {
               :controller => "",
@@ -33,11 +33,7 @@ module NavigationHelper
             {
               :controller => "",
               :action     => ""
-            },
-            {
-              :controller => "",
-              :action     => ""
-            }
+            } 
           ]
         }
       ]
@@ -60,13 +56,9 @@ module NavigationHelper
           :icon => "icon-folder-open",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
-            },
-            {
-              :controller => "",
-              :action     => ""
-            }
+              :controller => "materials",
+              :action     => "new"
+            } 
           ]
         } 
       ]
@@ -88,13 +80,9 @@ module NavigationHelper
           :icon => "icon-folder-close",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
-            },
-            {
-              :controller => "",
-              :action     => ""
-            }
+              :controller => "invoices",
+              :action     => "new"
+            } 
           ]
         },
         {
@@ -103,12 +91,12 @@ module NavigationHelper
           :icon => "icon-shopping-cart",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
+              :controller => "payments",
+              :action     => "new"
             },
             {
-              :controller => "",
-              :action     => ""
+              :controller => "invoice_payments",
+              :action     => "new"
             }
           ]
         } 
@@ -131,13 +119,9 @@ module NavigationHelper
           :icon => "icon-folder-close",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
-            },
-            {
-              :controller => "",
-              :action     => ""
-            }
+              :controller => "pre_production_histories",
+              :action     => "new"
+            } 
           ]
         },
         {
@@ -146,13 +130,9 @@ module NavigationHelper
           :icon => "icon-shopping-cart",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
-            },
-            {
-              :controller => "",
-              :action     => ""
-            }
+              :controller => "production_histories",
+              :action     => "new"
+            } 
           ]
         },
         {
@@ -161,13 +141,9 @@ module NavigationHelper
           :icon => "icon-wrench",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
-            },
-            {
-              :controller => "",
-              :action     => ""
-            }
+              :controller => "post_production_histories",
+              :action     => "new"
+            } 
           ]
         } 
       ],
@@ -180,12 +156,12 @@ module NavigationHelper
           :icon => "icon-wrench",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
+              :controller => "deliveries",
+              :action     => "new"
             },
             {
-              :controller => "",
-              :action     => ""
+              :controller => "delivery_entries",
+              :action     => "new"
             }
           ]
         },
@@ -195,12 +171,12 @@ module NavigationHelper
           :icon => "icon-wrench",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
+              :controller => "sales_returns",
+              :action     => "new"
             },
             {
-              :controller => "",
-              :action     => ""
+              :controller => "sales_return_entries",
+              :action     => "new"
             }
           ]
         }
@@ -223,13 +199,9 @@ module NavigationHelper
           :icon => "icon-folder-close",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
-            },
-            {
-              :controller => "",
-              :action     => ""
-            }
+              :controller => "customers",
+              :action     => "new"
+            } 
           ]
         } 
       ],
@@ -242,12 +214,12 @@ module NavigationHelper
           :icon => "icon-shopping-cart",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
+              :controller => "sales_orders",
+              :action     => "new"
             },
             {
-              :controller => "",
-              :action     => ""
+              :controller => "sales_items",
+              :action     => "new"
             }
           ]
         } 
@@ -271,17 +243,17 @@ module NavigationHelper
       navigation_blocks << result if not result.nil?
     end
     
-     puts "********* the nav_blocks' length : #{navigation_blocks.length}\n"*5
+     # puts "********* the nav_blocks' length : #{navigation_blocks.length}\n"*5
     
     if navigation_blocks.length != 0 
       navigation_string << '<ul id="main-nav" class="nav pull-right">'
       navigation_string << navigation_blocks.join('')  
-      puts "The content: #{navigation_blocks.join('')  }"
-      puts "\n"
+      # puts "The content: #{navigation_blocks.join('')  }"
+      # puts "\n"
       navigation_string << '</ul>' 
     end
     
-    puts "the navigation_string: #{navigation_string}"
+    # puts "the navigation_string: #{navigation_string}"
     return navigation_string 
   end
   
@@ -298,6 +270,7 @@ module NavigationHelper
     
     nav[:blocks].each do |nav_block|
       # nav block has_many nav elements 
+      puts "the nav[:header] = #{nav[:header]}, gonna render nav block"
       result =  render_nav_block( current_user, params, nav_block) 
       nav_blocks << result if not  result.nil? or not result.length == 0
     end
@@ -326,14 +299,20 @@ module NavigationHelper
   
   def draw_nav( nav_blocks_string, is_nav_active , nav )
     
+    puts "\n"
+    puts "The nav[:header] = #{nav[:header]}\n"
+    puts "the is_nav_active value: #{is_nav_active}" 
+    puts "\n\n"
+    
 		header_string = ""
 		
 		dropdown_string = "<ul class='dropdown-menu'>" + 
 	                        nav_blocks_string         +
 	                    "</ul>"
 		nav_wrapper_string = "" 
+		active = ACTIVE_CLASS if is_nav_active 
 		if nav[:has_dropdown]
-		  nav_wrapper_string = "<li class='dropdown'>"
+		  nav_wrapper_string = "<li class='dropdown #{active}'>"
 		  
   		  header_string << "<a href='javascript:;' class='dropdown-toggle' data-toggle='dropdown'>"
   		  header_string << "<i class='#{nav[:header_icon]}'></i>"
@@ -344,7 +323,7 @@ module NavigationHelper
 		  
 		  
 	  else
-	    nav_wrapper_string = "<li class='nav-icon'>"
+	    nav_wrapper_string = "<li class='nav-icon #{active}'>"
   	    header_string = "<a>"
   	    header_string << '<i class="icon-home"></i>'
   	    header_string << '<span>'  + nav[:header]  + '</span>'
@@ -371,8 +350,11 @@ module NavigationHelper
       if is_nav_element_visible?( current_user , nav_element) 
         is_active = false  
         is_active = true if is_nav_element_active?( params, nav_element )
+        puts "The value of is_active: #{is_active}"
+        if @is_nav_active == false  
+          @is_nav_active = true  if is_active  
+        end
         
-        @is_nav_active if is_active  
         result_array << draw_nav_element( nav_element, is_active  )   
       end
     end
@@ -381,7 +363,7 @@ module NavigationHelper
     
     return nil if result_array.length == 0  
     
-    puts "result_array.join('') : #{result_array.join('')}"
+    # puts "result_array.join('') : #{result_array.join('')}"
     return result_array.join('')
   end
   
@@ -414,7 +396,7 @@ module NavigationHelper
       nav_element_string << "</a>"
 		nav_element_string << "</li>"
 			  
-		puts("The nav_element_string: #{nav_element_string}")
+    # puts("The nav_element_string: #{nav_element_string}")
 		return nav_element_string 
   end
   
