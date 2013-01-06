@@ -1,0 +1,11 @@
+$(document).ready(function(){
+	
+	var $row = $("#entry-<%= @object.id %>")
+	$row.spin(false); 
+	
+	$row.remove(); 
+	
+	$.msgbox("Berhasil menghapus user: <%= @object_identifier %>");
+	 
+	
+});

@@ -1,5 +1,3 @@
-admin = User.create_main_user(   :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
-
 role = {
   :system => {
     :administrator => true
@@ -7,15 +5,23 @@ role = {
 }
 
 Role.create!(
-:name        => :admin,
+:name        => ROLE_NAME[:admin],
 :title       => 'Administrator',
 :description => 'Role for administrator',
 :the_role    => role.to_json
 )
+admin_role = Role.find_by_name ROLE_NAME[:admin]
+first_role = Role.first
 
-admin_role = Role.first 
-admin.role = admin_role
-admin.save 
+puts "total role: #{Role.count}\n"*100
+puts "the inspect of first_role : #{first_role.inspect}"
+puts "the role: #{admin_role.name }"
+admin = User.create_main_user(   :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
+
+
+
+ 
+# admin.set_as_main_user
 
 
 customer_1 = Customer.create :name => "Dixzell"

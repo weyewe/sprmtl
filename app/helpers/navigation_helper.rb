@@ -26,13 +26,13 @@ module NavigationHelper
           ]
         },
         {
-          :name => "Employee",
-          :url  => 'new_cash_account_url',
+          :name => "User",
+          :url  => 'new_app_user_url',
           :icon => "icon-plus-sign",
           :activities => [
             {
-              :controller => "",
-              :action     => ""
+              :controller => "app_users",
+              :action     => "new"
             } 
           ]
         }

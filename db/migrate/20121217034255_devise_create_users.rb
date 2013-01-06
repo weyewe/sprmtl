@@ -20,6 +20,11 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string   :last_sign_in_ip
       
       t.integer :role_id,         :default => nil
+      t.string :name
+      t.string :username
+      t.string :login
+      t.boolean :is_deleted , :default => false 
+      t.boolean :is_main_user, :default => false 
 
       ## Confirmable
       # t.string   :confirmation_token

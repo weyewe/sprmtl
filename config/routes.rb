@@ -9,6 +9,9 @@ Supermetal::Application.routes.draw do
   resources :customers
   resources :materials
   
+  resources :users
+  resources :app_users
+  
   resources :sales_orders do 
     resources :sales_items 
   end
@@ -75,6 +78,22 @@ Supermetal::Application.routes.draw do
   match 'update_cash_account/:cash_account_id' => 'cash_accounts#update_cash_account', :as => :update_cash_account , :method => :post 
   match 'delete_cash_account' => 'cash_accounts#delete_cash_account', :as => :delete_cash_account , :method => :post
 
+
+##################################################
+##################################################
+######### USER 
+##################################################
+##################################################
+  match 'update_user/:user_id' => 'users#update_user', :as => :update_user , :method => :post 
+  match 'delete_user' => 'users#delete_user', :as => :delete_user , :method => :post
+  
+##################################################
+##################################################
+######### APP_USER 
+##################################################
+##################################################
+  match 'update_app_user/:user_id' => 'app_users#update_app_user', :as => :update_app_user , :method => :post 
+  match 'delete_app_user' => 'app_users#delete_app_user', :as => :delete_app_user , :method => :post
 
 
 ##################################################

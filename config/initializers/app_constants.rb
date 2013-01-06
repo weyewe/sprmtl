@@ -218,6 +218,10 @@ CASH_ACCOUNT_CASE     = {
 
 
 
+ROLE_NAME = {
+  :admin => "admin"
+}
+
 =begin
 PRINTING RELATED
 =end

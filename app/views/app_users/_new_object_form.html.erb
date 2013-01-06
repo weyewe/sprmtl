@@ -1,0 +1,44 @@
+<% if new_object.persisted? %>
+	<% id = 'edit_object'%>
+<% else %>
+	<% id = 'new_object'%>
+<% end %>
+
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => " prevent_double_submit ajax-form   no_content_form",
+        :id => "#{id}"}) do |f| %>
+
+	 
+ 
+
+  <%= f.input :name  , :input_html => {:class => "input-xlarge "}, 
+  			:label => "Name" %>
+ 
+	<%= f.input :email  , :input_html => {:class => "input-xlarge "}, 
+  			:label => "Email" %>
+
+ 
+
+<hr />
+
+	<% if not  new_object.is_main_user? %>
+		<%= f.input :role_id, :label => "Role" do %>
+	     <%= f.select :role_id, 
+	         Role.all_selectables %>
+	  <% end %>
+	<% end %>
+
+  <div class="form-actions">
+	
+		<% if new_object.persisted? %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update  User" %>
+		<% else %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create User" %>
+		<% end %>
+		
+  </div>
+<% end %>
+
+
+ 

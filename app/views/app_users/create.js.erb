@@ -1,0 +1,34 @@
+$(document).ready(function(){
+	 
+	var $modal = $("#newEntry"); 
+	var $form = $("form", $modal );
+	$form.spin(false);
+	
+	<% new_form = escape_javascript(  render :partial => "app_users/new_object_form", :locals => {
+    :new_object => @new_object , 
+		:url => app_users_url,
+  })%>
+
+ 
+	
+	<% if @object.errors.size == 0  %>
+		// show the growl. save. done. 
+		<% new_entry = escape_javascript(  render :partial => "app_users/entry", :locals => {
+	    :object => @object  
+	  })%>
+		$("#tableview tbody").prepend('<%= new_entry %>');
+		
+		$.msgbox("User <b><%= @object.name %></b> is created.", 
+					{type: "info"});
+		$modal.modal('hide'); 
+		$form.remove();
+	<% else %>
+		$form.replaceWith('<%= new_form %>');
+		 $.msgbox("Gagal membuat User baru.", 
+					{type: "error"});
+	<% end %>
+	
+	
+	// else, display error.. 
+	jQuery('.prevent_double_submit').preventDoubleSubmit();
+});
