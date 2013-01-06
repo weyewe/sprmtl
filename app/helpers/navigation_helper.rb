@@ -271,10 +271,17 @@ module NavigationHelper
       navigation_blocks << result if not result.nil?
     end
     
-    navigation_string << '<ul id="main-nav" class="nav pull-right">'
-    navigation_string << navigation_blocks.join('')  
-    navigation_string << '</ul>' 
+     puts "********* the nav_blocks' length : #{navigation_blocks.length}\n"*5
     
+    if navigation_blocks.length != 0 
+      navigation_string << '<ul id="main-nav" class="nav pull-right">'
+      navigation_string << navigation_blocks.join('')  
+      puts "The content: #{navigation_blocks.join('')  }"
+      puts "\n"
+      navigation_string << '</ul>' 
+    end
+    
+    puts "the navigation_string: #{navigation_string}"
     return navigation_string 
   end
   
@@ -292,23 +299,25 @@ module NavigationHelper
     nav[:blocks].each do |nav_block|
       # nav block has_many nav elements 
       result =  render_nav_block( current_user, params, nav_block) 
-      nav_blocks << result if not  result.nil?
+      nav_blocks << result if not  result.nil? or not result.length == 0
     end
     
     return nil if nav_blocks.length == 0 
+  
     
     nav_blocks_count = nav_blocks.length 
     counter = 0
     
-    nav_blocks.each do |nav_block_string|
+    nav_blocks.each do |nav_block|
+      nav_blocks_string << nav_block
       if counter != nav_blocks_count  - 1 
         nav_blocks_string << draw_block_divider 
       end
+      counter += 1 
     end
     
     
       # <li class="dropdown active">
-    
     nav_blocks_string = draw_nav( nav_blocks_string, @is_nav_active , nav)
     
     return nav_blocks_string 
@@ -327,7 +336,7 @@ module NavigationHelper
 		  nav_wrapper_string = "<li class='dropdown'>"
 		  
   		  header_string << "<a href='javascript:;' class='dropdown-toggle' data-toggle='dropdown'>"
-  		  header_string << "<i class='icon-th'></i>"
+  		  header_string << "<i class='#{nav[:header_icon]}'></i>"
   			header_string << '<span>'  + nav[:header]  + '</span>'
   			header_string << '<b class="caret"></b>'
   		  header_string << '</a>'
@@ -348,7 +357,7 @@ module NavigationHelper
 	  nav_wrapper_string << "</li>"
 		
 		
-	  
+	  return nav_wrapper_string
 	
  
   end
@@ -368,6 +377,11 @@ module NavigationHelper
       end
     end
     
+    
+    
+    return nil if result_array.length == 0  
+    
+    puts "result_array.join('') : #{result_array.join('')}"
     return result_array.join('')
   end
   
@@ -400,6 +414,7 @@ module NavigationHelper
       nav_element_string << "</a>"
 		nav_element_string << "</li>"
 			  
+		puts("The nav_element_string: #{nav_element_string}")
 		return nav_element_string 
   end
   
