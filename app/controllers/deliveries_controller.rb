@@ -1,4 +1,5 @@
 class DeliveriesController < ApplicationController
+  before_filter :role_required
   def new
     @objects = Delivery.order("created_at DESC")
     @new_object = Delivery.new 

@@ -1,4 +1,6 @@
 class SalesReturnEntriesController < ApplicationController
+  before_filter :role_required
+  
   def new
     @parent = SalesReturn.find_by_id params[:sales_return_id]
     @objects = @parent.sales_return_entries.joins(:delivery_entry => [:sales_item]) 

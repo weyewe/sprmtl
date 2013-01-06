@@ -1,4 +1,5 @@
 class PreProductionHistoriesController < ApplicationController
+  before_filter :role_required
   
   def generate_pre_production_history
     @sales_item   =  SalesItem.find_by_id params[:selected_sales_item_id]

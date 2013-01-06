@@ -1,4 +1,5 @@
 class InvoicePaymentsController < ApplicationController
+  before_filter :role_required
   def new
     @parent = Payment.find_by_id params[:payment_id]
     @customer = @parent.customer 

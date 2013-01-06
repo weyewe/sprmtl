@@ -1,4 +1,5 @@
 class SalesItemsController < ApplicationController
+  before_filter :role_required
   def new
     @parent = SalesOrder.find_by_id params[:sales_order_id]
     @objects = @parent.active_sales_items 

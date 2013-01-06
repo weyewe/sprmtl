@@ -1,4 +1,5 @@
 class CustomersController < ApplicationController
+  before_filter :role_required
   def new
     @objects = Customer.active_objects
     @new_object = Customer.new 

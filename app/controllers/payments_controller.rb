@@ -1,4 +1,5 @@
 class PaymentsController < ApplicationController
+  before_filter :role_required
   def new
     @objects = Payment.order("created_at DESC") 
     @new_object = Payment.new 

@@ -1,0 +1,235 @@
+
+<%#= get_process_nav( :branch_manager , params ).html_safe %>  
+
+<%= render_navigation( current_user , params ) .html_safe %>
+<!-- <ul id="main-nav" class="nav pull-right">
+	<li class="nav-icon active ">
+		<%= link_to '#'  do %>
+			<i class="icon-home"></i>
+			<span>Home </span>
+		<% end %> 
+	</li>
+	
+	<li class="dropdown">					
+		<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+			<i class="icon-th"></i>
+			<span>Management </span> 
+			<b class="caret"></b>
+		</a>	
+	
+		<ul class="dropdown-menu">
+			<li>
+				<%= link_to new_cash_account_url   do %>
+					<i class="icon-plus-sign"></i>Cash Account
+				<% end %>
+			</li>
+			<li>
+				<%= link_to '#'   do %>
+					<i class="icon-user"></i>
+					<span>Employee</span>
+				<% end %>
+			</li>
+	 
+		</ul>    				
+	</li>
+	
+	<li class="dropdown">					
+		<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+			<i class="icon-gift"></i>
+			<span> Supply</span> 
+			<b class="caret"></b>
+		</a>	
+	
+		<ul class="dropdown-menu">
+			<li>
+				<%= link_to '#'  do %>
+					<i class="icon-folder-open"></i>Vendor
+				<% end %> 
+			</li>
+			<li>
+				
+				<%= link_to '#'  do %>
+					<i class="icon-th-list"></i>Purchase Invoice
+				<% end %>
+			</li>
+			<li>
+				<%= link_to '#'   do %>
+					<i class="icon-remove"></i>Purchase Return
+				<% end %>
+				
+			</li>
+			
+			<li class="divider"></li>
+			
+			<li>
+				<%= link_to '#'  do %>
+					<i class="icon-tasks"></i>Stock Conversion 
+				<% end %>
+			</li>
+			
+			
+		</ul>    				
+	</li>
+	
+	<li class="dropdown">					
+		<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+			<i class="icon-copy"></i>
+			<span>Inventory</span> 
+			<b class="caret"></b>
+		</a>	
+		
+		 
+	
+		<ul class="dropdown-menu">
+			<li>
+				<%= link_to new_material_url do %>
+					<i class="icon-folder-open"></i>Material
+				<% end %>
+			</li>
+			<li>
+				<%= link_to '#'  do %>
+					<i class="icon-hdd"></i>Item DB
+				<% end %>
+			</li> 
+			
+			<li>
+				<%= link_to '#'  do %>
+					<i class="icon-th-list"></i>Service DB
+				<% end %>
+			</li>
+			
+			
+			
+			<li class="divider"></li>
+			
+			<li>
+				<%= link_to '#'  do %>
+					<i class="icon-star"></i>Stock Migration
+				<% end %>
+			</li>
+			
+			<li>
+				<%= link_to '#'  do %>
+					<i class="icon-edit"></i>Stock Adjustment
+				<% end %>
+			</li>
+			
+			<li>
+				<%= link_to '#'  do %>
+					<i class="icon-tasks"></i>Convert Stock
+				<% end %>
+			</li>
+			
+			<li>
+				<%= link_to '#'  do %>
+					<i class="icon-trash"></i>Scrap Item
+				<% end %>
+			</li>
+			
+			<li>
+				<%= link_to '#'  do %>
+					<i class="icon-refresh"></i>Replace Item
+				<% end %>
+			</li> 
+		</ul>    				
+	</li>
+	
+	<li class="dropdown">					
+		<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+			<i class="icon-shopping-cart"></i>
+			<span>Payment</span> 
+			<b class="caret"></b>
+		</a>	
+	
+		<ul class="dropdown-menu">							
+			<li>
+				<%= link_to new_invoice_url  do %>
+					<i class="icon-folder-close"></i>Invoice
+				<% end %>
+				 
+			</li>
+	 
+			
+			<li>
+				<%= link_to new_payment_url  do %>
+					<i class="icon-shopping-cart"></i>Pembayaran
+				<% end %>
+			</li>
+		 
+			
+		</ul>    				
+	</li>
+	
+	
+
+	
+	<li class="dropdown">					
+		<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+			<i class="icon-shopping-cart"></i>
+			<span>Factory</span> 
+			<b class="caret"></b>
+		</a>	
+	
+		<ul class="dropdown-menu">							
+			<li>
+				<%= link_to new_pre_production_history_url  do %>
+					<i class="icon-folder-close"></i>Pre Production
+				<% end %>
+				 
+			</li>
+	 
+			
+			<li>
+				<%= link_to new_production_history_url  do %>
+					<i class="icon-shopping-cart"></i>Production
+				<% end %>
+			</li>
+			<li>
+				<%= link_to new_post_production_history_url do %>
+					<i class="icon-wrench"></i>Post Production
+				<% end %>							
+			</li>
+			
+			<li class="divider"></li>
+			 
+			<li>
+				<%= link_to new_delivery_url do %>
+					<i class="icon-wrench"></i>Surat Jalan
+				<% end %>							
+			</li>
+			
+			<li>
+				<%= link_to new_sales_return_url do %>
+					<i class="icon-wrench"></i>Sales Retur
+				<% end %>							
+			</li>
+			
+		</ul>    				
+	</li>
+	
+	
+	<li class="dropdown">					
+		<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+			<i class="icon-shopping-cart"></i>
+			<span>Sales</span> 
+			<b class="caret"></b>
+		</a>	
+	
+		<ul class="dropdown-menu">							
+			<li>
+				<%= link_to new_customer_url  do %>
+					<i class="icon-folder-close"></i>Customer
+				<% end %>
+				 
+			</li>
+			<li class="divider"></li>
+			
+			<li>
+				<%= link_to new_sales_order_url  do %>
+					<i class="icon-shopping-cart"></i>Sales Order
+				<% end %>
+			</li>
+	 
+		</ul>    				
+	</li>
+</ul> -->

@@ -1,4 +1,5 @@
 class MaterialsController < ApplicationController
+  before_filter :role_required
   def new
     @objects = Material.active_objects
     @new_object = Material.new 

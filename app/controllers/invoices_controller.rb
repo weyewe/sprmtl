@@ -1,4 +1,5 @@
 class InvoicesController < ApplicationController
+  before_filter :role_required
   def new
     @objects = Invoice.joins(:delivery => [:customer]).order("created_at DESC") 
     @new_object = Invoice.new 

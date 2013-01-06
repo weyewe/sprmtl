@@ -1,4 +1,5 @@
 class SalesOrdersController < ApplicationController
+  before_filter :role_required
   def new
     @objects = SalesOrder.active_objects 
     @new_object = SalesOrder.new 

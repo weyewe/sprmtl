@@ -1,4 +1,5 @@
 class SalesReturnsController < ApplicationController
+  before_filter :role_required
   def new
     @objects = SalesReturn.joins(:delivery).order("created_at DESC") 
     # @new_object = SalesOrder.new 

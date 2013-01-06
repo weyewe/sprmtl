@@ -1,4 +1,6 @@
+require 'navigation_helper.rb'
 module ApplicationHelper
+  include NavigationHelper
   ACTIVE = 'active'
   
   def print_money(value)

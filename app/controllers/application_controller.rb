@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   
   
+  
   def access_denied
     render :text => 'access_denied: requires an role' and return
   end

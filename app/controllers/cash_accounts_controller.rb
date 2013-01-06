@@ -1,4 +1,5 @@
 class CashAccountsController < ApplicationController
+  before_filter :role_required
   def new
     @objects = CashAccount.order("created_at DESC")
     @new_object = CashAccount.new 
