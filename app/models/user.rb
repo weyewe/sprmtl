@@ -41,12 +41,25 @@ class User < ActiveRecord::Base
   def User.create_by_employee( employee, params)
     return nil if employee.nil? 
     
-    new_object = User.new 
+    new_object                        = User.new 
+    password                         = UUIDTools::UUID.timestamp_create.to_s[0..7]
     new_object.name                  = params[:name]
     new_object.email                 = params[:email] 
     new_object.role_id               = params[:role_id]
     
+    new_object.password              = password
+    new_object.password_confirmation = password 
+    
     new_object.save
+
+    
+     
+    
+    if new_object.valid?
+      UserMailer.notify_new_user_registration( new_object , password    ).deliver
+      # send_company_admin_approval_notification( company_admin ).deliver
+      # NewsletterMailer.send_company_admin_approval_notification( company_admin ).deliver
+    end
     return new_object 
 
   end
@@ -66,6 +79,28 @@ class User < ActiveRecord::Base
     
     self.save
     return self  
+  end
+  
+  def update_password(  params) 
+    self.password = params[:password]
+    self.password_confirmation = params[:password_confirmation]
+    
+    self.save 
+    
+    return self 
+    
+  end
+  
+  def reset_password( employee, params ) 
+    password                   = UUIDTools::UUID.timestamp_create.to_s[0..7]
+    self.password              = password
+    self.password_confirmation = password 
+    
+    if self.save
+      UserMailer.notify_reset_password( employee, self , password    ).deliver
+    end
+    
+    return self
   end
   
   def set_as_main_user 

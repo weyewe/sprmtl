@@ -75,6 +75,8 @@ Supermetal::Application.configure do
                                 
                                 datepicker.js
                                 datepicker.css
+                                
+                                bootstrap_email.css 
                   )
 
   # Disable delivery errors, bad email addresses will be ignored

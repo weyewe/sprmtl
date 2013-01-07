@@ -95,6 +95,11 @@ Supermetal::Application.routes.draw do
   match 'update_app_user/:user_id' => 'app_users#update_app_user', :as => :update_app_user , :method => :post 
   match 'delete_app_user' => 'app_users#delete_app_user', :as => :delete_app_user , :method => :post
 
+=begin
+  SETTING
+=end
+  match 'edit_credential' => "passwords#edit_credential" , :as => :edit_credential
+  match 'update_password' => "passwords#update" , :as => :update_password, :method => :put
 
 ##################################################
 ##################################################
