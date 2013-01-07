@@ -22,6 +22,14 @@ $(document).ready(function(){
 	
 		$("#tableview").replaceWith('<%= item_list %>');
 		
+		// refresh the masthead
+		<% masthead = escape_javascript(  render :partial => "layouts/masthead" ,:locals => {
+			:title => "Sales Item",
+			:description => "Create New Sales Item for Sales Order <b>#{@sales_order.code}</b>".html_safe
+		})%>
+		
+		$("#masthead").replaceWith('<%= masthead%>');
+		
 		
 	
 	// alert msgbox: success confirming 

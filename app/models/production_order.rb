@@ -17,6 +17,7 @@ class ProductionOrder < ActiveRecord::Base
   end
   
   def ProductionOrder.generate_production_failure_production_order( production_history )
+    return nil if production_history.broken_quantity == 0 
     sales_item = production_history.sales_item 
     ProductionOrder.create(
       :sales_item_id            => production_history.sales_item_id       ,
@@ -32,6 +33,8 @@ class ProductionOrder < ActiveRecord::Base
   
   
   def ProductionOrder.generate_post_production_failure_production_order( post_production_history )
+    # puts "We are inside the production order\n"*10
+    return nil if post_production_history.broken_quantity == 0 
     sales_item = post_production_history.sales_item 
     ProductionOrder.create(
       :sales_item_id            => post_production_history.sales_item_id       ,
@@ -47,7 +50,7 @@ class ProductionOrder < ActiveRecord::Base
   
   
   def ProductionOrder.generate_sales_return_production_order( sales_return_entry )
-    
+    return nil if sales_return_entry.quantity_for_production ==0 
     ProductionOrder.create(
       :sales_item_id            => sales_return_entry.delivery_entry.sales_item_id       ,
       :case                     => PRODUCTION_ORDER[:sales_return]     ,
@@ -62,6 +65,7 @@ class ProductionOrder < ActiveRecord::Base
   end
   
   def ProductionOrder.generate_delivery_lost_production_order( delivery_lost_entry  )
+    return nil if delivery_lost_entry.quantity_lost == 0 
     ProductionOrder.create(
       :sales_item_id            => delivery_lost_entry.delivery_entry.sales_item_id       ,
       :case                     => PRODUCTION_ORDER[:delivery_lost]     ,

@@ -26,15 +26,15 @@ class ProductionHistory < ActiveRecord::Base
   end
   
   def no_negative_quantity
-    if ok_quantity < 0 
+    if ok_quantity.present? and ok_quantity < 0 
       errors.add(:ok_quantity , "Kuantitas tidak boleh lebih kecil dari 0" ) 
     end
     
-    if broken_quantity <0 
+    if broken_quantity.present? and  broken_quantity <0 
       errors.add(:broken_quantity , "Kuantitas tidak boleh lebih kecil dari 0" )   
     end 
     
-    if repairable_quantity < 0 
+    if repairable_quantity.present? and  repairable_quantity < 0 
       errors.add(:repairable_quantity , "Kuantitas tidak boleh lebih kecil dari 0" )   
     end
   end

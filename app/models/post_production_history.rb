@@ -37,11 +37,11 @@ class PostProductionHistory < ActiveRecord::Base
   end
   
   def no_negative_weight
-    if ok_weight < BigDecimal('0')
+    if ok_weight.present? and ok_weight < BigDecimal('0')
       errors.add(:ok_weight , "Berat tidak boleh negative" ) 
     end
     
-    if broken_weight < BigDecimal('0')
+    if broken_weight.present? and  broken_weight < BigDecimal('0')
       errors.add(:broken_weight , "Berat tidak boleh negative" )   
     end
   
@@ -55,12 +55,12 @@ class PostProductionHistory < ActiveRecord::Base
     if broken_quantity >  0  and broken_weight <=  BigDecimal('0')
       errors.add(:broken_weight , "Berat tidak boleh 0 jika kuantity > 0 " )   
     end
-  
   end
   
   def prevent_excess_post_production
     sales_item = self.sales_item
     pending_post_production = sales_item.pending_post_production
+    puts "pending post production from validation: #{pending_post_production}"
     if ok_quantity + broken_quantity > sales_item.pending_post_production
       errors.add(:ok_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )   
       errors.add(:broken_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )
@@ -136,12 +136,13 @@ class PostProductionHistory < ActiveRecord::Base
     return nil if self.is_confirmed == true 
     
     ActiveRecord::Base.transaction do
-      self.update_processed_quantity
+      
       
       self.is_confirmed = true 
       self.confirmer_id = employee.id
       self.confirmed_at = DateTime.now 
       self.save
+      self.update_processed_quantity
       if  self.errors.size != 0  
         raise ActiveRecord::Rollback, "Call tech support!" 
       end
@@ -152,7 +153,8 @@ class PostProductionHistory < ActiveRecord::Base
       # if only post production
       
       sales_item.generate_next_phase_after_post_production( self ) 
-      sales_item.update_post_production_statistics( self )  
+      sales_item.update_post_production_statistics    
+      sales_item.update_pending_production # the failure will add production
       
       
        

@@ -58,10 +58,18 @@ class Delivery < ActiveRecord::Base
     start_datetime = Date.today.at_beginning_of_month.to_datetime
     end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
     
-    counter = Delivery.where{
+    counter = self.class.where{
       (self.created_at >= start_datetime)  & 
       (self.created_at < end_datetime )
     }.count
+    
+    if self.is_confirmed?
+      counter = self.class.where{
+        (self.created_at >= start_datetime)  & 
+        (self.created_at < end_datetime ) & 
+        (self.is_confirmed.eq true )
+      }.count
+    end
     
     header = ""
     if not self.is_confirmed?  
@@ -138,7 +146,8 @@ class Delivery < ActiveRecord::Base
       #  
       #  # create DeliveryLost
       if self.has_delivery_lost? 
-        DeliveryLost.create_by_employee( employee, self )
+        delivery_lost = DeliveryLost.create_by_employee( employee, self )
+        delivery_lost.confirm( employee )
       end
       
       invoice.update_amount_payable

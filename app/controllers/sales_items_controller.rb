@@ -46,7 +46,9 @@ class SalesItemsController < ApplicationController
     @objects = [] 
     query = '%' + search_params + '%'
     # on PostGre SQL, it is ignoring lower case or upper case 
-    @objects = SalesItem.where{ (code =~ query)  & (is_deleted.eq false) }.map{|x| {:code => x.code, :id => x.id }}
+    @objects = SalesItem.where{ (code =~ query)  &
+                      (is_deleted.eq false) & 
+                      (is_confirmed.eq true) }.map{|x| {:code => x.code, :id => x.id }}
     
     respond_to do |format|
       format.html # show.html.erb 

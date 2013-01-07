@@ -1,0 +1,71 @@
+
+<% customer = object.sales_order.customer %>
+<tr id="entry-<%= object.id %>"> 
+	<td>
+		<%= "#{object.code}" %>
+		<hr />
+		Dipesan: <b><%= object.quantity %></b>
+		
+	</td>
+	
+	<td>
+		<%= customer.name %>
+	</td>
+	
+	<td>
+		<%= object.pending_production %>
+		<hr />
+		Total Pengerjaan: <b><%= object.number_of_production %></b>
+		<hr />
+		Sukses: <b><%= object.number_of_production - object.number_of_failed_production %></b>
+		<hr />
+		Gagal: <b><%= object.number_of_failed_production %></b>
+	</td>
+	
+	<td>
+		<%= object.pending_post_production %>
+		<hr />
+		Total Pengerjaan: <b><%= object.number_of_post_production %></b>
+		<hr />
+		Sukses: <b><%= object.number_of_post_production - object.number_of_failed_post_production %></b>
+		<hr />
+		Gagal: <b><%= object.number_of_failed_post_production %></b>
+	</td>
+	
+	<td>
+		<%= object.ready %>
+	</td>
+	
+	<td>
+		Total : <%= object.number_of_delivery %>
+		<hr />
+		Masih Di Perjalanan: <b> <%= object.on_delivery %> </b>
+		
+		<hr />
+		Disetujui: <b><%= object.fulfilled_order %></b>
+		<hr />
+		Retur: <b><%= object.number_of_sales_return %></b>
+		<hr />
+		Hilang: <b><%= object.number_of_delivery_lost %></b>
+		
+	</td>
+	 
+ 
+</tr>
+
+
+
+
+
+
+
+           
+
+
+               
+          
+                 
+             
+            
+        
+   

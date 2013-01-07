@@ -164,10 +164,32 @@ class DeliveryEntry < ActiveRecord::Base
   
   
   def generate_code
-    string = "DE" + "/" + 
+    
+    start_datetime = Date.today.at_beginning_of_month.to_datetime
+    end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
+    
+    counter = self.class.where{
+      (self.created_at >= start_datetime)  & 
+      (self.created_at < end_datetime )
+    }.count
+    
+    if self.is_confirmed?
+      counter = self.class.where{
+        (self.created_at >= start_datetime)  & 
+        (self.created_at < end_datetime ) & 
+        (self.is_confirmed.eq true )
+      }.count
+    end
+    
+    header = ""
+    if not self.is_confirmed?  
+      header = "[pending]"
+    end
+    
+    string = "#{header}DE" + "/" + 
               self.created_at.year.to_s + '/' + 
               self.created_at.month.to_s+ '/' + 
-              self.id .to_s
+              counter.to_s
               
     self.code =  string 
     self.save 
@@ -176,7 +198,9 @@ class DeliveryEntry < ActiveRecord::Base
   def confirm 
     return nil if self.is_confirmed == true  
     self.is_confirmed = true 
+    
     self.save 
+    self.generate_code
     
     if  self.errors.size != 0  
       raise ActiveRecord::Rollback, "Call tech support!" 
@@ -184,8 +208,9 @@ class DeliveryEntry < ActiveRecord::Base
     
     sales_item = self.sales_item 
     
-    sales_item.update_ready_statistics
+    
     sales_item.update_on_delivery_statistics
+    sales_item.update_ready_statistics
   end
   
   def finalize

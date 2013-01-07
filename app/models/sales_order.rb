@@ -61,11 +61,20 @@ class SalesOrder < ActiveRecord::Base
     start_datetime = Date.today.at_beginning_of_month.to_datetime
     end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
     
-    counter = SalesOrder.where{
+    counter = self.class.where{
       (self.created_at >= start_datetime)  & 
       (self.created_at < end_datetime )
     }.count
     
+    if self.is_confirmed?
+      counter = self.class.where{
+        (self.created_at >= start_datetime)  & 
+        (self.created_at < end_datetime ) & 
+        (self.is_confirmed.eq true )
+      }.count
+    end
+    
+  
     header = ""
     if not self.is_confirmed?  
       header = "[pending]"

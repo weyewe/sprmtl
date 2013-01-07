@@ -9,18 +9,9 @@ class DeliveryLostEntry < ActiveRecord::Base
     new_object = DeliveryLostEntry.new 
     new_object.creator_id = employee.id 
     new_object.delivery_entry_id = delivery_entry.id 
-    new_object.delivery_lost_id  = delivery_lost.id 
+    new_object.delivery_lost_id  = delivery_lost.id  
     
-     
-    
-    if new_object.save
-      ProductionOrder.generate_delivery_lost_production_order( new_object  )
-      
-      sales_item = new_object.delivery_entry.sales_item 
-      sales_item.reload 
-
-      sales_item.update_pending_production 
-      sales_item.reload
+    if new_object.save 
     end
     
     return new_object
@@ -28,5 +19,30 @@ class DeliveryLostEntry < ActiveRecord::Base
   
   def quantity_lost
     self.delivery_entry.quantity_lost
+  end
+  
+  def confirm
+    
+    sales_item = self.delivery_entry.sales_item  
+    puts "before update, pending_production: #{sales_item.pending_production}"
+    puts "before update, total production_order : #{sales_item.production_orders.sum('quantity')}"
+    
+    
+    self.is_confirmed = true 
+    self.save 
+    ProductionOrder.generate_delivery_lost_production_order( self  )
+    
+    puts "initial delivery_lost: #{sales_item.number_of_delivery_lost}"
+    
+    sales_item.update_delivery_lost
+    sales_item.reload 
+    puts "final delivery_lost: #{sales_item.number_of_delivery_lost}"
+
+    
+    
+    sales_item.update_pending_production  # after addition of production order 
+    sales_item.reload 
+    puts "after update, pending_production: #{sales_item.pending_production}"
+    puts "after update, total production_order : #{sales_item.production_orders.sum('quantity')}"
   end
 end
