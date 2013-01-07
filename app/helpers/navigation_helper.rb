@@ -2,6 +2,7 @@
 module NavigationHelper 
   ACTIVE_CLASS = "active"
   
+  
   MANAGEMENT_NAV = {
     :header => "Management",
     :header_icon => "icon-th", 
@@ -232,7 +233,7 @@ module NavigationHelper
     navigation_string = ""
     
     navigation_blocks = [] 
-    [
+    [ 
       MANAGEMENT_NAV,
       INVENTORY_NAV,
       PAYMENT_NAV,
@@ -272,7 +273,7 @@ module NavigationHelper
       # nav block has_many nav elements 
       puts "the nav[:header] = #{nav[:header]}, gonna render nav block"
       result =  render_nav_block( current_user, params, nav_block) 
-      nav_blocks << result if not  result.nil? or not result.length == 0
+      nav_blocks << result if not  result.nil? and not result.length == 0
     end
     
     return nil if nav_blocks.length == 0 

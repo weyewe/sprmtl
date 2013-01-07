@@ -1,5 +1,5 @@
 class DeliveryEntriesController < ApplicationController
-  before_filter :role_required
+  before_filter :role_required, :except => [:search_delivery_entry]
   def new
     @parent = Delivery.find_by_id params[:delivery_id]
     @customer = @parent.customer 

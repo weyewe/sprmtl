@@ -1,5 +1,5 @@
 class ProductionHistoriesController < ApplicationController
-  before_filter :role_required
+  before_filter :role_required, :except => [:generate_production_history]
   
   def generate_production_history
     @sales_item   =  SalesItem.find_by_id params[:selected_sales_item_id]

@@ -68,9 +68,7 @@ class User < ActiveRecord::Base
     return nil if employee.nil? 
       
     self.name                  = params[:name]
-    self.email                 = params[:email]
-    self.password              = params[:password]
-    self.password_confirmation = params[:password_confirmation]
+    self.email                 = params[:email] 
     
     
     if  self.is_main_user == false  

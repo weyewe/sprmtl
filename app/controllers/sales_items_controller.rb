@@ -1,5 +1,5 @@
 class SalesItemsController < ApplicationController
-  before_filter :role_required
+  before_filter :role_required, :except => [:search_sales_item]
   def new
     @parent = SalesOrder.find_by_id params[:sales_order_id]
     @objects = @parent.active_sales_items 

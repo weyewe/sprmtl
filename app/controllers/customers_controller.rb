@@ -1,5 +1,5 @@
 class CustomersController < ApplicationController
-  before_filter :role_required
+  before_filter :role_required, :except => [:search_customer]
   def new
     @objects = Customer.active_objects
     @new_object = Customer.new 

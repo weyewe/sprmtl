@@ -219,7 +219,8 @@ CASH_ACCOUNT_CASE     = {
 
 
 ROLE_NAME = {
-  :admin => "admin"
+  :admin => "admin",
+  :data_entry => "dataentry"
 }
 
 =begin
