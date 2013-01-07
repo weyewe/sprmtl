@@ -55,14 +55,32 @@ class SalesOrder < ActiveRecord::Base
   end
   
   def generate_code
-    string = "SO" + "/" + 
+    # get the total number of sales order created in that month 
+    
+    # total_sales_order = SalesOrder.where()
+    start_datetime = Date.today.at_beginning_of_month.to_datetime
+    end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
+    
+    counter = SalesOrder.where{
+      (self.created_at >= start_datetime)  & 
+      (self.created_at < end_datetime )
+    }.count
+    
+    header = ""
+    if not self.is_confirmed?  
+      header = "[pending]"
+    end
+    
+    
+    string = "#{header}SO" + "/" + 
               self.created_at.year.to_s + '/' + 
               self.created_at.month.to_s + '/' + 
-              self.id.to_s
+              counter.to_s
               
     self.code =  string 
     self.save 
   end
+   
   
   def confirm(employee) 
     return nil if employee.nil? 
@@ -75,6 +93,7 @@ class SalesOrder < ActiveRecord::Base
       self.confirmed_at = DateTime.now 
       self.is_confirmed = true 
       self.save 
+      self.generate_code
       self.active_sales_items.each do |sales_item|
         sales_item.confirm 
       end

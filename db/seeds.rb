@@ -179,7 +179,11 @@ has_production_sales_item = SalesItem.create_sales_item( admin, sales_order,  {
     :name => "Nama dari sales item ini ( menurut customer)"
   })
   
+puts "BEFORE CONFIRM the sales order code: #{sales_order.code}\n"*10
 sales_order.confirm( admin )
+puts "AFTER CONFIRM the sales order code: #{sales_order.code}\n"*10
+
+
 
 
 # ADDING PRE_PRODUCTION 

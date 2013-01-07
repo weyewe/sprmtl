@@ -45,10 +45,24 @@ class Invoice < ActiveRecord::Base
   
   
   def generate_code
+    
+    start_datetime = Date.today.at_beginning_of_month.to_datetime
+    end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
+    
+    counter = SalesOrder.where{
+      (self.created_at >= start_datetime)  & 
+      (self.created_at < end_datetime )
+    }.count
+    
+    header = ""
+    if not self.is_confirmed?  
+      header = "[pending]"
+    end
+    
     string = "INV" + "/" + 
               self.created_at.year.to_s + '/' + 
               self.created_at.month.to_s + '/' + 
-              self.id.to_s
+              counter.to_s 
               
     self.code =  string 
     self.save 

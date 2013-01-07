@@ -54,10 +54,25 @@ class Delivery < ActiveRecord::Base
   end
   
   def generate_code
-    string = "DO" + "/" + 
+    
+    start_datetime = Date.today.at_beginning_of_month.to_datetime
+    end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
+    
+    counter = Delivery.where{
+      (self.created_at >= start_datetime)  & 
+      (self.created_at < end_datetime )
+    }.count
+    
+    header = ""
+    if not self.is_confirmed?  
+      header = "[pending]"
+    end
+    
+    
+    string = "#{header}DO" + "/" + 
               self.created_at.year.to_s + '/' + 
               self.created_at.month.to_s + '/' + 
-              self.id.to_s
+              counter.to_s 
               
     self.code =  string 
     self.save 
@@ -74,6 +89,7 @@ class Delivery < ActiveRecord::Base
       self.confirmed_at = DateTime.now 
       self.is_confirmed = true 
       self.save 
+      self.generate_code
       
       if  self.errors.size != 0  
         raise ActiveRecord::Rollback, "Call tech support!" 
