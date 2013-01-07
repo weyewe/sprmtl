@@ -77,6 +77,7 @@ data_entry_role = {
         :delete_delivery_entry => true,
         :confirm_delivery_entry => true
       },
+      
   :sales_returns => {
     :new => true,
     :create => true, 
@@ -90,10 +91,35 @@ data_entry_role = {
         :create => true, 
         :edit => true, 
         :update_sales_return_entry => true ,
-        :delete_sales_return_entry => true,
-        :confirm_sales_return_entry => true
+        :delete_sales_return_entry => true 
+      },
+      
+  :invoices => {
+    :new => true,
+    :create => true, 
+    :edit => true, 
+    :update_invoice => true ,
+    :delete_invoice => true,
+    :confirm_invoice => true
+  }, 
+  
+  :payments => {
+    :new => true,
+    :create => true, 
+    :edit => true, 
+    :update_payment => true ,
+    :delete_payment => true,
+    :confirm_payment => true
+  },
+      :invoice_payments => {
+        :new => true,
+        :create => true, 
+        :edit => true, 
+        :update_invoice_payment => true ,
+        :delete_invoice_payment => true 
       }
 }
+
 
 data_entry_role = Role.create!(
 :name        => ROLE_NAME[:data_entry],

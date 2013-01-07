@@ -10,9 +10,15 @@ class SalesOrder < ActiveRecord::Base
     self.where(:is_deleted => false ).order("created_at DESC")
   end
   
-  def delete
-    self.is_active = false 
-    self.save 
+  def delete(employee) 
+    return nil if employee.nil? 
+    return nil if self.is_confirmed? 
+    
+    self.sales_items.each do |sales_item|
+      sales_item.delete( employee ) 
+    end 
+    
+    self.destroy
   end
   
   def active_sales_items 

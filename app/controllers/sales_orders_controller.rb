@@ -33,7 +33,7 @@ class SalesOrdersController < ApplicationController
   
   def delete_sales_order
     @object = SalesOrder.find_by_id params[:object_to_destroy_id]
-    @object.delete 
+    @object.delete(current_user) 
   end
   
 =begin

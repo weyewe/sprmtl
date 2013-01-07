@@ -76,9 +76,11 @@ class SalesItem < ActiveRecord::Base
     return self 
   end
   
-  def delete
-    self.is_deleted = true 
-    self.save 
+  def delete(employee)
+    return nil if employee.nil?
+    return nil if self.is_confirmed? 
+    
+    self.destroy 
   end
   
   def SalesItem.create_sales_item( employee, sales_order, params ) 
