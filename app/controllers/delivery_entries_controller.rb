@@ -5,6 +5,10 @@ class DeliveryEntriesController < ApplicationController
     @customer = @parent.customer 
     @objects = @parent.delivery_entries 
     @new_object = DeliveryEntry.new 
+    
+    add_breadcrumb "Surat Jalan", 'new_delivery_url'
+    set_breadcrumb_for @parent, 'new_delivery_delivery_entry_url' + "(#{@parent.id})", 
+                "Tambah Sales Item ke Surat Jalan"
   end
   
   def create

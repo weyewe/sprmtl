@@ -3,6 +3,7 @@ class DeliveriesController < ApplicationController
   def new
     @objects = Delivery.order("created_at DESC")
     @new_object = Delivery.new 
+    add_breadcrumb "Surat Jalan", 'new_delivery_url'
   end
   
   def create

@@ -3,6 +3,8 @@ class SalesOrdersController < ApplicationController
   def new
     @objects = SalesOrder.active_objects 
     @new_object = SalesOrder.new 
+    
+    add_breadcrumb "Sales Order", 'new_sales_order_url'
   end
   
   def create

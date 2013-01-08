@@ -3,7 +3,11 @@ class SalesItemsController < ApplicationController
   def new
     @parent = SalesOrder.find_by_id params[:sales_order_id]
     @objects = @parent.active_sales_items 
-    @new_object = SalesItem.new 
+    @new_object = SalesItem.new
+    
+    add_breadcrumb "SalesOrder", 'new_sales_order_url'
+    set_breadcrumb_for @parent, 'new_sales_order_sales_item_url' + "(#{@parent.id})", 
+                "Tambah Sales Item ke Sales Order"
   end
   
   def create

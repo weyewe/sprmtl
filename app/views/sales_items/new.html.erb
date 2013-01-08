@@ -3,6 +3,9 @@
 	:description => "Create New Sales Item for Sales Order <b>#{@parent.code}</b>".html_safe
 }%>
 
+
+<%= create_breadcrumb(@breadcrumbs).html_safe %>
+
 <div id="content">
 
 	<div class="container">

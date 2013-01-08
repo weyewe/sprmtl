@@ -5,6 +5,10 @@ class InvoicePaymentsController < ApplicationController
     @customer = @parent.customer 
     @objects = @parent.invoice_payments.order("created_at DESC") 
     @new_object = InvoicePayment.new 
+    
+    add_breadcrumb "Payment", 'new_payment_url'
+    set_breadcrumb_for @parent, 'new_payment_invoice_payment_url' + "(#{@parent.id})", 
+                "Tambah Invoice ke Payment"
   end
   
   def create

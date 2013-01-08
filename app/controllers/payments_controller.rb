@@ -3,6 +3,8 @@ class PaymentsController < ApplicationController
   def new
     @objects = Payment.order("created_at DESC") 
     @new_object = Payment.new 
+    
+    add_breadcrumb "Payment", 'new_payment_url'
   end
   
   def create
