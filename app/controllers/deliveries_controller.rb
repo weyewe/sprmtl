@@ -50,7 +50,7 @@ class DeliveriesController < ApplicationController
   def finalize_delivery
     @delivery = Delivery.find_by_id params[:delivery_id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company
-    sleep 3 
+    # sleep 3 
     @delivery.finalize( current_user  )
     @delivery.reload
   end

@@ -18,7 +18,8 @@ class ProductionHistory < ActiveRecord::Base
    
 
   def no_all_zero_quantity
-    if  ok_quantity == 0  and  broken_quantity == 0 and repairable_quantity == 0 
+    if  ok_quantity.present? and broken_quantity.present? and repairable_quantity.present? and
+      ok_quantity == 0  and  broken_quantity == 0 and repairable_quantity == 0 
       errors.add(:ok_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" ) 
       errors.add(:broken_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" )   
       errors.add(:repairable_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" )  
@@ -40,29 +41,32 @@ class ProductionHistory < ActiveRecord::Base
   end
   
   def no_negative_weight
-    if ok_weight < BigDecimal('0')
+    if ok_weight.present? and ok_weight < BigDecimal('0')
       errors.add(:ok_weight , "Berat tidak boleh negative" ) 
     end
     
-    if broken_weight < BigDecimal('0')
+    if broken_weight.present? and broken_weight < BigDecimal('0')
       errors.add(:broken_weight , "Berat tidak boleh negative" )   
     end
     
-    if repairable_weight < BigDecimal('0')
+    if repairable_weight.present? and repairable_weight < BigDecimal('0')
       errors.add(:repairable_weight , "Berat tidak boleh negative" )   
     end
   end
   
   def prevent_zero_weight_for_non_zero_quantity
-    if ok_quantity > 0 and ok_weight <= BigDecimal('0')
+    if ok_quantity.present? and ok_weight.present? and 
+        ok_quantity > 0 and ok_weight <= BigDecimal('0')
       errors.add(:ok_weight , "Berat tidak boleh 0 jika kuantity > 0 " ) 
     end
     
-    if broken_quantity >  0  and broken_weight <=  BigDecimal('0')
+    if broken_quantity.present? and broken_weight.present? and 
+       broken_quantity >  0  and broken_weight <=  BigDecimal('0')
       errors.add(:broken_weight , "Berat tidak boleh 0 jika kuantity > 0 " )   
     end
     
-    if repairable_quantity >  0  and repairable_weight <=  BigDecimal('0')
+    if repairable_quantity.present? and repairable_weight.present? and 
+       repairable_quantity >  0  and repairable_weight <=  BigDecimal('0')
       errors.add(:repairable_weight , "Berat tidak boleh 0 jika kuantity > 0 " )   
     end
   end

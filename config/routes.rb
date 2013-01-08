@@ -47,6 +47,17 @@ Supermetal::Application.routes.draw do
   match 'search_customer' => "customers#search_customer", :as => :search_customer 
   match 'search_sales_item' => "sales_items#search_sales_item", :as => :search_sales_item 
  
+##################################################
+##################################################
+######### REPORT_ROUTES 
+##################################################
+##################################################
+  match 'production_details/:sales_item_id' => 'home#production_details', :as => :production_details
+  match 'post_production_details/:sales_item_id' => 'home#post_production_details', :as => :post_production_details
+  match 'delivery_entry_details/:sales_item_id' => 'home#delivery_entry_details', :as => :delivery_entry_details
+  
+ 
+ 
 =begin
   MASTER DATA ROUTES
 =end

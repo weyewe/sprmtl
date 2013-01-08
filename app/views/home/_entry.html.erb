@@ -15,7 +15,10 @@
 	<td>
 		 <%= object.pending_production %> 
 		<hr />
-		Total Pengerjaan: <b><%= object.number_of_production %></b>
+		Total Pengerjaan: 
+		<b>
+			<%= link_to object.number_of_production, production_details_url(object) %>
+		</b>
 		<hr />
 		Sukses: <b><%= object.number_of_production - object.number_of_failed_production %></b>
 		<hr />
@@ -25,7 +28,11 @@
 	<td>
 		<%= object.pending_post_production %>
 		<hr />
-		Total Pengerjaan: <b><%= object.number_of_post_production %></b>
+		Total Pengerjaan: 
+		<b>
+			<%= link_to object.number_of_post_production, post_production_details_url(object) %>
+		</b>
+ 
 		<hr />
 		Sukses: <b><%= object.number_of_post_production - object.number_of_failed_post_production %></b>
 		<hr />
@@ -37,12 +44,18 @@
 	</td>
 	
 	<td>
-		Total : <%= object.number_of_delivery %>
+		Disetujui: <b><%= object.fulfilled_order %></b>
+		
+		<hr />
+		Total Pengiriman: 
+		<b>
+			<%= link_to object.number_of_delivery , delivery_entry_details_url(object) %>
+		</b>
+		
 		<hr />
 		Masih Di Perjalanan: <b> <%= object.on_delivery %> </b>
 		
-		<hr />
-		Disetujui: <b><%= object.fulfilled_order %></b>
+		
 		<hr />
 		Retur: <b><%= object.number_of_sales_return %></b>
 		<hr />

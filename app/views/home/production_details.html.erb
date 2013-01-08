@@ -1,10 +1,9 @@
 <%= render :partial => "layouts/masthead" ,:locals => {
-	:title => "Report Pengerjaan",
-	:description => "Lihat progress pengerjaan order client"
+	:title => "Report Pengerjaan: #{@sales_item.code}",
+	:description => "Lihat progress history produksi (casting) dengan total produksi: <b>#{@sales_item.number_of_production}</b>".html_safe
 }%>
 
 <%= create_breadcrumb(@breadcrumbs).html_safe %>
-
 <div id="content">
 
 	<div class="container">
@@ -17,17 +16,15 @@
 				<table class="table table-bordered table-striped table-highlight" id='tableview'>
 					<thead>
 						<tr>
-							<th>Code</th> 
-							<th>Customer</th>
-							<th style="font-weight:bold;">Pending Production</th>
-							<th style="font-weight:bold;">Pending Post Production</th>
-							<th style="font-weight:bold;">Ready</th>
-							<th>Pengiriman</th> 
+							<th>Tanggal</th> 
+							<th>OK</th>
+							<th>Perbaiki</th>
+							<th>Gagal</th> 
 						</tr>
 					</thead>
 					<tbody> 
 						<% @objects.each do |object| %>
-							<%= render :partial =>  'home/entry', :locals => {
+							<%= render :partial =>  'home/production_history_entry', :locals => {
 								:object => object 
 							} %> 
 						<% end %>

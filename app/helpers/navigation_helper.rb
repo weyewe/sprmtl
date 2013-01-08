@@ -2,6 +2,45 @@
 module NavigationHelper 
   ACTIVE_CLASS = "active"
   
+   
+  
+  
+  REPORT_NAV = {
+    :header => "Report",
+    :header_icon => "icon-file", 
+    :has_dropdown => true, 
+    :only_icon => false , 
+    :blocks => [
+      # block 1 
+      [
+        {
+          :name => "Progress",
+          :url  => 'root_url',
+          :icon => "icon-tasks",
+          :activities => [
+            {
+              :controller => "home",
+              :action     => "index"
+            },
+            {
+              :controller => "home",
+              :action     => "production_details"
+            },
+            {
+              :controller => "home",
+              :action     => "post_production_details"
+            },
+            {
+              :controller => "home",
+              :action     => "delivery_entry_details"
+            }
+          ]
+        } 
+      ]
+      
+    ] 
+  }
+  
   
   MANAGEMENT_NAV = {
     :header => "Management",
@@ -236,6 +275,7 @@ module NavigationHelper
     [ 
       MANAGEMENT_NAV,
       INVENTORY_NAV,
+      REPORT_NAV, 
       PAYMENT_NAV,
       FACTORY_NAV,
       SALES_NAV

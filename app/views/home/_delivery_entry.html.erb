@@ -1,0 +1,39 @@
+ 
+<tr id="entry-<%= object.id %>"> 
+	<td>
+		<%= print_date(object.delivery.delivery_date) %>
+	</td>
+	 
+	
+	<td> 
+		<%= print_date( object.delivery.finalized_at ) %>
+	</td>
+	 
+	
+	<td> 
+		<%= object.quantity_sent %>
+	</td>
+	
+	
+	<% if object.is_finalized? %>
+	<td>  
+		<%= object.quantity_confirmed %>
+	</td>
+	
+	<td> 
+		<%= object.quantity_returned %>
+	</td>
+	
+	<td> 
+		<%= object.quantity_lost %>
+	</td>
+	<% else %>
+		<td colspan='3'>
+			Belum Finalisasi
+		</td>
+	<% end %>
+	
+	
+ 
+	
+</tr>
