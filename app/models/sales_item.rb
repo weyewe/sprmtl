@@ -61,7 +61,8 @@ class SalesItem < ActiveRecord::Base
   def update_sales_item( params ) 
     self.material_id        = params[:material_id]       
     self.is_pre_production  = params[:is_pre_production] 
-    self.is_production      = params[:is_production]     
+    # self.is_production      = params[:is_production]     
+    self.is_production      = true # by default 
     self.is_post_production = params[:is_post_production]
     self.is_delivered       = params[:is_delivered]      
     self.delivery_address   = params[:delivery_address]  
@@ -93,7 +94,8 @@ class SalesItem < ActiveRecord::Base
     
     new_object.material_id        = params[:material_id]       
     new_object.is_pre_production  = params[:is_pre_production] 
-    new_object.is_production      = params[:is_production]     
+    # new_object.is_production      = params[:is_production]    
+    new_object.is_production      = true # by default  
     new_object.is_post_production = params[:is_post_production]
     new_object.is_delivered       = params[:is_delivered]      
     new_object.delivery_address   = params[:delivery_address]  
