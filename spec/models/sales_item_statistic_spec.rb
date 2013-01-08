@@ -202,7 +202,7 @@ describe "sales item statistic spec" do
           @final_pending_post_production = @complete_cycle_sales_item.pending_post_production 
           diff = @initial_pending_post_production  - @final_pending_post_production
           
-          diff.should == @post_production_ok_1
+          diff.should == @post_production_ok_1 + @post_production_broken_1
         end
         
         it 'should update the ready' do

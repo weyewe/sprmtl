@@ -67,7 +67,8 @@ data_entry_role = {
     :edit => true, 
     :update_delivery => true ,
     :delete_delivery => true,
-    :confirm_delivery => true
+    :confirm_delivery => true,
+    :finalize_delivery => true 
   },
       :delivery_entries => {
         :new => true,
@@ -75,7 +76,9 @@ data_entry_role = {
         :edit => true, 
         :update_delivery_entry => true ,
         :delete_delivery_entry => true,
-        :confirm_delivery_entry => true
+        :confirm_delivery_entry => true,
+        :edit_post_delivery_delivery_entry => true ,
+        :update_post_delivery_delivery_entry => true 
       },
       
   :sales_returns => {

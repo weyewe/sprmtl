@@ -414,6 +414,10 @@ class SalesItem < ActiveRecord::Base
     return self.post_production_histories.where(:is_confirmed => true ).sum("ok_quantity")
   end
   
+  def post_production_fail_quantity
+    return self.post_production_histories.where(:is_confirmed => true ).sum("broken_quantity")
+  end
+  
   def update_number_of_post_production
     self.number_of_post_production = self.post_production_histories.where(:is_confirmed => true).sum("processed_quantity")
     self.save
@@ -602,15 +606,15 @@ class SalesItem < ActiveRecord::Base
   end
   
   def update_pending_post_production  
-    produced = self.post_production_finished_quantity 
+    produced = self.post_production_finished_quantity    + self.post_production_fail_quantity 
     
     post_production_order_adjustment =    self.sales_return_entries.where(:is_confirmed => true ).
                                         sum("quantity_for_post_production")
     
                            
     self.pending_post_production = self.post_production_orders.sum("quantity")  - 
-                                      produced #- 
-                                     # post_production_order_adjustment
+                                      produced # - 
+                                      #                                       post_production_order_adjustment  
     self.save
   end
   
@@ -661,7 +665,7 @@ class SalesItem < ActiveRecord::Base
   end
   
   def update_number_of_sales_return
-    confirmed_sales_return_entries = self.sales_return_entries.where(:is_confirmed => true )
+    # confirmed_sales_return_entries = self.sales_return_entries.where(:is_confirmed => true )
     self.number_of_sales_return = self.delivery_entries.
                             where(:is_confirmed =>true, :is_finalized => true ).
                             sum("quantity_returned")
@@ -699,12 +703,14 @@ class SalesItem < ActiveRecord::Base
   def update_on_delivery_confirm
     update_on_delivery
     update_number_of_delivery
+    update_number_of_sales_return
     update_ready
   end
   
   def update_on_delivery_item_finalize
     update_on_delivery
     update_fulfilled_order
+    update_number_of_sales_return
   end
   
   def update_on_delivery_lost_entry_confirm

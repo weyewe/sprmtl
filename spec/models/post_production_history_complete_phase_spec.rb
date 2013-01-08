@@ -200,12 +200,12 @@ describe PostProductionHistory do
     end
     
     
-    it 'should deduct the pending post production by the number of ok_quantity' do
+    it 'should deduct the pending post production by the number of ok_quantity + broken quantity' do
       @final_pending_post_production = @complete_cycle_sales_item.pending_post_production 
       
       delta = @initial_pending_post_production - @final_pending_post_production
       
-      delta.should == @post_production_ok_1
+      delta.should == @post_production_ok_1 + @post_production_broken_1 
     end
     
     it 'should add the ready item by ok quantity' do

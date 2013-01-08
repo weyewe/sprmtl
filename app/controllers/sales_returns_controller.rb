@@ -42,6 +42,7 @@ class SalesReturnsController < ApplicationController
     @sales_return = SalesReturn.find_by_id params[:sales_return_id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @sales_return.confirm( current_user  )
+    @sales_return.reload 
     # sleep 5  
   end
 end
