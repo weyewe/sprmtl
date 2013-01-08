@@ -192,7 +192,7 @@ describe "sales item statistic spec" do
           
           @final_pending_production  =  @complete_cycle_sales_item.pending_production 
           diff = @final_pending_production - @initial_pending_production 
-          diff.should ==  0 # pending production is the same
+          diff.should ==  @post_production_broken_1 # pending production is the same
         end
          
         it 'should update pending post_productions' do 
@@ -457,7 +457,7 @@ describe "sales item statistic spec" do
                 it 'should add pending production by the amount of sales_return going to post production' do
                   @final_pending_production = @complete_cycle_sales_item.pending_production 
                   diff = @final_pending_production  - @initial_pending_production
-                  diff.should == @quantity_return_for_post_production
+                  diff.should == @quantity_broken
                 end
               
                 it 'should add production orders by the amount of all failed post production' do

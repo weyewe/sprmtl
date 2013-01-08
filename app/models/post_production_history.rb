@@ -18,18 +18,18 @@ class PostProductionHistory < ActiveRecord::Base
    
 
   def no_all_zero_quantity
-    if  ok_quantity == 0  and  broken_quantity == 0   
+    if  ok_quantity.present? and broken_quantity.present? and ok_quantity == 0  and  broken_quantity == 0   
       errors.add(:ok_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" ) 
       errors.add(:broken_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" )   
     end
   end
   
   def no_negative_quantity
-    if ok_quantity < 0 
+    if ok_quantity.present? and ok_quantity < 0 
       errors.add(:ok_quantity , "Kuantitas tidak boleh lebih kecil dari 0" ) 
     end
     
-    if broken_quantity <0 
+    if broken_quantity.present? and  broken_quantity <0 
       errors.add(:broken_quantity , "Kuantitas tidak boleh lebih kecil dari 0" )   
     end 
     
@@ -48,11 +48,11 @@ class PostProductionHistory < ActiveRecord::Base
   end
   
   def prevent_zero_weight_for_non_zero_quantity
-    if ok_quantity > 0 and ok_weight <= BigDecimal('0')
+    if ok_quantity.present? and ok_weight.present? and ok_quantity > 0 and ok_weight <= BigDecimal('0')
       errors.add(:ok_weight , "Berat tidak boleh 0 jika kuantity > 0 " ) 
     end
     
-    if broken_quantity >  0  and broken_weight <=  BigDecimal('0')
+    if broken_quantity.present? and broken_weight.present? and broken_quantity >  0  and broken_weight <=  BigDecimal('0')
       errors.add(:broken_weight , "Berat tidak boleh 0 jika kuantity > 0 " )   
     end
   end
@@ -61,7 +61,9 @@ class PostProductionHistory < ActiveRecord::Base
     sales_item = self.sales_item
     pending_post_production = sales_item.pending_post_production
     # puts "pending post production from validation: #{pending_post_production}"
-    if ok_quantity + broken_quantity > sales_item.pending_post_production
+    
+    if ok_quantity.present? and broken_quantity.present? and 
+          ( ok_quantity + broken_quantity > sales_item.pending_post_production ) 
       errors.add(:ok_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )   
       errors.add(:broken_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )
     end

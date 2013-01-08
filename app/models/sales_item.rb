@@ -351,7 +351,7 @@ class SalesItem < ActiveRecord::Base
     # puts "Total number of broken quantity: #{post_production_history.broken_quantity}\n"*10
     # for the failure 
     if self.is_production? and post_production_history.broken_quantity != 0 
-      
+      ProductionOrder.generate_post_production_failure_production_order( post_production_history  )
       
       # ProductionOrder.generate_post_production_failure_production_order( post_production_history ) 
       # 
@@ -359,28 +359,28 @@ class SalesItem < ActiveRecord::Base
       # if self.sales_return_pending_production_replacement_quota >  0 
       #   ProductionOrder.generate_sales_return_post_production_failure_production_order(post_production_history )
       # end
-      
-      broken_quantity  = post_production_history.broken_quantity 
-      replacement_quota = self.sales_return_pending_production_replacement_quota
-      to_be_replaced = 0 
-      not_replaced = 0 
-      
-      if replacement_quota < broken_quantity
-        to_be_replaced = replacement_quota 
-        not_replaced = broken_quantity - to_be_replaced
-      elsif self.sales_return_pending_production_replacement_quota >=  broken_quantity
-        to_be_replaced = broken_quantity 
-        not_replaced = 0 
-      end
-      
-      if not_replaced != 0 
-        ProductionOrder.generate_post_production_failure_production_order( post_production_history, not_replaced ) 
-      end
-      
-      if to_be_replaced != 0 
-        ProductionOrder.generate_sales_return_post_production_failure_production_order(post_production_history,to_be_replaced )
-      end
-      
+      # 
+      # broken_quantity  = post_production_history.broken_quantity 
+      # replacement_quota = self.sales_return_pending_production_replacement_quota
+      # to_be_replaced = 0 
+      # not_replaced = 0 
+      # 
+      # if replacement_quota < broken_quantity
+      #   to_be_replaced = replacement_quota 
+      #   not_replaced = broken_quantity - to_be_replaced
+      # elsif self.sales_return_pending_production_replacement_quota >=  broken_quantity
+      #   to_be_replaced = broken_quantity 
+      #   not_replaced = 0 
+      # end
+      # 
+      # if not_replaced != 0 
+      #   ProductionOrder.generate_post_production_failure_production_order( post_production_history, not_replaced ) 
+      # end
+      # 
+      # if to_be_replaced != 0 
+      #   ProductionOrder.generate_sales_return_post_production_failure_production_order(post_production_history,to_be_replaced )
+      # end
+      # 
       
       
     else
@@ -566,6 +566,13 @@ class SalesItem < ActiveRecord::Base
 # => number_of_failed_production
 # => number_of_failed_post_production
 # => number_of_delivery_lost
+
+###################################################
+#
+# => What is Pending Production? Number of quantity that I need to cast 
+#
+#
+####################################################
   def update_pending_production 
     # puts "\n\n ******************in the update_pending_production"
     # puts "production_finished_quantity: #{self.production_finished_quantity }"
@@ -580,9 +587,10 @@ class SalesItem < ActiveRecord::Base
     # puts "sales_return: #{self.sales_return_entries.where(:is_confirmed => true ).sum('quantity_for_production') }"
     # 
     
-    adjustment_to_production_order  = self.number_of_failed_production   +   
-                                  self.number_of_failed_post_production - 
-                                  self.used_quota_for_post_production_failure_replacement
+    adjustment_to_production_order  = self.number_of_failed_production  # -   
+                                  #self.used_quota_for_post_production_failure_replacement 
+                                  # self.number_of_failed_post_production 
+                                  
                                   
                                    #  +
                                   # self.number_of_delivery_lost +  # delivery lost doesn't preserve the pending production

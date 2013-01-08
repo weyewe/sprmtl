@@ -32,15 +32,14 @@ class ProductionOrder < ActiveRecord::Base
   end
   
   
-  def ProductionOrder.generate_post_production_failure_production_order( post_production_history , quantity)
+  def ProductionOrder.generate_post_production_failure_production_order( post_production_history )
     # puts "We are inside the production order\n"*10
-    # return nil if post_production_history.broken_quantity == 0 
-    return nil if quantity == 0 
+    return nil if post_production_history.broken_quantity == 0 
     sales_item = post_production_history.sales_item 
     ProductionOrder.create(
       :sales_item_id            => post_production_history.sales_item_id       ,
       :case                     => PRODUCTION_ORDER[:post_production_failure]     ,
-      :quantity                 => quantity     ,
+      :quantity                 => post_production_history.broken_quantity     ,
 
       :source_document_entry    => post_production_history.class.to_s          ,
       :source_document_entry_id => post_production_history.id                  ,

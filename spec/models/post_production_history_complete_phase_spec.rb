@@ -220,8 +220,8 @@ describe PostProductionHistory do
       @final_pending_production  =  @complete_cycle_sales_item.pending_production
       
       delta = @final_pending_production - @initial_pending_production
-
-      delta.should ==  0 
+      
+      delta.should ==  @post_production_broken_1
     end
     
     it 'should create ProductionOrder for the PRODUCTION_ORDER[:post_production_failure]' do
