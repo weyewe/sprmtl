@@ -51,7 +51,7 @@ class InvoicePayment < ActiveRecord::Base
     new_object = InvoicePayment.new
     
     new_object.creator_id   = employee.id  
-    new_object.payment_id  = payment.id
+    new_object.payment_id  = payment.id 
     new_object.invoice_id  = params[:invoice_id]
     
     new_object.amount_paid = BigDecimal( params[:amount_paid]   )  

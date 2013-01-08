@@ -108,4 +108,25 @@ class SalesOrder < ActiveRecord::Base
       end
     end 
   end
+  
+  
+  
+=begin
+  Sales Invoice Printing
+=end
+  def printed_sales_invoice_code
+    self.code.gsub('/','-')
+  end
+
+  def calculated_vat
+    BigDecimal("0")
+  end
+
+  def calculated_delivery_charges
+    BigDecimal("0")
+  end
+
+  def calculated_sales_tax
+    BigDecimal('0')
+  end
 end

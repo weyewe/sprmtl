@@ -1,0 +1,25 @@
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => "form-horizontal prevent_double_submit ajax-form   no_content_form",
+        :id => "edit_object"}) do |f| %>
+
+
+
+
+  <%= f.input :name  , :input_html => {:class => "input-xlarge "}, 
+  :label => "Nama Perusahaan" %>
+
+	<%= f.input :address  , :input_html => {:class => "input-xlarge ", :rows => 5}, 
+  :label => "Alamat" %>
+
+	<%= f.input :phone  , :input_html => {:class => "input-xlarge "}, 
+  :label => "Telepon" %>
+
+
+  <div class="form-actions">
+
+	 
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update" %> 
+
+  </div>
+<% end %>

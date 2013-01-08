@@ -131,6 +131,8 @@ data_entry_role = Role.create!(
 :the_role    => data_entry_role.to_json
 )
 
+
+company = Company.create(:name => "Super metal", :address => "Tanggerang", :phone => "209834290840932")
 admin = User.create_main_user(   :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
 
 data_entry = User.create_by_employee(admin, {

@@ -1,0 +1,29 @@
+ 
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%#= link_to "#{object.code}" , new_sales_order_sales_item_url( object)%>
+		<%= object.code %>
+	</td>
+	
+	<td>
+		<%= object.delivery.code %>
+	</td> 
+	
+	<td>
+		<%= print_date(object.due_date )%>
+	</td>
+	 
+ 	<td>
+		<%= print_money( object.amount_payable) %>
+	</td>
+	
+	<td>
+		<%= print_money(object.confirmed_pending_payment)%>
+		
+		<% if object.has_pending_payment_confirmation? %>
+			( <%= print_money(object.pending_payment) %>)
+		<% end %>
+	</td>
+ 
+	 
+</tr>

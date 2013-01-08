@@ -47,4 +47,26 @@ class InvoicesController < ApplicationController
     @invoice.confirm( current_user  )  
     @object =  @invoice
   end
+
+=begin
+  PRINT SALES ORDER
+=end
+  def print_invoice
+    @invoice = Invoice.find_by_id params[:invoice_id]
+    puts "The invoce inspect: #{@invoice}\n"
+    respond_to do |format|
+      format.html # do
+       #        pdf = SalesInvoicePdf.new(@sales_order, view_context)
+       #        send_data pdf.render, filename:
+       #        "#{@sales_order.printed_sales_invoice_code}.pdf",
+       #        type: "application/pdf"
+       #      end
+      format.pdf do
+        pdf = InvoicePdf.new(@invoice, view_context,CONTINUOUS_FORM_WIDTH,FULL_CONTINUOUS_FORM_LENGTH)
+        send_data pdf.render, filename:
+        "#{@invoice.printed_code}.pdf",
+        type: "application/pdf"
+      end
+    end
+  end
 end

@@ -1,0 +1,34 @@
+
+<tr id="entry-<%= object.id %>"> 
+	<td>
+		<%= "#{object.name}" %> 
+	</td>
+	
+	<td>
+		<%= link_to print_money(object.pending_confirmed_payment_amount),
+		 			outstanding_payment_details_url(object)%>
+		
+		<% if object.has_unconfirmed_payment? %>
+		(*)
+		<% end %>
+	</td>
+	 
+	 
+ 
+</tr>
+
+
+
+
+
+
+
+           
+
+
+               
+          
+                 
+             
+            
+        

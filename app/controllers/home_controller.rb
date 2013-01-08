@@ -48,4 +48,23 @@ class HomeController < ApplicationController
   def extract_sales_item
     @sales_item = SalesItem.find_by_id params[:sales_item_id]
   end
+  
+=begin
+  OUTSTANDING PAYMENT
+=end
+  def customers_with_outstanding_payment
+    @objects = Customer.all_with_outstanding_payments
+    
+    add_breadcrumb "Monitor Piutang", 'customers_with_outstanding_payment_url' 
+  end
+  
+  def outstanding_payment_details
+    @customer = Customer.find_by_id params[:customer_id]
+    
+    @objects = @customer.invoices.order("created_at DESC")
+    
+    add_breadcrumb "Monitor Piutang", 'customers_with_outstanding_payment_url' 
+    set_breadcrumb_for @customer, 'outstanding_payment_details_url' + "(#{@customer.id})", 
+                "Detail Outstanding Payment"
+  end
 end

@@ -8,6 +8,9 @@ Supermetal::Application.routes.draw do
   
   resources :customers
   resources :materials
+  resources :companies 
+  match 'edit_main_company' => 'companies#edit_main_company', :as => :edit_main_company, :method => :post 
+  match 'update_company/:id' => 'companies#update_company', :as => :update_company, :method => :post 
   
   resources :users
   resources :app_users
@@ -57,10 +60,12 @@ Supermetal::Application.routes.draw do
   match 'delivery_entry_details/:sales_item_id' => 'home#delivery_entry_details', :as => :delivery_entry_details
   
  
- 
+  match 'customers_with_outstanding_payment' => 'home#customers_with_outstanding_payment', :as => :customers_with_outstanding_payment
+  match 'outstanding_payment_details/:customer_id' => 'home#outstanding_payment_details', :as => :outstanding_payment_details
 =begin
   MASTER DATA ROUTES
 =end
+ 
 
 ##################################################
 ##################################################
@@ -121,6 +126,7 @@ Supermetal::Application.routes.draw do
   match 'delete_sales_order' => 'sales_orders#delete_sales_order', :as => :delete_sales_order , :method => :post
   match 'confirm_sales_order/:sales_order_id' => "sales_orders#confirm_sales_order", :as => :confirm_sales_order, :method => :post 
 
+  match 'print_sales_order/:sales_order_id' => 'sales_orders#print_sales_order' , :as => :print_sales_order
 
 ##################################################
 ##################################################
@@ -175,6 +181,8 @@ Supermetal::Application.routes.draw do
   match 'confirm_delivery/:delivery_id' => "deliveries#confirm_delivery", :as => :confirm_delivery, :method => :post
   match 'finalize_delivery/:delivery_id' => "deliveries#finalize_delivery", :as => :finalize_delivery, :method => :post
   
+  
+  match 'print_delivery/:delivery_id' => 'deliveries#print_delivery' , :as => :print_delivery
 ##################################################
 ##################################################
 ######### DELIVERY_ENTRY
@@ -209,6 +217,8 @@ Supermetal::Application.routes.draw do
   match 'update_invoice/:invoice_id' => 'invoices#update_invoice', :as => :update_invoice , :method => :post 
   match 'confirm_invoice/:invoice_id' => "invoices#confirm_invoice", :as => :confirm_invoice, :method => :post
 
+  match 'print_invoice/:invoice_id' => 'invoices#print_invoice' , :as => :print_invoice
+
 
 ##################################################
 ##################################################
@@ -221,6 +231,8 @@ Supermetal::Application.routes.draw do
   match 'finalize_payment/:payment_id' => "payments#finalize_payment", :as => :finalize_payment, :method => :post
 
 
+  match 'print_payment/:payment_id' => 'payments#print_payment' , :as => :print_payment
+  
 ##################################################
 ##################################################
 ######### Invoice Payments

@@ -44,4 +44,25 @@ class SalesOrdersController < ApplicationController
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @sales_order.confirm( current_user  )  
   end
+  
+=begin
+  PRINT SALES ORDER
+=end
+  def print_sales_order
+    @sales_order = SalesOrder.find_by_id params[:sales_order_id]
+    respond_to do |format|
+      format.html # do
+       #        pdf = SalesInvoicePdf.new(@sales_order, view_context)
+       #        send_data pdf.render, filename:
+       #        "#{@sales_order.printed_sales_invoice_code}.pdf",
+       #        type: "application/pdf"
+       #      end
+      format.pdf do
+        pdf = SalesOrderPdf.new(@sales_order, view_context,CONTINUOUS_FORM_WIDTH,FULL_CONTINUOUS_FORM_LENGTH)
+        send_data pdf.render, filename:
+        "#{@sales_order.printed_sales_invoice_code}.pdf",
+        type: "application/pdf"
+      end
+    end
+  end
 end

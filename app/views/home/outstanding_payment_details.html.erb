@@ -1,0 +1,52 @@
+<%= render :partial => "layouts/masthead" ,:locals => {
+	:title => "Outstanding payment: #{@customer.name}",
+	:description => ("Lihat detail piutang dengan total: " + 
+			"<b>#{print_money(@customer.pending_confirmed_payment_amount)}</b>").html_safe
+}%>
+
+<%= create_breadcrumb(@breadcrumbs).html_safe %>
+
+
+<div id="content">
+
+	<div class="container">
+		
+		
+		<div class="row">
+			
+			<div class="span12">
+				 
+				<table class="table table-bordered table-striped table-highlight" id='tableview'>
+					<thead>
+						<tr>
+							<th>Code</th>
+							<th>Delivery</th>
+							<th>Jatuh Tempo</th>  
+							<th>Jumlah</th>  
+							<th>Belum Terbayar</th>   
+						</tr>
+					</thead>
+					<tbody> 
+						<% @objects.each do |object| %>
+							<%= render :partial =>  'home/outstanding_payment_entry', :locals => {
+								:object => object 
+							} %> 
+						<% end %>
+					</tbody>
+				</table>
+
+				
+				
+				
+			 
+				
+			</div> <!-- /.span12 -->
+			
+		 
+		</div> <!-- /.row -->
+		
+	
+	</div> <!-- /.container -->
+
+</div> <!-- /#content -->
+ 

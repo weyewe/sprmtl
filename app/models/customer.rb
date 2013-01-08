@@ -98,4 +98,20 @@ class Customer < ActiveRecord::Base
     end
     return result
   end
+  
+  def self.all_with_outstanding_payments
+    customer_id_list = Invoice.where(:is_paid => false).pluck(:customer_id).uniq
+    Customer.includes(:invoices).where(:id => customer_id_list )
+  end
+  
+  def pending_confirmed_payment_amount
+    self.invoices.sum("amount_payable") - self.payments.where(:is_confirmed => true).sum("amount_paid")
+  end
+  
+  def has_unconfirmed_payment?
+    self.payments.where(:is_confirmed => false).count != 0 
+  end
+  
+  
+   
 end

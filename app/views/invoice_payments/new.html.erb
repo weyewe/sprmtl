@@ -1,6 +1,7 @@
 <%= render :partial => "layouts/masthead" ,:locals => {
 	:title => "Invoice Payment",
-	:description => "Lengkapi pembayaran untuk Payment: <b>#{@parent.code}</b>.".html_safe
+	:description => ("Lengkapi pembayaran untuk Payment: <b>#{@parent.code}</b>."+ 
+									"<br /> Total terbilang: <b>#{print_money(@parent.amount_paid)}</b>").html_safe
 }%>
 
 <div id="content">

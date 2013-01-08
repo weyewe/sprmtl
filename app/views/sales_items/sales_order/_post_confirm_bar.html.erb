@@ -2,9 +2,8 @@
 	<tbody>
 		<tr> 
 			<td style='text-align: center;'>  
-				<%= link_to confirm_sales_order_url(parent),
-					:id => 'confirm' , 
-					:class => " btn btn-primary" do %>
+				<%= link_to print_sales_order_url(parent, :format => :pdf),
+ 					:class => " btn btn-primary" do %>
 					<i class="icon-ok"></i> Download Sales Order
 				<% end %>
 			</td>

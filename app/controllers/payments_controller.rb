@@ -44,4 +44,26 @@ class PaymentsController < ApplicationController
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @payment.confirm( current_user  )  
   end
+
+=begin
+  PRINT SALES ORDER
+=end
+  def print_payment
+    @payment = Payment.find_by_id params[:payment_id]
+    puts "The invoce inspect: #{@invoice}\n"
+    respond_to do |format|
+      format.html # do
+       #        pdf = SalesInvoicePdf.new(@sales_order, view_context)
+       #        send_data pdf.render, filename:
+       #        "#{@sales_order.printed_sales_invoice_code}.pdf",
+       #        type: "application/pdf"
+       #      end
+      format.pdf do
+        pdf = PaymentPdf.new(@payment, view_context,CONTINUOUS_FORM_WIDTH,FULL_CONTINUOUS_FORM_LENGTH)
+        send_data pdf.render, filename:
+        "#{@payment.printed_code}.pdf",
+        type: "application/pdf"
+      end
+    end
+  end
 end

@@ -54,4 +54,25 @@ class DeliveriesController < ApplicationController
     @delivery.finalize( current_user  )
     @delivery.reload
   end
+  
+=begin
+  PRINT SALES ORDER
+=end
+  def print_delivery
+    @delivery = Delivery.find_by_id params[:delivery_id]
+    respond_to do |format|
+      format.html # do
+       #        pdf = SalesInvoicePdf.new(@sales_order, view_context)
+       #        send_data pdf.render, filename:
+       #        "#{@sales_order.printed_sales_invoice_code}.pdf",
+       #        type: "application/pdf"
+       #      end
+      format.pdf do
+        pdf = DeliveryOrderPdf.new(@delivery, view_context,CONTINUOUS_FORM_WIDTH,FULL_CONTINUOUS_FORM_LENGTH)
+        send_data pdf.render, filename:
+        "#{@delivery.printed_code}.pdf",
+        type: "application/pdf"
+      end
+    end
+  end
 end

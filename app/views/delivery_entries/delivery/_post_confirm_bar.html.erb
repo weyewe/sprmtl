@@ -2,8 +2,7 @@
 	<tbody>
 		<tr> 
 			<td style='text-align: center;'>  
-				<%= link_to confirm_delivery_url(parent),
-					:id => 'confirm' , 
+				<%= link_to print_delivery_url(parent, :format => :pdf )  ,
 					:class => " btn btn-primary" do %>
 					<i class="icon-envelope"></i> Download Surat Jalan
 				<% end %>

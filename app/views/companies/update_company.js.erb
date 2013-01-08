@@ -1,0 +1,13 @@
+$(document).ready(function(){
+	
+	var $form = $("#edit_object");
+	$form.spin(false); 
+	
+	<% new_form = escape_javascript(   render :partial => "companies/new_object_form", :locals => {
+    :new_object => @company , 
+		:url => update_company_url(@company)  
+  })%>
+	//replace the form, show the edit
+	$form.replaceWith("<%= new_form %>");
+	
+});

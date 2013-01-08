@@ -171,6 +171,25 @@ class Delivery < ActiveRecord::Base
     self.delivery_entries.where{ (quantity_lost.not_eq 0 )}.count != 0 
   end
     
+    
+=begin
+  Delivery Printing
+=end
+  def printed_code
+    self.code.gsub('/','-')
+  end
+
+  def calculated_vat
+    BigDecimal("0")
+  end
+
+  def calculated_delivery_charges
+    BigDecimal("0")
+  end
+
+  def calculated_sales_tax
+    BigDecimal('0')
+  end
   
   
 end

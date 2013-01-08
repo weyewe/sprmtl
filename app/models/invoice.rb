@@ -109,4 +109,23 @@ class Invoice < ActiveRecord::Base
   def has_pending_payment_confirmation?
     self.invoice_payments.where(:is_confirmed => false ).count != 0
   end
+ 
+=begin
+  Delivery Printing
+=end
+  def printed_code
+    self.code.gsub('/','-')
+  end
+
+  def calculated_vat
+    BigDecimal("0")
+  end
+
+  def calculated_delivery_charges
+    BigDecimal("0")
+  end
+
+  def calculated_sales_tax
+    BigDecimal('0')
+  end
 end

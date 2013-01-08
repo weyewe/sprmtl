@@ -35,7 +35,17 @@
 				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
 				<i class='icon-edit'></i>Edit
 			<% end %>
+		</td>
+		
+		<td>
+			<%= link_to print_invoice_url(object, :format => :pdf),  
+			 :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-arrow-down'></i>Download Invoice
+			<% end %>
 		</td> 
+		
+		
+		 
 		
 		
 	<% end %>

@@ -36,7 +36,25 @@ module NavigationHelper
             }
           ]
         } 
-      ]
+      ],
+      [
+        {
+          :name => "Piutang",
+          :url  => 'customers_with_outstanding_payment_url',
+          :icon => "icon-tasks",
+          :activities => [
+            {
+              :controller => "home",
+              :action     => "customers_with_outstanding_payment"
+            },
+            {
+              :controller => "home",
+              :action     => "outstanding_payment_details"
+            }
+          ]
+        } 
+      ],
+      
       
     ] 
   }
@@ -73,6 +91,17 @@ module NavigationHelper
             {
               :controller => "app_users",
               :action     => "new"
+            } 
+          ]
+        },
+        {
+          :name => "Company",
+          :url  => 'edit_main_company_url',
+          :icon => "icon-home",
+          :activities => [
+            {
+              :controller => "companies",
+              :action     => "edit"
             } 
           ]
         }
