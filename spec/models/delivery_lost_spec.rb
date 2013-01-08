@@ -168,35 +168,9 @@ describe DeliveryLost do
     @complete_cycle_sales_item.reload
     @delivery_lost = @delivery.delivery_lost
     
-  end
-  
-  # context => delivery finalized 
-  # => sales return will be created
-  # => delivery_lost will be created as well 
-  
-  # it 'should produce delivery_lost' do
-  #   @delivery_lost.should be_valid 
-  # end
-  # 
-  # it 'should produce exact copy of returned delivery entry as its delivery_lost entry' do 
-  #   
-  #   @delivery_lost.delivery_lost_entries.count.should == @delivery.delivery_entries.
-  #                                             where{(quantity_lost.not_eq 0)}.count
-  #   
-  # end
-  # 
-  # it 'should produce extra production orders, equal to the lost delivery' do
-  #   first_delivery_lost_entry = @delivery_lost.delivery_lost_entries.first 
-  #   ProductionOrder.where(
-  #     :sales_item_id => first_delivery_lost_entry.delivery_entry.sales_item_id ,
-  #     :case   => PRODUCTION_ORDER[:delivery_lost] , 
-  #     :source_document_entry_id => first_delivery_lost_entry.id ,
-  #     :source_document_entry => first_delivery_lost_entry.class.to_s 
-  #   ).count.should == 1 
-  # end
+  end 
   
   it 'should update pending production' do
-    puts "$$$$$$$$$$$$$$ update pending production\n"*10
     @final_pending_production = @complete_cycle_sales_item.pending_production 
     diff = @final_pending_production - @initial_pending_production
     

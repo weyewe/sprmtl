@@ -208,9 +208,9 @@ class DeliveryEntry < ActiveRecord::Base
     
     sales_item = self.sales_item 
     
-    
-    sales_item.update_on_delivery_statistics
-    sales_item.update_ready_statistics
+    sales_item.update_on_delivery_confirm
+    # sales_item.update_on_delivery_statistics
+    # sales_item.update_ready_statistics
   end
   
   def finalize
@@ -247,8 +247,9 @@ class DeliveryEntry < ActiveRecord::Base
     
     # puts "&&&&&&&&&&&&&&&&&&BEFORE UPDATING ON FINALIZE\n"*10
     sales_item = self.sales_item 
-    sales_item.update_on_delivery_statistics
-    sales_item.update_post_delivery_statistics 
+    sales_item.update_on_delivery_item_finalize
+    # sales_item.update_on_delivery_statistics
+    # sales_item.update_post_delivery_statistics 
   end
   
 end

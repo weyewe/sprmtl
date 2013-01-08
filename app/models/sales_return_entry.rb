@@ -4,11 +4,15 @@ class SalesReturnEntry < ActiveRecord::Base
   belongs_to :delivery_entry 
   belongs_to :sales_return
   
+  validates_presence_of :sales_item_id 
+  validates_presence_of :delivery_entry_id 
+  
   def SalesReturnEntry.create_by_employee( employee, sales_return, delivery_entry)
     
     new_object = SalesReturnEntry.new 
     new_object.creator_id = employee.id 
     new_object.delivery_entry_id = delivery_entry.id 
+    new_object.sales_item_id = delivery_entry.sales_item_id 
     new_object.sales_return_id = sales_return.id 
     
     new_object.save 
@@ -112,6 +116,9 @@ class SalesReturnEntry < ActiveRecord::Base
       raise ActiveRecord::Rollback, "Call tech support!" 
     end
     
+    self.is_confirmed = true 
+    self.save 
+    
     ProductionOrder.generate_sales_return_production_order( self  )
     PostProductionOrder.generate_sales_return_repair_post_production_order( self ) 
     
@@ -121,10 +128,11 @@ class SalesReturnEntry < ActiveRecord::Base
     
     sales_item = self.delivery_entry.sales_item 
     sales_item.reload 
-   
-    sales_item.update_pending_production 
-    sales_item.reload 
-    sales_item.update_pending_post_production
+    sales_item.update_on_sales_return_confirm
+     #   
+     # sales_item.update_pending_production 
+     # sales_item.reload 
+     # sales_item.update_pending_post_production
     
   end
 end

@@ -24,25 +24,27 @@ class DeliveryLostEntry < ActiveRecord::Base
   def confirm
     
     sales_item = self.delivery_entry.sales_item  
-    puts "before update, pending_production: #{sales_item.pending_production}"
-    puts "before update, total production_order : #{sales_item.production_orders.sum('quantity')}"
-    
+    # puts "before update, pending_production: #{sales_item.pending_production}"
+    # puts "before update, total production_order : #{sales_item.production_orders.sum('quantity')}"
+    # 
     
     self.is_confirmed = true 
     self.save 
     ProductionOrder.generate_delivery_lost_production_order( self  )
+     #    
+     # puts "initial delivery_lost: #{sales_item.number_of_delivery_lost}"
+     # 
+     # sales_item.update_delivery_lost
+     # sales_item.reload 
+     # puts "final delivery_lost: #{sales_item.number_of_delivery_lost}"
+     # 
+     # 
+     # 
+     # sales_item.update_pending_production  # after addition of production order 
+     # sales_item.reload 
+     # puts "after update, pending_production: #{sales_item.pending_production}"
+     # puts "after update, total production_order : #{sales_item.production_orders.sum('quantity')}"
     
-    puts "initial delivery_lost: #{sales_item.number_of_delivery_lost}"
-    
-    sales_item.update_delivery_lost
-    sales_item.reload 
-    puts "final delivery_lost: #{sales_item.number_of_delivery_lost}"
-
-    
-    
-    sales_item.update_pending_production  # after addition of production order 
-    sales_item.reload 
-    puts "after update, pending_production: #{sales_item.pending_production}"
-    puts "after update, total production_order : #{sales_item.production_orders.sum('quantity')}"
+    sales_item.update_on_delivery_lost_entry_confirm
   end
 end

@@ -154,8 +154,10 @@ class SalesItem < ActiveRecord::Base
       PostProductionOrder.create_machining_only_sales_production_order( self )
     elsif self.casting_included?
       production_order = ProductionOrder.create_sales_production_order( self )
-      self.update_pending_production 
+      self.update_on_confirm 
     end    
+    
+    
     
     self.is_confirmed = true 
     self.save 
@@ -221,20 +223,7 @@ class SalesItem < ActiveRecord::Base
                                   self.sales_return_entries.where(:is_confirmed => true ).sum("quantity_for_production")
   end
 
-  def update_pending_production
-   
-                              
-    produced_quantity  =   self.production_finished_quantity 
-    adjustment_to_production_order  = self.number_of_failed_production   +   
-                                  self.number_of_failed_post_production    +
-                                  self.number_of_delivery_lost + 
-                                  self.sales_return_entries.where(:is_confirmed => true ).sum("quantity_for_production")
-    
-    self.pending_production =  self.production_orders.sum("quantity") -    
-                                produced_quantity - 
-                                adjustment_to_production_order 
-    self.save 
-  end
+  
   
 
 =begin
@@ -289,15 +278,7 @@ class SalesItem < ActiveRecord::Base
   3. production => ready ( no need to repair, and not asked to do post production @ sales item)
 =end
 
-  def update_number_of_production
-    self.number_of_production = self.production_histories.sum("processed_quantity")
-    self.save
-  end
   
-  def update_number_of_failed_production
-    self.number_of_failed_production = self.production_histories.sum("broken_quantity")
-    self.save
-  end
   
   def update_production_statistics 
   
@@ -353,24 +334,7 @@ class SalesItem < ActiveRecord::Base
     self.production_orders.where(:case => PRODUCTION_ORDER[:post_production_failure])
   end
   
-  def update_pending_post_production 
-
-    
-   
-    produced = self.post_production_finished_quantity 
-    
-    post_production_order_adjustment =    self.sales_return_entries.where(:is_confirmed => true ).
-                                        sum("quantity_for_post_production")
-    
-      puts "Total: #{self.post_production_orders.sum('quantity') }"
-      puts "In the shite, produced: #{produced }"
-      puts "In the shite, post_production_order_adjustment: #{post_production_order_adjustment }"
-                                        
-    self.pending_post_production = self.post_production_orders.sum("quantity")  - 
-                                      produced - 
-                                      post_production_order_adjustment
-    self.save
-  end
+  
  
 =begin
   POST PRODUCTION INTERFACE with delivery
@@ -382,16 +346,65 @@ class SalesItem < ActiveRecord::Base
     # all things going from post production is the ready item 
     
     
-    puts "Total number of broken quantity: #{post_production_history.broken_quantity}\n"*10
+    # puts "Total number of broken quantity: #{post_production_history.broken_quantity}\n"*10
     # for the failure 
     if self.is_production? and post_production_history.broken_quantity != 0 
-      ProductionOrder.generate_post_production_failure_production_order( post_production_history ) 
-      self.update_pending_production 
-    else
-      # FUCK>> ASK the company for the policy
       
+      
+      # ProductionOrder.generate_post_production_failure_production_order( post_production_history ) 
+      # 
+      # 
+      # if self.sales_return_pending_production_replacement_quota >  0 
+      #   ProductionOrder.generate_sales_return_post_production_failure_production_order(post_production_history )
+      # end
+      
+      broken_quantity  = post_production_history.broken_quantity 
+      replacement_quota = self.sales_return_pending_production_replacement_quota
+      to_be_replaced = 0 
+      not_replaced = 0 
+      
+      if replacement_quota < broken_quantity
+        to_be_replaced = replacement_quota 
+        not_replaced = broken_quantity - to_be_replaced
+      elsif self.sales_return_pending_production_replacement_quota >=  broken_quantity
+        to_be_replaced = broken_quantity 
+        not_replaced = 0 
+      end
+      
+      if not_replaced != 0 
+        ProductionOrder.generate_post_production_failure_production_order( post_production_history, not_replaced ) 
+      end
+      
+      if to_be_replaced != 0 
+        ProductionOrder.generate_sales_return_post_production_failure_production_order(post_production_history,to_be_replaced )
+      end
+      
+      
+      
+    else
+      
+      
+      # ASK the company for the policy
       # reimburse? or, there is no case of this at all?
     end 
+    
+  end
+  
+  def sales_return_pending_production_replacement_quota 
+    quota_for_post_production_failure_replacement -  
+      used_quota_for_post_production_failure_replacement
+  end
+  
+  def quota_for_post_production_failure_replacement
+    self.sales_return_entries.
+      where(:is_confirmed => true).
+      sum("quantity_for_post_production")
+  end
+  
+  def used_quota_for_post_production_failure_replacement
+    self.production_orders.
+      where(:case =>  PRODUCTION_ORDER[:sales_return_post_production_failure]).
+      sum("quantity")
   end
   
   
@@ -534,8 +547,174 @@ class SalesItem < ActiveRecord::Base
 
   
   
+  
   # def total_repaired
   #   self.production_repair_post_production_orders.sum("ok_quantity") + 
   #   self.sales_return_repair_post_production_orders.sum("ok_quantity")
   # end
+  
+=begin  
+  UPDATER UTILITY
+=end
+# things that must have been updated: 
+# => number_of_failed_production
+# => number_of_failed_post_production
+# => number_of_delivery_lost
+  def update_pending_production 
+    # puts "\n\n ******************in the update_pending_production"
+    # puts "production_finished_quantity: #{self.production_finished_quantity }"
+    # puts "post_production_finished_quantity: #{self.post_production_finished_quantity }"
+    produced_quantity  =   self.production_finished_quantity 
+    
+    # we need adjustment because there events trigger a new production order 
+    # puts "\n the adjustment\n"
+    # puts "failed_production: #{self.number_of_failed_production }"
+    # puts "number_of_failed_post_production: #{self.number_of_failed_post_production }"
+    # puts "number_of_delivery_lost: #{self.number_of_delivery_lost }"
+    # puts "sales_return: #{self.sales_return_entries.where(:is_confirmed => true ).sum('quantity_for_production') }"
+    # 
+    
+    adjustment_to_production_order  = self.number_of_failed_production   +   
+                                  self.number_of_failed_post_production - 
+                                  self.used_quota_for_post_production_failure_replacement
+                                  
+                                   #  +
+                                  # self.number_of_delivery_lost +  # delivery lost doesn't preserve the pending production
+                                  # self.sales_return_entries.where(:is_confirmed => true ).sum("quantity_for_production")
+    
+    # puts "\nproduction_orders: #{self.production_orders.sum('quantity')}"
+    self.pending_production =  self.production_orders.sum("quantity") -    
+                                produced_quantity - 
+                                adjustment_to_production_order 
+    self.save 
+  end
+  
+  def update_number_of_production
+    self.number_of_production = self.production_histories.sum("processed_quantity")
+    self.save
+  end
+  
+  def update_number_of_failed_production
+    self.number_of_failed_production = self.production_histories.sum("broken_quantity")
+    self.save
+  end
+  
+  def update_pending_post_production  
+    produced = self.post_production_finished_quantity 
+    
+    post_production_order_adjustment =    self.sales_return_entries.where(:is_confirmed => true ).
+                                        sum("quantity_for_post_production")
+    
+                           
+    self.pending_post_production = self.post_production_orders.sum("quantity")  - 
+                                      produced #- 
+                                     # post_production_order_adjustment
+    self.save
+  end
+  
+  def update_ready
+    self.ready = self.total_finished - self.total_delivered
+    self.save
+  end
+  
+  def update_on_delivery
+    all_confirmed_entries = self.delivery_entries .where( :is_confirmed => true ) 
+    
+    # when it is finalized, it is the approval from the customer 
+    all_finalized_entries = all_confirmed_entries.where(:is_finalized => true)
+    
+    total_items_going_out = all_confirmed_entries.sum("quantity_sent")
+    total_items_approved  = all_finalized_entries.sum("quantity_confirmed")
+    total_items_returned  = all_finalized_entries.sum("quantity_returned")
+    total_items_lost      = all_finalized_entries.sum('quantity_lost') 
+    
+    self.on_delivery = total_items_going_out  - 
+                        total_items_approved  -
+                        total_items_returned  -   # can it be returned at later date? => no idea
+                        total_items_lost
+                        
+    self.save
+  end
+  
+  def update_number_of_delivery
+    self.number_of_delivery = self.delivery_entries.where(:is_confirmed => true).sum("quantity_sent")
+  end
+  
+  def update_fulfilled_order
+    self.fulfilled_order = self.delivery_entries.where(
+                            :is_confirmed => true, 
+                            :is_finalized => true 
+                          ).sum("quantity_confirmed")
+    
+    self.save
+  end
+  
+  
+  def update_number_of_delivery_lost
+    all_confirmed_entries = self.delivery_entries .where( :is_confirmed => true ) 
+    all_finalized_entries = all_confirmed_entries.where(:is_finalized => true)
+    total_items_lost      = all_finalized_entries.sum('quantity_lost')
+    self.number_of_delivery_lost = total_items_lost
+    self.save 
+  end
+  
+  def update_number_of_sales_return
+    confirmed_sales_return_entries = self.sales_return_entries.where(:is_confirmed => true )
+    self.number_of_sales_return = self.delivery_entries.
+                            where(:is_confirmed =>true, :is_finalized => true ).
+                            sum("quantity_returned")
+    self.save
+  end
+  
+  
+=begin  
+  UPDATER MAIN function
+=end
+
+  def update_on_confirm
+    #pending_production
+    update_pending_production
+  end
+  
+  def update_on_production_history_confirm
+    update_number_of_production
+    update_number_of_failed_production
+    update_pending_production
+    update_pending_post_production 
+    update_ready 
+  end
+  
+  def update_on_post_production_history_confirm
+    update_number_of_post_production
+    update_number_of_failed_post_production 
+    update_pending_production
+    update_pending_post_production
+    update_ready 
+  end
+  
+  
+  
+  def update_on_delivery_confirm
+    update_on_delivery
+    update_number_of_delivery
+    update_ready
+  end
+  
+  def update_on_delivery_item_finalize
+    update_on_delivery
+    update_fulfilled_order
+  end
+  
+  def update_on_delivery_lost_entry_confirm
+    update_number_of_delivery_lost
+    update_pending_production #for delivery lost
+  end
+  
+  def update_on_sales_return_confirm
+    update_number_of_sales_return
+    update_pending_production
+    update_pending_post_production
+    
+  end
+  
 end

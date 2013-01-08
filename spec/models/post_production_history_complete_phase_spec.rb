@@ -216,12 +216,12 @@ describe PostProductionHistory do
       delta.should == @post_production_ok_1
     end
     
-    it 'should add the pending_production   by broken quantity' do
+    it 'should NOT add the pending_production   by broken quantity' do
       @final_pending_production  =  @complete_cycle_sales_item.pending_production
       
       delta = @final_pending_production - @initial_pending_production
 
-      delta.should == @post_production_broken_1
+      delta.should ==  0 
     end
     
     it 'should create ProductionOrder for the PRODUCTION_ORDER[:post_production_failure]' do

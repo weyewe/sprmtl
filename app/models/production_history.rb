@@ -164,7 +164,8 @@ class ProductionHistory < ActiveRecord::Base
       # if only post production
       
       sales_item.generate_next_phase_after_production( self ) 
-      sales_item.update_production_statistics
+      # sales_item.update_production_statistics
+      sales_item.update_on_production_history_confirm
        
     end
     

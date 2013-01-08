@@ -60,7 +60,7 @@ class PostProductionHistory < ActiveRecord::Base
   def prevent_excess_post_production
     sales_item = self.sales_item
     pending_post_production = sales_item.pending_post_production
-    puts "pending post production from validation: #{pending_post_production}"
+    # puts "pending post production from validation: #{pending_post_production}"
     if ok_quantity + broken_quantity > sales_item.pending_post_production
       errors.add(:ok_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )   
       errors.add(:broken_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )
@@ -153,8 +153,16 @@ class PostProductionHistory < ActiveRecord::Base
       # if only post production
       
       sales_item.generate_next_phase_after_post_production( self ) 
-      sales_item.update_post_production_statistics    
-      sales_item.update_pending_production # the failure will add production
+      puts "confirm post production history"
+      puts "quantity_broken: #{self.broken_quantity}" 
+      puts "quantity_ok: #{self.ok_quantity}"
+      puts "processed_quantity: #{self.processed_quantity}"
+      
+      
+      sales_item.update_on_post_production_history_confirm 
+      puts "after_update, pending_production: #{sales_item.pending_production}"
+      # sales_item.update_post_production_statistics    
+      # sales_item.update_pending_production # the failure will add production
       
       
        

@@ -127,6 +127,8 @@ describe "sales item statistic spec" do
       
       context "creating post_production history" do
         before(:each) do
+          puts "\n\n"
+          puts "$$$$$$$$$$$$$$$$$$$$$$$$ uniqly post production\n"*5
           @total_post_production_1 = @ok_quantity -2 
 
           @post_production_broken_1 = 1 
@@ -160,13 +162,7 @@ describe "sales item statistic spec" do
 
         end
         
-        it 'should be valid' do
-          
-          
-          
-          # the real code.. whatever 
-          # puts "The ERRORS\n"*10
-          puts "The error length: #{@post_production_history.errors.size}"
+        it 'should be valid' do 
           @post_production_history.errors.messages.each do |key, values| 
             puts "The key is #{key.to_s}"
             values.each do |value|
@@ -179,11 +175,11 @@ describe "sales item statistic spec" do
           @post_production_history.errors.size.should ==0 
          
         end
-
+        
         it 'should confirm the post production history' do
-
+        
           @post_production_history.is_confirmed.should be_true 
-          puts "Total count: #{PostProductionHistory.count}"
+          # puts "Total count: #{PostProductionHistory.count}"
         end
         # 
         it 'should increase the production order' do 
@@ -191,23 +187,24 @@ describe "sales item statistic spec" do
           diff = @final_production_order_quantity - @initial_production_order_quantity
           diff.should == @post_production_broken_1
         end
-        # 
+        
         it 'should update pending productions' do
+          
           @final_pending_production  =  @complete_cycle_sales_item.pending_production 
           diff = @final_pending_production - @initial_pending_production 
-          diff.should == @post_production_broken_1
+          diff.should ==  0 # pending production is the same
         end
-        #  
+         
         it 'should update pending post_productions' do 
           
-          puts "ok quantity: #{@post_production_ok_1}"
-          puts "initial pending post production: #{@initial_pending_post_production}\n"*10
+          # puts "ok quantity: #{@post_production_ok_1}"
+          # puts "initial pending post production: #{@initial_pending_post_production}\n"*10
           @final_pending_post_production = @complete_cycle_sales_item.pending_post_production 
           diff = @initial_pending_post_production  - @final_pending_post_production
           
           diff.should == @post_production_ok_1
         end
-
+        
         it 'should update the ready' do
           @final_ready      = @complete_cycle_sales_item.ready
           diff = @final_ready - @initial_ready
@@ -221,11 +218,11 @@ describe "sales item statistic spec" do
               :delivery_address   => "some address",    
               :delivery_date     => Date.new(2012, 12, 15)
             })
-
-
+        
+        
             #create delivery entry
             @pending_delivery = @complete_cycle_sales_item.ready 
-
+        
             @quantity_sent = 1 
             if @pending_delivery > 1 
               @quantity_sent = @pending_delivery - 1 
@@ -236,12 +233,12 @@ describe "sales item statistic spec" do
                 :quantity_sent_weight => "#{@quantity_sent * 10}" ,
                 :sales_item_id => @complete_cycle_sales_item.id 
               })
-
+        
             #confirm delivery
             @complete_cycle_sales_item.reload 
             @initial_ready = @complete_cycle_sales_item.ready 
             @initial_on_delivery = @complete_cycle_sales_item.on_delivery 
-
+        
             @delivery.confirm( @admin ) 
             @complete_cycle_sales_item.reload 
             @delivery_entry.reload
@@ -258,7 +255,7 @@ describe "sales item statistic spec" do
             diff = @final_on_delivery  - @initial_on_delivery
             diff.should == @quantity_sent
             
-            puts "quantity_sent: #{@quantity_sent}"  #14
+            # puts "quantity_sent: #{@quantity_sent}"  #14
           end
           
           context "finalize delivery" do
@@ -266,8 +263,8 @@ describe "sales item statistic spec" do
               @quantity_returned = 2
               @quantity_lost = 3 
               @quantity_confirmed =   @delivery_entry.quantity_sent - @quantity_returned  - @quantity_lost 
-
-
+        
+        
               @delivery_entry.update_post_delivery(@admin, {
                 :quantity_confirmed => @quantity_confirmed , 
                 :quantity_returned => @quantity_returned ,
@@ -278,7 +275,7 @@ describe "sales item statistic spec" do
               @complete_cycle_sales_item.reload 
               @initial_on_delivery_item = @complete_cycle_sales_item.on_delivery 
               @initial_fulfilled = @complete_cycle_sales_item.fulfilled_order
-
+        
               @initial_pending_production  =  @complete_cycle_sales_item.pending_production 
               @initial_production_order =  @complete_cycle_sales_item.production_orders.sum("quantity") 
               
@@ -286,7 +283,7 @@ describe "sales item statistic spec" do
               @delivery.reload 
               @delivery.finalize(@admin)
               @delivery.reload
-
+        
               # @delivery.finalize(@admin)  
               @complete_cycle_sales_item.reload
               @delivery_lost = @delivery.delivery_lost
@@ -327,8 +324,9 @@ describe "sales item statistic spec" do
               diff = @final_pending_production  - @initial_pending_production
               # diff.should == @quantity_lost
               
-              puts "initial pending production: #{@initial_pending_production}"
-              puts "final pending production: #{@final_pending_production}"
+              # puts "initial pending production: #{@initial_pending_production}"
+              # puts "final pending production: #{@final_pending_production}"
+              diff.should == @quantity_lost 
             end
             
             it 'should add the production order' do
@@ -336,7 +334,7 @@ describe "sales item statistic spec" do
               diff = @final_production_order - @initial_production_order
               
               diff.should == @quantity_lost
-              puts "The diff: #{diff}"
+              # puts "The diff: #{diff}"
             end
             
             it 'should add the number of delivery lost ' do 
@@ -344,8 +342,136 @@ describe "sales item statistic spec" do
               diff = @final_delivery_lost - @initial_delivery_lost 
               diff.should == @quantity_lost
               
-              puts "final delivery lost :#{@final_delivery_lost}"
+              # puts "final delivery lost :#{@final_delivery_lost}"
             end
+            
+            it 'should have only one sales return entry' do
+               @sales_return.sales_return_entries.count.should == 1 
+            end
+            
+            context "finalize sales return" do
+              before(:each) do
+                @sales_return_entry = @sales_return.sales_return_entries.first 
+                @quantity_return_for_production = 1 
+                @quantity_return_for_post_production = @quantity_returned - @quantity_return_for_production
+                @initial_production_order = @complete_cycle_sales_item.production_orders.sum("quantity")
+                @initial_pending_production = @complete_cycle_sales_item.pending_production
+                
+                @initial_post_production_order = @complete_cycle_sales_item.post_production_orders.sum("quantity")
+                @initial_pending_post_production = @complete_cycle_sales_item.pending_post_production 
+                
+                @sales_return_entry.update_return_handling( {
+                  :quantity_for_production => @quantity_return_for_production, 
+                  :weight_for_production => "#{@quantity_return_for_production*8}",
+
+                  :quantity_for_post_production => @quantity_return_for_post_production,
+                  :weight_for_post_production => "#{@quantity_return_for_post_production*7}"
+                })
+                @sales_return.confirm(@admin)
+                @complete_cycle_sales_item.reload 
+              end
+              
+              it 'should confirm the sales return' do
+                @sales_return.is_confirmed.should be_true 
+              end
+              
+              it 'should confirm all sales return entries ' do
+                @sales_return.sales_return_entries.each do |sre|
+                  sre.is_confirmed.should be_true 
+                end
+              end
+              
+              it 'should produce confirmed sales return entries' do
+                puts "TOTAL SALES RETURN ENTRIES: "
+                @complete_cycle_sales_item.sales_return_entries.each do |sre|
+                  sre.is_confirmed.should be_true 
+                  sre.should be_valid 
+                end
+                
+                confirmed_sre = @complete_cycle_sales_item.sales_return_entries.where(:is_confirmed => true).count
+                total_sre = @complete_cycle_sales_item.sales_return_entries.count 
+                puts "TOTAL SRE: #{total_sre}"
+                puts "$$$$$$$$$$$ the confirmed sre : #{confirmed_sre}\n"*10
+                # @complete_cycle_sales_item.sales_return_entries.where(:is_confirmed => true).count.should == 1 
+              end
+              
+              it 'should add quota for un adjusted post production failure replacement' do
+                
+                puts "Total confirmed_sales_return_entries: #{@complete_cycle_sales_item.sales_return_entries.where(:is_confirmed => true).count}"
+                @complete_cycle_sales_item.quota_for_post_production_failure_replacement.should == @quantity_return_for_post_production
+              end
+              
+              
+              
+              it 'should increase pending_production' do
+                @final_pending_production = @complete_cycle_sales_item.pending_production
+                diff = @final_pending_production- @initial_pending_production
+                diff.should == @quantity_return_for_production
+              end
+              
+              it 'should increase production order' do
+                @final_production_order = @complete_cycle_sales_item.production_orders.sum("quantity")
+                diff = @final_production_order - @initial_production_order
+                diff.should == @quantity_return_for_production
+              end
+              
+              it 'should increase pending_post_production' do
+                @final_pending_post_production = @complete_cycle_sales_item.pending_post_production 
+                diff = @final_pending_post_production -  @initial_pending_post_production
+                
+                diff.should == @quantity_return_for_post_production
+              end
+              
+              it 'should increase post_production_order' do
+                @final_post_production_order = @complete_cycle_sales_item.post_production_orders.sum("quantity")
+                diff = @final_post_production_order - @initial_post_production_order
+                
+                diff.should == @quantity_return_for_post_production
+              end
+              # 
+              
+              
+              context "creating post production history after sales return with quantity for post production" do
+                before(:each) do
+                  @quantity_for_post_production = @complete_cycle_sales_item.pending_post_production
+                  @quantity_broken = 2 
+                  @quantity_ok  = @quantity_for_post_production - @quantity_broken
+                  @post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
+                    :ok_quantity           => @quantity_ok, 
+                    :broken_quantity       => @quantity_broken, 
+              
+                    :ok_weight             =>  "#{@quantity_ok*15}" ,  # in kg.. .00 
+                    :broken_weight         =>  "#{@quantity_broken*10}" ,
+              
+                    # :person_in_charge      => nil ,# list of employee id 
+                    :start_date            => Date.new( 2012, 10,10 ) ,
+                    :finish_date           => Date.new( 2013, 1, 15) 
+                  })
+                  
+                  @initial_pending_production = @complete_cycle_sales_item.pending_production 
+                  @initial_production_orders = @complete_cycle_sales_item.production_orders.sum("quantity")
+                  @post_production_history.confirm(@admin)
+                  @complete_cycle_sales_item.reload
+                end
+                
+                it 'should add pending production by the amount of sales_return going to post production' do
+                  @final_pending_production = @complete_cycle_sales_item.pending_production 
+                  diff = @final_pending_production  - @initial_pending_production
+                  diff.should == @quantity_return_for_post_production
+                end
+              
+                it 'should add production orders by the amount of all failed post production' do
+                  @final_production_orders = @complete_cycle_sales_item.production_orders.sum("quantity")
+                  diff = @final_production_orders - @initial_production_orders
+                  diff.should == @quantity_broken
+                end
+                
+                
+              end # "creating post production history after sales return with quantity for post production" 
+              
+              
+              
+            end#"finalize sales return"
             
           end #"finalize delivery"
           

@@ -186,7 +186,7 @@ describe ProductionHistory do
       # updating the sales item statistics
       it 'should deduct pending production by the ok + repairable quantity' do 
         @final_pending_production = @complete_cycle_sales_item.pending_production 
-        delta_pending_production = @ok_quantity + @repairable_quantity - @broken_quantity  
+        delta_pending_production = @ok_quantity + @repairable_quantity  
         (@initial_pending_production -  @final_pending_production).should == delta_pending_production
       end
       

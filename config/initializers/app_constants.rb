@@ -134,7 +134,8 @@ PRODUCTION_ORDER = {
   :production_failure      => 2, 
   :post_production_failure => 3, 
   :sales_return            => 4, 
-  :delivery_lost           => 5 
+  :delivery_lost           => 5,
+  :sales_return_post_production_failure => 10  
 
 }
 
