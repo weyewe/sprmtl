@@ -39,7 +39,7 @@ module NavigationHelper
       ],
       [
         {
-          :name => "Piutang",
+          :name => "Hutang",
           :url  => 'customers_with_outstanding_payment_url',
           :icon => "icon-tasks",
           :activities => [
