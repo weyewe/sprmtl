@@ -1,6 +1,6 @@
 <%= render :partial => "layouts/masthead" ,:locals => {
 	:title => "Outstanding payment: #{@customer.name}",
-	:description => ("Lihat detail piutang dengan total: " + 
+	:description => ("Lihat detail Hutang dengan total: " + 
 			"<b>#{print_money(@customer.pending_confirmed_payment_amount)}</b>").html_safe
 }%>
 
