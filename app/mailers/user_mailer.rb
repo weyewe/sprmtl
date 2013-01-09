@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: "bangjay.sm@pilipoto.com"  #bangjay1234
+  default from: "bangjay.sm@gmail.com"  #bangjay1234
   
   def notify_new_user_registration( user , password ) 
     @password = password 

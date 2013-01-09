@@ -132,7 +132,6 @@ ActiveRecord::Schema.define(:version => 20130108080141) do
   create_table "invoices", :force => true do |t|
     t.integer  "delivery_id"
     t.integer  "creator_id"
-    t.integer  "customer_id"
     t.string   "code"
     t.decimal  "amount_payable",     :precision => 11, :scale => 2, :default => 0.0
     t.date     "due_date"
