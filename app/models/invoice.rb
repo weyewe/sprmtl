@@ -18,7 +18,7 @@ class Invoice < ActiveRecord::Base
     new_object = Invoice.new 
     new_object.creator_id   = employee.id 
     new_object.delivery_id  = delivery.id 
-    # new_object.customer_id = delivery.customer_id 
+    new_object.customer_id = delivery.customer_id 
 
     if new_object.save
       new_object.generate_code
