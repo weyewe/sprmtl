@@ -1,5 +1,8 @@
 class PasswordsController < ApplicationController
-  
+  skip_before_filter :role_required,  :only => [  
+                                                :edit_credential,   
+                                                :update 
+                                                ]
   def edit_credential
     @user = current_user 
     # @profile = current_user.profile 
