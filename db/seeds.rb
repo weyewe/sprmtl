@@ -27,7 +27,8 @@ data_entry_role = {
     :edit => true, 
     :update_sales_order => true ,
     :delete_sales_order => true ,
-    :confirm_sales_order => true 
+    :confirm_sales_order => true,
+    :print_sales_order => true 
   },
       :sales_items => {
         :new => true,
@@ -68,7 +69,8 @@ data_entry_role = {
     :update_delivery => true ,
     :delete_delivery => true,
     :confirm_delivery => true,
-    :finalize_delivery => true 
+    :finalize_delivery => true ,
+    :print_delivery => true 
   },
       :delivery_entries => {
         :new => true,
@@ -103,7 +105,8 @@ data_entry_role = {
     :edit => true, 
     :update_invoice => true ,
     :delete_invoice => true,
-    :confirm_invoice => true
+    :confirm_invoice => true,
+    :print_invoice => true 
   }, 
   
   :payments => {
@@ -112,7 +115,8 @@ data_entry_role = {
     :edit => true, 
     :update_payment => true ,
     :delete_payment => true,
-    :confirm_payment => true
+    :confirm_payment => true,
+    :print_payment => true 
   },
       :invoice_payments => {
         :new => true,

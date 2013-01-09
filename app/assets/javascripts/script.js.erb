@@ -12,6 +12,34 @@ $(document).ready(function(){
 	
 	jQuery('.prevent_double_submit').preventDoubleSubmit();
 	
+	$(".edit_password").live("click", function(){ 
+		
+		var $modal = $("#editPassword");
+		$modal.modal('show'); 
+		
+		$(".modal_closer", $modal ).click(function(){
+			$modal.modal('hide'); 
+			$("form", $modal).remove(); 
+		});
+ 
+		
+		
+		var get_form_url =  $(this).attr("href");
+		
+		// get the edit form 
+		$.ajax({
+			url: get_form_url,
+			type: "GET",
+			// data: $form.serialize(),
+			dataType: 'script',
+			success: function(response){ 
+				// it is live.. ajax-form class
+			}
+		}); 
+		
+		return false; 
+	});
+	
 	$(".ajax-form").live("submit", function(){
     var $form = $(this);  
     // $form.showLoading();
