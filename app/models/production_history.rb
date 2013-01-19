@@ -14,6 +14,7 @@ class ProductionHistory < ActiveRecord::Base
   validate :no_negative_weight
   validate :prevent_zero_weight_for_non_zero_quantity
   validate :start_date_must_not_be_later_than_finish_date
+ 
 
    
 
@@ -51,6 +52,14 @@ class ProductionHistory < ActiveRecord::Base
     
     if repairable_weight.present? and repairable_weight < BigDecimal('0')
       errors.add(:repairable_weight , "Berat tidak boleh negative" )   
+    end
+    
+    if ok_tap_weight.present? and ok_tap_weight < BigDecimal('0')
+      errors.add(:ok_tap_weight , "Berat tidak boleh negative" )   
+    end
+    
+    if repairable_tap_weight.present? and repairable_tap_weight < BigDecimal('0')
+      errors.add(:repairable_tap_weight , "Berat tidak boleh negative" )   
     end
   end
   

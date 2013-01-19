@@ -90,6 +90,8 @@ class InvoicePayment < ActiveRecord::Base
     self.confirmer_id = employee.id
     self.save 
     
+    # validate: 
+    
     if self.errors.size !=  0   
       raise ActiveRecord::Rollback, "Call tech support!" 
     end

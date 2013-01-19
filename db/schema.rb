@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108080141) do
+ActiveRecord::Schema.define(:version => 20130119173853) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -221,16 +221,18 @@ ActiveRecord::Schema.define(:version => 20130108080141) do
     t.integer  "ok_quantity"
     t.integer  "broken_quantity"
     t.integer  "repairable_quantity"
-    t.decimal  "ok_weight",           :precision => 7, :scale => 2, :default => 0.0
-    t.decimal  "broken_weight",       :precision => 7, :scale => 2, :default => 0.0
-    t.decimal  "repairable_weight",   :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "ok_weight",             :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "broken_weight",         :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "repairable_weight",     :precision => 7, :scale => 2, :default => 0.0
     t.date     "start_date"
     t.date     "finish_date"
-    t.boolean  "is_confirmed",                                      :default => false
+    t.boolean  "is_confirmed",                                        :default => false
     t.integer  "confirmer_id"
     t.datetime "confirmed_at"
-    t.datetime "created_at",                                                           :null => false
-    t.datetime "updated_at",                                                           :null => false
+    t.datetime "created_at",                                                             :null => false
+    t.datetime "updated_at",                                                             :null => false
+    t.decimal  "ok_tap_weight",         :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "repairable_tap_weight", :precision => 7, :scale => 2, :default => 0.0
   end
 
   create_table "production_orders", :force => true do |t|

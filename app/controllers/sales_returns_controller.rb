@@ -2,6 +2,7 @@ class SalesReturnsController < ApplicationController
   before_filter :role_required
   def new
     @objects = SalesReturn.joins(:delivery).order("created_at DESC") 
+    add_breadcrumb "Sales Return", 'new_sales_return_url'
     # @new_object = SalesOrder.new 
   end
   

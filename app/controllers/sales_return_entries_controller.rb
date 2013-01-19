@@ -5,6 +5,10 @@ class SalesReturnEntriesController < ApplicationController
     @parent = SalesReturn.find_by_id params[:sales_return_id]
     @objects = @parent.sales_return_entries.joins(:delivery_entry => [:sales_item]) 
     @new_object = SalesReturnEntry.new 
+    
+    add_breadcrumb "Sales Return", 'new_sales_return_url'
+    set_breadcrumb_for @parent, 'new_sales_return_sales_return_entry_url' + "(#{@parent.id})", 
+                "Konfirmasi Sales Return Entry"
   end
   
   # def create

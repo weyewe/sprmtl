@@ -20,12 +20,20 @@
   			:label => "Berat OK",
  				:hint => "Dalam kilogram. Contoh: <b>15.5</b> kg" %>
 
+	<%= f.input :ok_tap_weight  , :input_html => {:class => "input-xlarge "}, 
+  			:label => "Berat <b>TAP</b> OK",
+ 				:hint => "Dalam kilogram. Contoh: <b>15.5</b> kg" %>
+
 <hr />
 	<%= f.input :repairable_quantity  , :input_html => {:class => "input-xlarge "}, 
   			:label => "Jumlah Perbaiki" %>
 	<%= f.input :repairable_weight , :input_html => {:class => "input-xlarge "}, 
   			:label => "Berat Perbaiki",
  				:hint => "Dalam kilogram. Contoh: <b>15.5</b> kg" %>
+
+	<%= f.input :repairable_tap_weight , :input_html => {:class => "input-xlarge "}, 
+	 			:label => "Berat <b>TAP</b> Perbaiki",
+					:hint => "Dalam kilogram. Contoh: <b>15.5</b> kg" %>
 
 <hr />
 	<%= f.input :broken_quantity  , :input_html => {:class => "input-xlarge "}, 
