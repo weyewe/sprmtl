@@ -164,90 +164,90 @@ bank_mandiri = CashAccount.create({
 })
 
 # ADDING SALES ORDER + SALES ITEMS 
-
-sales_order   = SalesOrder.create_by_employee( admin , {
-  :customer_id    => customer_1.id,          
-  :payment_term   => PAYMENT_TERM[:cash],    
-  :order_date     => Date.new(2012, 12, 15)   
-})
-
-quantity_in_sales_item = 50 
-has_production_sales_item = SalesItem.create_sales_item( admin, sales_order,  {
-    :material_id => copper.id, 
-    :is_pre_production => true , 
-    :is_production     => true, 
-    :is_post_production => true, 
-    :is_delivered => true, 
-    :delivery_address => "Perumahan Citra Garden 1 Blok AC2/3G",
-    :quantity => quantity_in_sales_item,
-    :description => "Bla bla bla bla bla", 
-    :delivery_address => "Yeaaah babyy", 
-    :requested_deadline => Date.new(2013, 3,5 ),
-    :price_per_piece => "90000", 
-    :weight_per_piece   => '15',
-    :name => "Nama dari sales item ini ( menurut customer)"
-  })
-  
-puts "BEFORE CONFIRM the sales order code: #{sales_order.code}\n"*10
-sales_order.confirm( admin )
-puts "AFTER CONFIRM the sales order code: #{sales_order.code}\n"*10
-
-
-
-
-# ADDING PRE_PRODUCTION 
-pre_production_history =  PreProductionHistory.create_history( admin, has_production_sales_item, {
-  :ok_quantity        =>  5                          ,
-  :broken_quantity    =>  1                          ,
-  :start_date         =>  Date.new(2012,7,14)        ,
-  :finish_date        =>  Date.new(2012,7,20)
-}) 
-pre_production_history.confirm( admin ) 
-
-
-# ADDING PRODUCTION 
-production_history =  ProductionHistory.create_history( admin, has_production_sales_item, {
-  :ok_quantity         => 20                            ,
-  :repairable_quantity => 2                             ,
-  :broken_quantity     => 1                             ,
-  :ok_weight           => 200                           ,
-  :repairable_weight   => 20                            ,
-  :broken_weight       => 10                            ,
-  :start_date          => Date.new(2012,8,14)           ,
-  :finish_date         => Date.new(2012,8,21) 
-})
-
-production_history.confirm( admin )
-
-# ADDING POST_PRODUCTION 
-post_production_history =  PostProductionHistory.create_history( admin, has_production_sales_item, {
-  :ok_quantity         => 10                           ,
-  :broken_quantity     => 1                            ,
-  :ok_weight           => 90                           ,
-  :broken_weight       => 8                            ,
-  :start_date          => Date.new(2012,10,14)         ,
-  :finish_date         => Date.new(2012,10,25) 
-})
-
-post_production_history.confirm( admin )
-
-# ADDING DELIVERY 
-delivery = Delivery.create_by_employee( admin, {
-  :customer_id => customer_1.id ,
-  :delivery_address => "This is delivery address",
-  :delivery_date    => Date.new( 2012,12,12)
-} )  
-
-has_production_sales_item.reload 
-
-delivery_entry = DeliveryEntry.create_delivery_entry( admin, delivery,  {
-  :sales_item_id => has_production_sales_item.id ,
-  :quantity_sent => has_production_sales_item.ready - 5,
-  :quantity_sent_weight =>  ((has_production_sales_item.ready - 5)*20).to_s
-} ) 
- 
- 
-delivery.confirm( admin )  
-
- 
+# 
+# sales_order   = SalesOrder.create_by_employee( admin , {
+#   :customer_id    => customer_1.id,          
+#   :payment_term   => PAYMENT_TERM[:cash],    
+#   :order_date     => Date.new(2012, 12, 15)   
+# })
+# 
+# quantity_in_sales_item = 50 
+# has_production_sales_item = SalesItem.create_sales_item( admin, sales_order,  {
+#     :material_id => copper.id, 
+#     :is_pre_production => true , 
+#     :is_production     => true, 
+#     :is_post_production => true, 
+#     :is_delivered => true, 
+#     :delivery_address => "Perumahan Citra Garden 1 Blok AC2/3G",
+#     :quantity => quantity_in_sales_item,
+#     :description => "Bla bla bla bla bla", 
+#     :delivery_address => "Yeaaah babyy", 
+#     :requested_deadline => Date.new(2013, 3,5 ),
+#     :price_per_piece => "90000", 
+#     :weight_per_piece   => '15',
+#     :name => "Nama dari sales item ini ( menurut customer)"
+#   })
+#   
+# puts "BEFORE CONFIRM the sales order code: #{sales_order.code}\n"*10
+# sales_order.confirm( admin )
+# puts "AFTER CONFIRM the sales order code: #{sales_order.code}\n"*10
+# 
+# 
+# 
+# 
+# # ADDING PRE_PRODUCTION 
+# pre_production_history =  PreProductionHistory.create_history( admin, has_production_sales_item, {
+#   :ok_quantity        =>  5                          ,
+#   :broken_quantity    =>  1                          ,
+#   :start_date         =>  Date.new(2012,7,14)        ,
+#   :finish_date        =>  Date.new(2012,7,20)
+# }) 
+# pre_production_history.confirm( admin ) 
+# 
+# 
+# # ADDING PRODUCTION 
+# production_history =  ProductionHistory.create_history( admin, has_production_sales_item, {
+#   :ok_quantity         => 20                            ,
+#   :repairable_quantity => 2                             ,
+#   :broken_quantity     => 1                             ,
+#   :ok_weight           => 200                           ,
+#   :repairable_weight   => 20                            ,
+#   :broken_weight       => 10                            ,
+#   :start_date          => Date.new(2012,8,14)           ,
+#   :finish_date         => Date.new(2012,8,21) 
+# })
+# 
+# production_history.confirm( admin )
+# 
+# # ADDING POST_PRODUCTION 
+# post_production_history =  PostProductionHistory.create_history( admin, has_production_sales_item, {
+#   :ok_quantity         => 10                           ,
+#   :broken_quantity     => 1                            ,
+#   :ok_weight           => 90                           ,
+#   :broken_weight       => 8                            ,
+#   :start_date          => Date.new(2012,10,14)         ,
+#   :finish_date         => Date.new(2012,10,25) 
+# })
+# 
+# post_production_history.confirm( admin )
+# 
+# # ADDING DELIVERY 
+# delivery = Delivery.create_by_employee( admin, {
+#   :customer_id => customer_1.id ,
+#   :delivery_address => "This is delivery address",
+#   :delivery_date    => Date.new( 2012,12,12)
+# } )  
+# 
+# has_production_sales_item.reload 
+# 
+# delivery_entry = DeliveryEntry.create_delivery_entry( admin, delivery,  {
+#   :sales_item_id => has_production_sales_item.id ,
+#   :quantity_sent => has_production_sales_item.ready - 5,
+#   :quantity_sent_weight =>  ((has_production_sales_item.ready - 5)*20).to_s
+# } ) 
+#  
+#  
+# delivery.confirm( admin )  
+# 
+#  
 

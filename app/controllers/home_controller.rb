@@ -55,7 +55,7 @@ class HomeController < ApplicationController
   def customers_with_outstanding_payment
     @objects = Customer.all_with_outstanding_payments
     
-    add_breadcrumb "Monitor Piutang", 'customers_with_outstanding_payment_url' 
+    add_breadcrumb "Monitor Hutang", 'customers_with_outstanding_payment_url' 
   end
   
   def outstanding_payment_details
@@ -63,7 +63,7 @@ class HomeController < ApplicationController
     
     @objects = @customer.invoices.order("created_at DESC")
     
-    add_breadcrumb "Monitor Piutang", 'customers_with_outstanding_payment_url' 
+    add_breadcrumb "Monitor Hutang", 'customers_with_outstanding_payment_url' 
     set_breadcrumb_for @customer, 'outstanding_payment_details_url' + "(#{@customer.id})", 
                 "Detail Outstanding Payment"
   end
