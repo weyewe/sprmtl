@@ -33,6 +33,9 @@ class User < ActiveRecord::Base
   def delete(employee)
     return nil if employee.nil?
     
+    random_password                    = UUIDTools::UUID.timestamp_create.to_s[0..7]
+    self.password = random_password
+    self.password_confirmation = random_password 
     self.is_deleted = true 
     self.save 
     
