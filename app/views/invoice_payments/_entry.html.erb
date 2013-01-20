@@ -8,6 +8,10 @@
 	<td>
 		<%= print_money( object.amount_paid)  %>
 	</td>
+	
+	<td>
+		<%= print_money( object.invoice.confirmed_pending_payment)  %>
+	</td>
 	 
 	
 	<% if not parent.is_confirmed? %>
