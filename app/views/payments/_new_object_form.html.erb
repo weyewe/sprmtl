@@ -15,7 +15,8 @@
   <%= f.input :customer_id  , :input_html => {:class => "input-xlarge "}, 
   			:label => "Customer" %>
 
-	<%= f.input :amount_paid  , :input_html => {:class => "input-xlarge "}, 
+	<%= f.input :amount_paid  , 
+				:input_html => {:class => "input-xlarge ", :value => "#{new_object.amount_paid.to_i}"}, 
   			:label => "Jumlah yang dibayar",
  				:as => :string,
 				:hint => "Dalam rupiah (tanpa tanda baca). Contoh: <b>15500</b> == Rp 15,000 " %>
