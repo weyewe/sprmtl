@@ -134,14 +134,14 @@ class Payment < ActiveRecord::Base
     
     new_object.creator_id     = employee.id 
     
-    new_object.customer_id    = params[:customer_id]
-    new_object.amount_paid    = BigDecimal( params[:amount_paid] ) 
-    new_object.payment_method = params[:payment_method]
-    new_object.cash_account_id = params[:cash_account_id]
-    
+    new_object.customer_id                 = params[:customer_id]
+    new_object.amount_paid                 = BigDecimal( params[:amount_paid] ) 
+    new_object.payment_method              = params[:payment_method]
+    new_object.cash_account_id             = params[:cash_account_id]
+    new_object.note                        = params[:note]
     new_object.downpayment_addition_amount = params[:downpayment_addition_amount]
-    new_object.downpayment_usage_amount = params[:downpayment_usage_amount]
-    # new_object.description = params[:description]
+    new_object.downpayment_usage_amount    = params[:downpayment_usage_amount]
+    # new_object.description               = params[:description]
     
     if new_object.is_only_downpayment_usage?
       new_object.payment_method = PAYMENT_METHOD_CASE[:only_downpayment][:value]
@@ -178,11 +178,12 @@ class Payment < ActiveRecord::Base
   
   def update_by_employee( employee, params )  
     
-    self.creator_id     = employee.id 
-    self.customer_id    = params[:customer_id]
-    self.amount_paid    = BigDecimal( params[:amount_paid] ) 
-    self.payment_method = params[:payment_method]
+    self.creator_id      = employee.id 
+    self.customer_id     = params[:customer_id]
+    self.amount_paid     = BigDecimal( params[:amount_paid] ) 
+    self.payment_method  = params[:payment_method]
     self.cash_account_id = params[:cash_account_id]
+    self.note            = params[:note]
     
     self.downpayment_addition_amount = params[:downpayment_addition_amount]
     self.downpayment_usage_amount = params[:downpayment_usage_amount]
