@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130121092814) do
+ActiveRecord::Schema.define(:version => 20130121162907) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -304,7 +304,6 @@ ActiveRecord::Schema.define(:version => 20130121092814) do
     t.boolean  "is_production",                                                   :default => false
     t.boolean  "is_post_production",                                              :default => false
     t.boolean  "is_delivered",                                                    :default => false
-    t.decimal  "price_per_piece",                  :precision => 11, :scale => 2, :default => 0.0
     t.decimal  "weight_per_piece",                 :precision => 7,  :scale => 2, :default => 0.0
     t.integer  "quantity"
     t.text     "delivery_address"
@@ -330,6 +329,10 @@ ActiveRecord::Schema.define(:version => 20130121092814) do
     t.boolean  "is_deleted",                                                      :default => false
     t.datetime "created_at",                                                                         :null => false
     t.datetime "updated_at",                                                                         :null => false
+    t.decimal  "pre_production_price",             :precision => 12, :scale => 2, :default => 0.0
+    t.decimal  "production_price",                 :precision => 12, :scale => 2, :default => 0.0
+    t.decimal  "post_production_price",            :precision => 12, :scale => 2, :default => 0.0
+    t.boolean  "is_pricing_by_weight",                                            :default => false
   end
 
   create_table "sales_orders", :force => true do |t|

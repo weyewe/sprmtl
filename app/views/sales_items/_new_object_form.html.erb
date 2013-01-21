@@ -51,8 +51,26 @@
 
 	<hr />
 		<%= f.input :is_pre_production, :label =>"Pattern?", :hint => "Termasuk jasa pembuatan pattern?" %>
+		<%= f.input :pre_production_price, :label =>"Biaya Pola",
+		   	:hint => "Dalam rupiah. Langsung isi tanpa koma. <br />"+ 
+							"Contoh untuk isi sembilan puluh lima ribu:"  + 
+							"<b>95000</b>" 		%>
+							
+		<br />
 		<%= f.input :is_production, :label =>"Casting?", :hint => "Termasuk jasa casting?"  %>
+		<%= f.input :production_price, :label =>"Biaya Cetak",
+		   	:hint => "Dalam rupiah. Langsung isi tanpa koma. <br />"+ 
+							"Contoh untuk isi sembilan puluh lima ribu:"  + 
+							"<b>95000</b>" 		%>
+		<%= f.input :is_pricing_by_weight, :label =>"Biaya Cetak Berdasarkan Berat?", 
+			:hint => "Centang jika biaya berdasarkan berat. Jika berdasarkan quantity, jangan di centang"  %>					
+		<br />
+		
 		<%= f.input :is_post_production, :label =>"Machining?", :hint => "Termasuk jasa bubut?"  %>
+		<%= f.input :post_production_price, :label =>"Biaya Bubut",
+		   	:hint => "Dalam rupiah. Langsung isi tanpa koma. <br />"+ 
+							"Contoh untuk isi sembilan puluh lima ribu:"  + 
+							"<b>95000</b>" 		%>
 	
 	<hr />
 		<%= f.input :is_delivered, :label =>"Delivery", :hint => "Centang jika diantar"  %>
