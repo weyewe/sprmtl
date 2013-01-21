@@ -177,8 +177,11 @@ describe Payment do
       :customer_id    => @customer.id , 
       :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
       :amount_paid => "50000",
-      :cash_account_id => @bank_mandiri.id
+      :cash_account_id => @bank_mandiri.id,
+      :downpayment_addition_amount => "0",
+      :downpayment_usage_amount => "0" 
     })
+  
     
     payment.should be_valid
   end
@@ -189,7 +192,9 @@ describe Payment do
       :customer_id    => @customer.id , 
       :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
       :amount_paid => "50000",
-      :cash_account_id => @bank_mandiri.id
+      :cash_account_id => @bank_mandiri.id,
+      :downpayment_addition_amount => "0",
+      :downpayment_usage_amount => "0" 
     })
      
     
@@ -206,13 +211,13 @@ describe Payment do
         :customer_id    => @customer.id , 
         :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
         :amount_paid => @total_sum,
-        :cash_account_id => @bank_mandiri.id
+        :cash_account_id => @bank_mandiri.id,
+        :downpayment_addition_amount => "0",
+        :downpayment_usage_amount => "0" 
       })
     end
     
-    it 'should produce valid payment' do
-      puts "$$$$$$$$$$$$$$$$$$$$ checking the pending amount\n"*10
-      puts "Pending Amount: #{@delivery.invoice.confirmed_pending_payment.to_s}"
+    it 'should produce valid payment' do 
       @payment.should be_valid 
     end
     
@@ -241,7 +246,32 @@ describe Payment do
       @payment.confirm( @admin) 
       @payment.is_confirmed.should  be_false  
     end
-  end
+    
+    context "confirming the payment" do
+      before(:each) do
+        @invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment,  {
+          :invoice_id  => @delivery.invoice.id , 
+          :amount_paid => @total_sum
+        } ) 
+    
+        @invoice_payment.should be_valid 
+        @customer = @payment.customer 
+        @initial_outstanding_payment = @customer.outstanding_payment
+        @payment.confirm( @admin)
+        @customer.reload 
+      end
+      
+      it 'should change the amount of outstanding payment' do
+        @payment.is_confirmed.should be_true 
+        
+        @final_outstanding_payment = @customer.outstanding_payment
+        diff = @initial_outstanding_payment - @final_outstanding_payment
+        diff.should == BigDecimal( @total_sum )
+      end
+      
+    end #"confirming the payment"
+    
+  end #'after creating payment, need to add invoice payment'
   
   
   # WARNING! we haven't checked the validation of single customer 

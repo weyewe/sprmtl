@@ -179,7 +179,9 @@ describe InvoicePayment do
       :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
       :amount_paid => @amount_paid,
       :customer_id => @customer.id,
-      :cash_account_id => @bank_mandiri.id
+      :cash_account_id => @bank_mandiri.id,
+      :downpayment_addition_amount => "0",
+      :downpayment_usage_amount => "0" 
     })
   end
   
@@ -251,7 +253,9 @@ describe InvoicePayment do
         :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
         :amount_paid => @paid_amount,
         :customer_id => @customer.id,
-        :cash_account_id => @bank_mandiri.id
+        :cash_account_id => @bank_mandiri.id,
+        :downpayment_addition_amount => "0",
+        :downpayment_usage_amount => "0" 
       })
       
       
@@ -284,7 +288,9 @@ describe InvoicePayment do
           :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
           :amount_paid => @second_payment_amount,
           :customer_id => @customer.id,
-          :cash_account_id => @bank_mandiri.id
+          :cash_account_id => @bank_mandiri.id,
+          :downpayment_addition_amount => "0",
+          :downpayment_usage_amount => "0" 
         })
  
         invoice_payment = InvoicePayment.create_invoice_payment( @admin, @second_payment,  {

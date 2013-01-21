@@ -6,22 +6,18 @@ class PaymentsController < ApplicationController
     
     add_breadcrumb "Payment", 'new_payment_url'
   end
+   
   
-  def create
-    # HARD CODE.. just for testing purposes 
-    # params[:customer][:town_id] = Town.first.id 
-    
+  def create 
     @object = Payment.create_by_employee( current_user, params[:payment] ) 
     if @object.errors.size == 0 
       @new_object=  Payment.new
     else
       @new_object= @object
     end
-    
   end
-  
    
-  
+    
   def edit
     # @customer = Customer.find_by_id params[:id] 
     @object = Payment.find_by_id params[:id]

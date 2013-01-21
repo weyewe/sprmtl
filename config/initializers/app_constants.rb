@@ -203,7 +203,16 @@ PAYMENT_METHOD_CASE = {
   :giro => {
     :value => 3, 
     :name => "Giro"
+  },
+  :only_downpayment => {
+    :value => 4, 
+    :name => "Hanya Menggunakan Downpayment"
   }
+}
+
+DOWNPAYMENT_CASE  = {
+  :addition => 1 , 
+  :deduction => 2 
 }
 
 CASH_ACCOUNT_CASE     = {

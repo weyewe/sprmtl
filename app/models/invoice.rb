@@ -7,6 +7,7 @@ class Invoice < ActiveRecord::Base
   
   has_many :invoice_payments
   has_many :payments, :through => :invoice_payments 
+  validates_presence_of :customer_id 
   
   
   
@@ -23,6 +24,7 @@ class Invoice < ActiveRecord::Base
     if new_object.save
       new_object.generate_code
       new_object.update_amount_payable
+      
     end
 
     return new_object 

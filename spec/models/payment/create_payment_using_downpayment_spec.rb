@@ -1,9 +1,8 @@
 require 'spec_helper'
 
-describe Invoice do
+describe Payment do
   before(:each) do
     # @admin = FactoryGirl.create(:user, :email => "admin@gmail.com", :password => "willy1234", :password_confirmation => "willy1234")
-  
     role = {
       :system => {
         :administrator => true
@@ -19,7 +18,7 @@ describe Invoice do
     @admin_role = Role.find_by_name ROLE_NAME[:admin]
     @admin =  User.create_main_user(   :email => "admin@gmail.com" ,:password => "willy1234", :password_confirmation => "willy1234") 
     
-    
+  
     @copper = Material.create :name => MATERIAL[:copper]
     @customer = FactoryGirl.create(:customer,  :name => "Weyewe",
                                             :contact_person => "Willy" )
@@ -33,6 +32,11 @@ describe Invoice do
       :order_date     => Date.new(2012, 12, 15)   
     })
    
+    @bank_mandiri = CashAccount.create({
+      :case =>  CASH_ACCOUNT_CASE[:bank][:value]  ,
+      :name => "Bank mandiri 234325321",
+      :description => "Spesial untuk non taxable payment"
+    })
     
     @quantity_in_sales_item = 50 
     @complete_cycle_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
@@ -136,104 +140,132 @@ describe Invoice do
     @complete_cycle_sales_item.reload 
     @initial_on_delivery = @complete_cycle_sales_item.on_delivery 
     
-    @initial_outstanding_payment = @customer.outstanding_payment 
     @delivery.confirm( @admin ) 
-    @customer = @delivery.customer 
-    
     @complete_cycle_sales_item.reload 
     @delivery_entry.reload
- 
-    @customer.reload 
-     
-  end
-  
-  it 'should produce invoice' do
-    @delivery.invoice.should be_valid 
-  end
-  
-  it "should increase the customer's outstanding payment " do
-    @final_outstanding_payment = @customer.outstanding_payment 
-    diff = @final_outstanding_payment - @initial_outstanding_payment
     
-    diff.should == @quantity_sent*@complete_cycle_sales_item.price_per_piece
+    @quantity_returned = 5 
+    @quantity_confirmed =   @delivery_entry.quantity_sent - @quantity_returned
+    
+    puts "quantity_confirmed: #{@quantity_confirmed}"
+    puts "quantity_returned: #{@quantity_returned}"
+    
+    @delivery_entry.update_post_delivery(@admin, {
+      :quantity_confirmed => @quantity_confirmed , 
+      :quantity_returned => @quantity_returned ,
+      :quantity_returned_weight => "#{@quantity_returned*20}" ,
+      :quantity_lost => 0 
+    }) 
+    
+    
+    @complete_cycle_sales_item.reload 
+    @initial_on_delivery_item = @complete_cycle_sales_item.on_delivery 
+    @initial_fulfilled = @complete_cycle_sales_item.fulfilled_order
+    
+    
+    @delivery.reload 
+    @delivery.finalize(@admin)
+    @delivery.reload
+    
+    @complete_cycle_sales_item.reload
+    
+    # create initial fund, downpayment 
+    @customer.reload
+    @downpayment_addition = "500000"
+    @payment = Payment.create_by_employee(@admin, {
+      :payment_method => PAYMENT_METHOD[:bank_transfer],
+      :customer_id    => @customer.id , 
+      :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
+      :amount_paid => "0",
+      :cash_account_id => @bank_mandiri.id,
+      :downpayment_addition_amount => @downpayment_addition,
+      :downpayment_usage_amount => "0" 
+    })
+    
+    @initial_remaining_downpayment = @customer.remaining_downpayment
+    @payment.confirm(@admin)
+    @customer.reload
   end
   
-  it "should be able to extract the amount payable" do
-    invoice = @delivery.invoice
-    total_amount = BigDecimal('0')
-    @delivery.delivery_entries.each do |de|
-      quantity_sent  = de.quantity_sent
-      price_per_piece = @complete_cycle_sales_item.price_per_piece
-      
-      total_amount += quantity_sent * price_per_piece
+  it 'should confirm the payment' do
+    @payment.is_confirmed.should be_true 
+  end
+  
+  it 'should add extra downpayment' do
+    @final_remaining_downpayment = @customer.remaining_downpayment
+    diff = @final_remaining_downpayment  - @initial_remaining_downpayment
+    diff.should == BigDecimal( "#{@downpayment_addition}")
+  end
+  
+  it 'should be able to create payment, using only remaining downpayment' do
+    pending_payment =  @delivery.invoice.confirmed_pending_payment
+    total_sum = ( pending_payment*0.5 ).to_s
+    payment = Payment.create_by_employee(@admin, {
+      :payment_method => PAYMENT_METHOD[:bank_transfer],
+      :customer_id    => @customer.id , 
+      :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
+      :amount_paid => '0',
+      :cash_account_id => @bank_mandiri.id,
+      :downpayment_addition_amount => "0",
+      :downpayment_usage_amount => total_sum 
+    })
+    
+    
+    puts "Total errors: #{payment.errors.size}\n"*10
+    payment.errors.messages.each do |message|
+      puts "#{message}"
     end
+    payment.should be_valid 
+    invoice_payment = InvoicePayment.create_invoice_payment( @admin, payment,  {
+      :invoice_id  => @delivery.invoice.id , 
+      :amount_paid => total_sum
+    })
     
-    invoice.amount_payable.should == total_amount 
+    payment.confirm(@admin)
+    
+    payment.is_confirmed.should be_true 
   end
   
-  context "post delivery confirmation" do
+  context "creating payment by using downpayment" do
     before(:each) do
-      # create finalization
-      @quantity_returned = 5 
-      @quantity_confirmed =   @delivery_entry.quantity_sent - @quantity_returned
+      pending_payment =  @delivery.invoice.confirmed_pending_payment
+      @total_sum = ( pending_payment*0.5 ).to_s
+      @payment = Payment.create_by_employee(@admin, {
+        :payment_method => PAYMENT_METHOD[:bank_transfer],
+        :customer_id    => @customer.id , 
+        :note           => "Dibayarkan dengan nomor transaksi AC/2323flkajfeaij",
+        :amount_paid => '0',
+        :cash_account_id => @bank_mandiri.id,
+        :downpayment_addition_amount => "0",
+        :downpayment_usage_amount => @total_sum 
+      })
       
-      puts "quantity_confirmed: #{@quantity_confirmed}"
-      puts "quantity_returned: #{@quantity_returned}"
+      @invoice_payment = InvoicePayment.create_invoice_payment( @admin, @payment,  {
+        :invoice_id  => @delivery.invoice.id , 
+        :amount_paid => @total_sum
+      })
       
-      @delivery_entry.update_post_delivery(@admin, {
-        :quantity_confirmed => @quantity_confirmed , 
-        :quantity_returned => @quantity_returned ,
-        :quantity_returned_weight => "#{@quantity_returned*20}" ,
-        :quantity_lost => 0 
-      }) 
-      
-      
-      @complete_cycle_sales_item.reload 
-      @initial_on_delivery_item = @complete_cycle_sales_item.on_delivery 
-      @initial_fulfilled = @complete_cycle_sales_item.fulfilled_order
-      
-      
-      @delivery.reload 
-      @customer = @delivery.customer 
-      @initial_outstanding_payment = @customer.outstanding_payment
-      @delivery.finalize(@admin)
-      @delivery.reload
       @customer.reload 
-      
-      # @delivery.finalize(@admin)  
-      @complete_cycle_sales_item.reload
+      @initial_outstanding_payment = @customer.outstanding_payment 
+      @initial_remaining_downpayment = @customer.remaining_downpayment
+      @payment.confirm(@admin)
+      @customer.reload
     end
     
-    it "should adjust the amount payable" do
-      invoice = @delivery.invoice
-      total_amount = BigDecimal('0')
-      @delivery.delivery_entries.each do |de|
-        quantity_confirmed  = de.quantity_confirmed
-        price_per_piece = @complete_cycle_sales_item.price_per_piece
-  
-        total_amount += quantity_confirmed * price_per_piece
-      end
-  
-      invoice.amount_payable.should == total_amount
+    it 'should create the payment' do
+      @payment.is_confirmed.should be_true 
     end
     
-    it 'should adjust the outstanding payment' do
-      @final_outstanding_payment = @customer.outstanding_payment
+    it 'should reduce the remaining_downpayment' do
+      @final_remaining_downpayment = @customer.remaining_downpayment
+      diff = @initial_remaining_downpayment  - @final_remaining_downpayment
+      diff.should == BigDecimal("#{@total_sum}")
+    end
+    
+    it 'should reduce the outstanding downpayment' do 
+      @final_outstanding_payment = @customer.outstanding_payment 
       diff = @initial_outstanding_payment - @final_outstanding_payment
-      diff.should == (@quantity_sent - @delivery_entry.quantity_confirmed)*@complete_cycle_sales_item.price_per_piece
+      diff.should == BigDecimal("#{@total_sum}")
     end
-    
-    context "on payment confirmation" do 
-      
-      it 'should deduct the confirmed_amount_payable' 
-      
-      it 'should change the is_paid to true if confirmed_amount payable is 0' 
-      
-    end# "on payment confirmation"
-    
-  end
-     
-  
-  
-  
+  end 
 end

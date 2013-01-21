@@ -5,6 +5,7 @@ class Customer < ActiveRecord::Base
   has_many :deliveries
   has_many :payments
   has_many :invoices 
+  has_many :downpayment_histories
   
   has_many :vehicles 
   
@@ -110,6 +111,30 @@ class Customer < ActiveRecord::Base
   
   def has_unconfirmed_payment?
     self.payments.where(:is_confirmed => false).count != 0 
+  end
+  
+=begin
+  TRACKING OUTSTANDING PAYMENT + REMAINING DOWNPAYMENT 
+=end
+
+  def update_outstanding_payment
+    total = BigDecimal("0")
+    self.invoices.where(:is_paid => false).each do |invoice|
+      total += invoice.confirmed_pending_payment
+    end
+    
+    self.outstanding_payment = total 
+    self.save 
+  end
+  
+  def update_remaining_downpayment
+    total = BigDecimal("0")
+    
+    total_addition = self.downpayment_histories.where(:case => DOWNPAYMENT_CASE[:addition]).sum("amount")
+    total_deduction = self.downpayment_histories.where(:case => DOWNPAYMENT_CASE[:deduction]).sum("amount")
+    
+    self.remaining_downpayment = total_addition - total_deduction 
+    self.save 
   end
   
   

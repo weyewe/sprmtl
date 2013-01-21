@@ -20,8 +20,8 @@ class InvoicePayment < ActiveRecord::Base
   end
    
   def uniqueness_of_invoice_payment
-    puts "$$$$$$$$$$$$ Inside the uniqueness_of_invoice_payment\n"*5
-    puts "the parent_id : #{self.payment_id}"
+    # puts "$$$$$$$$$$$$ Inside the uniqueness_of_invoice_payment\n"*5
+    # puts "the parent_id : #{self.payment_id}"
     
     parent  = self.payment
     invoice_id_list  = parent.invoice_payments.map{|x| x.invoice_id }

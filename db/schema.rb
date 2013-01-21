@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130119173853) do
+ActiveRecord::Schema.define(:version => 20130121092814) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -44,9 +44,11 @@ ActiveRecord::Schema.define(:version => 20130119173853) do
     t.text     "office_address"
     t.text     "delivery_address"
     t.integer  "town_id"
-    t.boolean  "is_deleted",       :default => false
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.boolean  "is_deleted",                                           :default => false
+    t.datetime "created_at",                                                              :null => false
+    t.datetime "updated_at",                                                              :null => false
+    t.decimal  "outstanding_payment",   :precision => 12, :scale => 2, :default => 0.0
+    t.decimal  "remaining_downpayment", :precision => 12, :scale => 2, :default => 0.0
   end
 
   create_table "deliveries", :force => true do |t|
@@ -105,6 +107,16 @@ ActiveRecord::Schema.define(:version => 20130119173853) do
     t.datetime "updated_at",                      :null => false
   end
 
+  create_table "downpayment_histories", :force => true do |t|
+    t.integer  "payment_id"
+    t.integer  "customer_id"
+    t.integer  "creator_id"
+    t.decimal  "amount",      :precision => 12, :scale => 2, :default => 0.0
+    t.integer  "case",                                       :default => 1
+    t.datetime "created_at",                                                  :null => false
+    t.datetime "updated_at",                                                  :null => false
+  end
+
   create_table "employees", :force => true do |t|
     t.string   "name"
     t.string   "phone"
@@ -159,14 +171,16 @@ ActiveRecord::Schema.define(:version => 20130119173853) do
     t.integer  "cash_account_id"
     t.integer  "customer_id"
     t.string   "code"
-    t.decimal  "amount_paid",     :precision => 11, :scale => 2, :default => 0.0
+    t.decimal  "amount_paid",                 :precision => 11, :scale => 2, :default => 0.0
     t.integer  "payment_method"
-    t.boolean  "is_confirmed",                                   :default => false
+    t.boolean  "is_confirmed",                                               :default => false
     t.integer  "confirmer_id"
     t.datetime "confirmed_at"
     t.text     "note"
-    t.datetime "created_at",                                                        :null => false
-    t.datetime "updated_at",                                                        :null => false
+    t.datetime "created_at",                                                                    :null => false
+    t.datetime "updated_at",                                                                    :null => false
+    t.decimal  "downpayment_addition_amount", :precision => 12, :scale => 2, :default => 0.0
+    t.decimal  "downpayment_usage_amount",    :precision => 12, :scale => 2, :default => 0.0
   end
 
   create_table "post_production_histories", :force => true do |t|

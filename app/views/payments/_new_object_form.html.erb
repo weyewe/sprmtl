@@ -17,12 +17,27 @@
 
 	<%= f.input :amount_paid  , 
 				:input_html => {:class => "input-xlarge ", :value => "#{new_object.amount_paid.to_i}"}, 
-  			:label => "Jumlah yang dibayar",
+  			:label => "Jumlah uang yang <b>diterima</b>",
+ 				:as => :string,
+				:hint => "Dalam rupiah (tanpa tanda baca). Contoh: <b>15500</b> == Rp 15,000 " %>
+	
+	<%= f.input :downpayment_usage_amount  , 
+				:input_html => {:class => "input-xlarge ", :value => "#{new_object.amount_paid.to_i}"}, 
+  			:label => "Jumlah <b>Penggunaan</b> Down Payment",
  				:as => :string,
 				:hint => "Dalam rupiah (tanpa tanda baca). Contoh: <b>15500</b> == Rp 15,000 " %>
  
 <hr />
-	<%= f.input :cash_account_id, :label => "Tujuan Pembayaran" do %>
+	<%= f.input :downpayment_addition_amount  , 
+				:input_html => {:class => "input-xlarge ", :value => "#{new_object.amount_paid.to_i}"}, 
+				:label => "Jumlah <b>Penambahan</b> Down Payment",
+				:as => :string,
+				:hint => "Dalam rupiah (tanpa tanda baca). Contoh: <b>15500</b> == Rp 15,000 " %>
+
+<hr />
+	<%= f.input :cash_account_id, :label => "Tujuan Pembayaran" , 
+		:hint => "Jika hanya pembayaran dengan menggunakan <b>Down Payment</b>, " + 
+						"apapun pilihannya tidak akan berpengaruh" do %>
      <%= f.select :cash_account_id, 
          CashAccount.all_selectables %>
   <% end %>

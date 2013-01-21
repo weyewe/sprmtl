@@ -443,16 +443,5 @@ describe Delivery do
     end # context 'creating delivery with 1 delivery entry , including production'
   end
   
-  
-  # create delivery order 
-  # => add delivery entries
-  # create delivery order confirmation 
-    # => sales return
-      # => decide whether it will go to post production (fix) 
-      # => or it will go to production  (remake) 
-    # => delivery loss 
-  
- 
-  
-  
+   
 end

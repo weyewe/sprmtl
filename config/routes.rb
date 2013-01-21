@@ -233,6 +233,7 @@ Supermetal::Application.routes.draw do
 
   match 'print_payment/:payment_id' => 'payments#print_payment' , :as => :print_payment
   
+   
 ##################################################
 ##################################################
 ######### Invoice Payments

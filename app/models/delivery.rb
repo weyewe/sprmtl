@@ -109,6 +109,9 @@ class Delivery < ActiveRecord::Base
       
       Invoice.create_by_employee( employee  , self  ) 
       
+      # by creating new invoice, we need to update outstanding payment 
+      customer  = self.customer
+      customer.update_outstanding_payment
     end 
   end
   
@@ -152,8 +155,10 @@ class Delivery < ActiveRecord::Base
       
       invoice.update_amount_payable
 
-      
-      # puts "DOING SHITE AS NORMAL, NO ROLLBACK"
+      # by finalizing delivery, we adjust the outstanding payment 
+      # adjustment for sales return or lost delivery 
+      customer  = self.customer
+      customer.update_outstanding_payment
     end 
   end
   
