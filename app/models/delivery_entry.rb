@@ -198,10 +198,8 @@ class DeliveryEntry < ActiveRecord::Base
   def validate_pricing_availability
     sales_item = self.sales_item
     
-    if sales_item.is_pending_pricing == true 
-      if not quantity.present? or quantity <= 0 
-        errors.add(:pricing , "Harga untuk sales item ini belum tersedia" )  
-      end
+    if sales_item.is_pending_pricing == true  
+      errors.add(:pricing , "Harga untuk sales item ini belum tersedia" )  
     end
   end
   
