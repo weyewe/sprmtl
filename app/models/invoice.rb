@@ -75,20 +75,14 @@ class Invoice < ActiveRecord::Base
     total_amount = BigDecimal('0') 
     
     delivery.delivery_entries.each do |de|
-      price = de.sales_item.price_per_piece
-      quantity = 0 
-      if delivery.is_confirmed?  and not delivery.is_finalized?
-        quantity = de.quantity_sent
-      elsif  delivery.is_confirmed?  and  delivery.is_finalized?
-        quantity = de.quantity_confirmed
-      end
-      total_amount += price * quantity
+      total_amount +=  de.total_delivery_entry_price
     end
     
     self.amount_payable = total_amount
-    self.save 
- 
+    self.save  
   end
+  
+  
   
   def update_paid_status(employee)
     self.reload

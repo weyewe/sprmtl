@@ -18,14 +18,13 @@ class SalesItem < ActiveRecord::Base
   validates_presence_of :description
   validates_presence_of :name 
   validates_presence_of :creator_id
-  validates_presence_of :price_per_piece
+  # validates_presence_of :price_per_piece
   validates_presence_of :weight_per_piece
   validates_presence_of :quantity 
   
   validate :material_must_present_if_production_is_true 
   validate :delivery_address_must_present_if_delivered_is_true 
   validate :quantity_must_be_at_least_one
-  validate :price_per_piece_must_not_be_zero 
   validate  :weight_per_piece_must_not_be_less_than_zero
   
   def material_must_present_if_production_is_true
@@ -46,11 +45,6 @@ class SalesItem < ActiveRecord::Base
     end
   end
   
-  def price_per_piece_must_not_be_zero
-    if  price_per_piece <= BigDecimal('0')
-      errors.add(:price_per_piece , "Harga jual satuan harus lebih dari 0" )  
-    end
-  end
   
   def weight_per_piece_must_not_be_less_than_zero
     if  weight_per_piece <= BigDecimal('0')
@@ -58,24 +52,7 @@ class SalesItem < ActiveRecord::Base
     end
   end
   
-  def update_sales_item( params ) 
-    self.material_id        = params[:material_id]       
-    self.is_pre_production  = params[:is_pre_production] 
-    # self.is_production      = params[:is_production]     
-    self.is_production      = true # by default 
-    self.is_post_production = params[:is_post_production]
-    self.is_delivered       = params[:is_delivered]      
-    self.delivery_address   = params[:delivery_address]  
-    self.price_per_piece    =  BigDecimal( params[:price_per_piece ])
-    self.weight_per_piece    =  BigDecimal( params[:weight_per_piece ])
-    self.quantity           = params[:quantity]          
-    self.description        = params[:description]   
-    self.name               = params[:name]
-    self.requested_deadline = params[:requested_deadline]
-    
-    self.save 
-    return self 
-  end
+  
   
   def delete(employee)
     return nil if employee.nil?
@@ -92,20 +69,37 @@ class SalesItem < ActiveRecord::Base
     new_object.creator_id = employee.id 
     new_object.sales_order_id = sales_order.id 
     
-    new_object.material_id        = params[:material_id]       
-    new_object.is_pre_production  = params[:is_pre_production] 
-    # new_object.is_production      = params[:is_production]    
-    new_object.is_production      = true # by default  
-    new_object.is_post_production = params[:is_post_production]
-    new_object.is_delivered       = params[:is_delivered]      
-    new_object.delivery_address   = params[:delivery_address]  
-    new_object.price_per_piece    =  BigDecimal( params[:price_per_piece ])
-    new_object.weight_per_piece    =  BigDecimal( params[:weight_per_piece ])
-    new_object.quantity           = params[:quantity]          
-    new_object.description        = params[:description]   
-    new_object.name               = params[:name]
+    new_object.material_id           = params[:material_id]       
+    new_object.is_pre_production     = params[:is_pre_production] 
+    # new_object.is_production       = params[:is_production]    
+    new_object.is_production         = true # by default  
+    new_object.is_post_production    = params[:is_post_production]
+    new_object.is_delivered          = params[:is_delivered]      
+    new_object.delivery_address      = params[:delivery_address]  
 
-    new_object.requested_deadline = params[:requested_deadline] # Date.new( 2013, 3,5 )
+    new_object.weight_per_piece      = BigDecimal( params[:weight_per_piece ])
+    new_object.quantity              = params[:quantity]          
+    new_object.description           = params[:description]   
+    new_object.name                  = params[:name]
+    
+    new_object.is_pending_pricing = params[:is_pending_pricing]
+
+    
+    
+    if not new_object.is_pending_pricing
+      new_object.pre_production_price  = BigDecimal( params[:pre_production_price]  )
+      new_object.production_price      = BigDecimal( params[:production_price]      )
+      new_object.post_production_price = BigDecimal( params[:post_production_price] )
+      new_object.is_pricing_by_weight  = BigDecimal( params[:is_pricing_by_weight]  )
+    else 
+      new_object.pre_production_price   = BigDecimal("0")
+      new_object.production_price       = BigDecimal("0")
+      new_object.post_production_price  = BigDecimal("0") 
+    end                               
+     
+
+    new_object.requested_deadline    = params[:requested_deadline] # Date.new( 2013, 3,5 )
+
     
     
     if new_object.save 
@@ -113,6 +107,41 @@ class SalesItem < ActiveRecord::Base
     end
     
     return new_object 
+  end
+  
+  def update_sales_item( params ) 
+    return nil if self.is_confirmed? 
+    
+    self.material_id           = params[:material_id]       
+    self.is_pre_production     = params[:is_pre_production] 
+    # self.is_production       = params[:is_production]     
+    self.is_production         = true # by default 
+    self.is_post_production    = params[:is_post_production]
+    self.is_delivered          = params[:is_delivered]      
+    self.delivery_address      = params[:delivery_address]  
+    self.weight_per_piece      = BigDecimal( params[:weight_per_piece ])
+    self.quantity              = params[:quantity]          
+    self.description           = params[:description]   
+    self.name                  = params[:name]
+    
+    self.is_pending_pricing = params[:is_pending_pricing]
+    
+    if not self.is_pending_pricing
+      self.pre_production_price  = BigDecimal( params[:pre_production_price]  )
+      self.production_price      = BigDecimal( params[:production_price]      )
+      self.post_production_price = BigDecimal( params[:post_production_price] )
+      self.is_pricing_by_weight  = BigDecimal( params[:is_pricing_by_weight]  )
+    else
+      self.pre_production_price  = BigDecimal( '0' )
+      self.production_price      = BigDecimal( '0' )
+      self.post_production_price = BigDecimal( '0' )
+    end
+    
+    
+    self.requested_deadline    = params[:requested_deadline] 
+    self.save 
+    
+    return self 
   end
   
   

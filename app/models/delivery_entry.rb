@@ -195,12 +195,25 @@ class DeliveryEntry < ActiveRecord::Base
     self.save 
   end
   
+  def validate_pricing_availability
+    sales_item = self.sales_item
+    
+    if sales_item.is_pending_pricing == true 
+      if not quantity.present? or quantity <= 0 
+        errors.add(:pricing , "Harga untuk sales item ini belum tersedia" )  
+      end
+    end
+  end
+  
   def confirm 
     return nil if self.is_confirmed == true  
     self.is_confirmed = true 
     
     self.save 
+    
     self.generate_code
+    
+    validate_pricing_availability
     
     if  self.errors.size != 0  
       raise ActiveRecord::Rollback, "Call tech support!" 
@@ -250,6 +263,62 @@ class DeliveryEntry < ActiveRecord::Base
     sales_item.update_on_delivery_item_finalize
     # sales_item.update_on_delivery_statistics
     # sales_item.update_post_delivery_statistics 
+  end
+  
+  def billed_quantity
+    quantity = 0 
+    if delivery.is_confirmed? and  not delivery.is_finalized? 
+      quantity = self.quantity_sent  
+    elsif delivery.is_confirmed? and  delivery.is_finalized? 
+      quantity = self.quantity_confirmed 
+    end
+    
+    return quantity 
+  end
+  
+  def billed_weight
+    weight = 0 
+    if delivery.is_confirmed? and  not delivery.is_finalized? 
+      weight = self.weight_quantity_sent  
+    elsif delivery.is_confirmed? and  delivery.is_finalized? 
+      weight = self.weight_quantity_confirmed 
+    end
+    
+    return weight
+  end
+  
+  def total_delivery_entry_price
+    sales_item = self.sales_item 
+    quantity = 0 
+    weight = BigDecimal('0')
+    if delivery.is_confirmed?  and not delivery.is_finalized?
+      quantity = de.quantity_sent
+      weight = de.quantity_sent_weight 
+    elsif  delivery.is_confirmed?  and  delivery.is_finalized?
+      quantity = de.quantity_confirmed
+      weight = de.quantity_confirmed_weight 
+    end 
+    
+    total_amount = BigDecimal("0")
+    
+    if sales_item.is_pre_production?
+      total_amount += sales_item.pre_production_price * quantity
+    end
+    
+    if sales_item.is_production? 
+      if sales_item.is_pricing_by_weight? 
+        total_amount += production_price * weight
+      else
+        total_amount += production_price * quantity
+      end
+    end
+  
+    
+    if sales_item.is_post_production?
+      total_amount += sales_item.post_production_price * quantity
+    end
+    
+    return total_amount
   end
   
 end

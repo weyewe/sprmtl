@@ -20,9 +20,7 @@
 				Berat Satuan: <b><%= object.weight_per_piece %></b> kg
 			</li>
 			
-			<li>
-				Harga Satuan: <b><%= print_money( object.price_per_piece)  %></b>
-			</li>
+	 
 		</ul>
 	</td>
 	 
@@ -32,6 +30,8 @@
 				Pattern:  
 				<% if object.is_pre_production == true %>
 					<span class="label label-primary">YES</span>
+					<%= print_money( object.pre_production_price) if not object.is_pending_pricing? %>
+					<!-- give the price -->
 				<% else %>
 					<span class="label label-tertiary">NO</span>
 				<% end %>
@@ -41,6 +41,14 @@
 				Casting: 
 				<% if object.is_production == true %>
 					<span class="label label-primary">YES</span>
+					<%= print_money( object.production_price) if not object.is_pending_pricing? %>
+					
+					<% if object.is_pricing_by_weight? %>	
+						per kg
+					<% else %>
+						per pcs
+					<% end %>
+					<!-- give the price -->
 				<% else %>
 					<span class="label label-tertiary">NO</span>
 				<% end %> 
@@ -50,6 +58,8 @@
 				Machining:  
 				<% if object.is_post_production == true %>
 					<span class="label label-primary">YES</span>
+					<%= print_money( object.post_production_price) if not object.is_pending_pricing? %>
+					<!-- give the price -->
 				<% else %>
 					<span class="label label-tertiary">NO</span>
 				<% end %>
@@ -67,8 +77,8 @@
 			
 			<% if object.is_delivered %>
 			
-			<hr />
-			<%= object.delivery_address %>
+				<hr />
+				<%= object.delivery_address %>
 			<% end %>
 		</ul>
 	</td>

@@ -8,24 +8,7 @@
       :method => :post , 
       :html => {:class => " form-horizontal prevent_double_submit ajax-form   no_content_form",
         :id => "#{id}"}) do |f| %>
-
-	 
-<!-- 				new_object.material_id        = params[:material_id]       
-		    new_object.is_pre_production  = params[:is_pre_production] 
-		    new_object.is_production      = params[:is_production]     
-		    new_object.is_post_production = params[:is_post_production]
-		    new_object.is_delivered       = params[:is_delivered]      
-		    new_object.delivery_address   = params[:delivery_address]  
-		    new_object.price_per_piece    =  BigDecimal( params[:price_per_piece ])
-		    new_object.weight_per_piece    =  BigDecimal( params[:weight_per_piece ])
-		    new_object.quantity           = params[:quantity]          
-		    new_object.description        = params[:description]   
-		    new_object.delivery_address   = params[:delivery_address]          
-		    new_object.requested_deadline = params[:requested_deadline]
-		
-		 -->
-
-   
+ 
  
 
 	<%= f.input :material_id, :label => "Material" do %>
@@ -43,11 +26,7 @@
 	<hr />
 		<%= f.input :quantity, :label =>"Kuantitas"   %>
 		<%= f.input :weight_per_piece, :label =>"Berat satuan", 
-				:hint => "Dalam kilogram, sensitif sampai 2 decimal. Contoh: <b>2.15</b>kg"   %>
-		<%= f.input :price_per_piece, :label =>"Harga satuan",
-		   	:hint => "Dalam rupiah. Langsung isi tanpa koma. <br />"+ 
-							"Contoh untuk isi sembilan puluh lima ribu:"  + 
-							"<b>95000</b>" 		%>
+				:hint => "Dalam kilogram, sensitif sampai 2 decimal. Contoh: <b>2.15</b>kg"   %> 
 
 	<hr />
 		<%= f.input :is_pre_production, :label =>"Pattern?", :hint => "Termasuk jasa pembuatan pattern?" %>

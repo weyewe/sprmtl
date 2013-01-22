@@ -139,7 +139,9 @@ class SalesOrderPdf < Prawn::Document
     count = 0
     total_price_in_sales_order = BigDecimal("0")
     
-    [["No", "Item", "Quantity", "Price", "Total"]] +
+    header = [["No", "Item", "Quantity", "Price"]] 
+    body = [] 
+    
     (@sales_order.sales_items).map do |sales_item|
       count = count + 1 
       item_data = "#{sales_item.code} "  
@@ -147,20 +149,46 @@ class SalesOrderPdf < Prawn::Document
       item_data << "#{sales_item.name}"
       item_data << "\n"
       item_data << "#{sales_item.description}"
-      total_price = sales_item.quantity * sales_item.price_per_piece
-      total_price_in_sales_order += total_price
       
-      [ "#{count}", 
+      price_details = ""
+      if sales_item.is_pending_pricing?
+        price_details << "Biaya Pending"
+      else
+        if sales_item.is_pre_production?
+          price_details << "Biaya Pola: #{precision( sales_item.pre_production_price) }" + "\n"
+        end
+
+        if sales_item.is_production?
+          price_details << "Biaya Cetak: #{precision( sales_item.production_price) }" 
+          if sales_item.is_pricing_by_weight?
+            price_details <<" per kg"  
+          else
+            price_details <<" per piece" 
+          end
+          
+          price_details << "\n"
+        end
+
+        if sales_item.is_post_production?
+          price_details << "Biaya Bubut: #{precision( sales_item.post_production_price) }" 
+        end
+      end
+      
+      
+      
+      body << [ "#{count}", 
         "#{item_data} ", sales_item.quantity,
-      "#{precision(sales_item.price_per_piece)}  ", 
-      "#{precision(total_price)}" ]
-    end  + 
-    [[
-      "",
-      " ", '',
-    "Total  ",  
-    "#{precision(total_price_in_sales_order)}"
-    ]]
+      "#{ price_details }  " ]
+    end  
+    
+    # footer = [[
+    #   "",
+    #   " ", '',
+    # "Total  ",  
+    # "#{precision(total_price_in_sales_order)}"
+    # ]]
+    
+    return header + body  #+ footer 
   end
    
   def precision(num)

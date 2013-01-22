@@ -150,24 +150,47 @@ class InvoicePdf < Prawn::Document
       item_data << "\n"
       item_data << "#{sales_item.description}"
       total_price = BigDecimal("0")
-      if @delivery.is_confirmed? and  not @delivery.is_finalized? 
-        total_price = delivery_entry.quantity_sent * sales_item.price_per_piece
-      elsif @delivery.is_confirmed? and  @delivery.is_finalized? 
-        total_price = delivery_entry.quantity_confirmed * sales_item.price_per_piece
+      
+        
+      quantity  = delivery_entry.billed_quantity 
+      weight = delivery_entry.billed_weight 
+      quantity_details = ""
+      quantity_details << "#{quantity} pcs"
+      if sales_item.is_pricing_by_weight?
+        quantity_details << "\n" + "(#{weight} kg)"
       end
       
-      quantity = 0 
-      if @delivery.is_confirmed? and  not @delivery.is_finalized? 
-        quantity = delivery_entry.quantity_sent  
-      elsif @delivery.is_confirmed? and  @delivery.is_finalized? 
-        quantity = delivery_entry.quantity_confirmed 
+      price_details = ""
+      if sales_item.is_pending_pricing?
+        price_details << "Biaya Pending"
+      else
+        if sales_item.is_pre_production?
+          price_details << "Biaya Pola: #{precision( sales_item.pre_production_price) }" + "\n"
+        end
+
+        if sales_item.is_production?
+          price_details << "Biaya Cetak: #{precision( sales_item.production_price) }" 
+          if sales_item.is_pricing_by_weight?
+            price_details <<" per kg"  
+          else
+            price_details <<" per piece" 
+          end
+          
+          price_details << "\n"
+        end
+
+        if sales_item.is_post_production?
+          price_details << "Biaya Bubut: #{precision( sales_item.post_production_price) }" 
+        end
       end
-    
-      total_price_in_invoice += total_price
+      
+      
+      total_price = delivery_entry.total_delivery_entry_price
+      total_price_in_invoice += delivery_entry.total_delivery_entry_price
       
       [ "#{count}", 
-        "#{item_data} ", quantity,
-      "#{precision(sales_item.price_per_piece)}  ", 
+        "#{item_data} ", quantity_details,
+        price_details, 
       "#{precision(total_price)}" ]
     end  + 
     [[
