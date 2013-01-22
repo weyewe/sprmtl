@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130121162907) do
+ActiveRecord::Schema.define(:version => 20130122010241) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -72,16 +72,17 @@ ActiveRecord::Schema.define(:version => 20130121162907) do
     t.integer  "sales_item_id"
     t.integer  "delivery_id"
     t.string   "code"
-    t.integer  "quantity_sent",                                          :default => 0
-    t.decimal  "quantity_sent_weight",     :precision => 7, :scale => 2, :default => 0.0
-    t.integer  "quantity_confirmed",                                     :default => 0
-    t.integer  "quantity_returned",                                      :default => 0
-    t.decimal  "quantity_returned_weight", :precision => 7, :scale => 2, :default => 0.0
-    t.integer  "quantity_lost",                                          :default => 0
-    t.boolean  "is_confirmed",                                           :default => false
-    t.boolean  "is_finalized",                                           :default => false
-    t.datetime "created_at",                                                                :null => false
-    t.datetime "updated_at",                                                                :null => false
+    t.integer  "quantity_sent",                                           :default => 0
+    t.decimal  "quantity_sent_weight",      :precision => 7, :scale => 2, :default => 0.0
+    t.integer  "quantity_confirmed",                                      :default => 0
+    t.integer  "quantity_returned",                                       :default => 0
+    t.decimal  "quantity_returned_weight",  :precision => 7, :scale => 2, :default => 0.0
+    t.integer  "quantity_lost",                                           :default => 0
+    t.boolean  "is_confirmed",                                            :default => false
+    t.boolean  "is_finalized",                                            :default => false
+    t.datetime "created_at",                                                                 :null => false
+    t.datetime "updated_at",                                                                 :null => false
+    t.decimal  "quantity_confirmed_weight", :precision => 7, :scale => 2, :default => 0.0
   end
 
   create_table "delivery_lost_entries", :force => true do |t|
@@ -333,6 +334,7 @@ ActiveRecord::Schema.define(:version => 20130121162907) do
     t.decimal  "production_price",                 :precision => 12, :scale => 2, :default => 0.0
     t.decimal  "post_production_price",            :precision => 12, :scale => 2, :default => 0.0
     t.boolean  "is_pricing_by_weight",                                            :default => false
+    t.boolean  "is_pending_pricing",                                              :default => false
   end
 
   create_table "sales_orders", :force => true do |t|

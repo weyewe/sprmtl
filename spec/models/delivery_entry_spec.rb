@@ -39,24 +39,26 @@ describe Delivery do
     
     @quantity_in_sales_item = 50 
     @complete_cycle_sales_item = SalesItem.create_sales_item( @admin, @sales_order,  {
-        :material_id => @copper.id, 
-        :is_pre_production => true , 
-        :is_production     => true, 
-        :is_post_production => true, 
-        :is_delivered => true, 
-        :delivery_address => "Perumahan Citra Garden 1 Blok AC2/3G",
-        :quantity => @quantity_in_sales_item,
-        :description => "Bla bla bla bla bla", 
-        :delivery_address => "Yeaaah babyy", 
-        :requested_deadline => Date.new(2013, 3,5 ),
-        :price_per_piece => "90000", 
-        :weight_per_piece   => '15' ,
-        :name => "Sales Item"
+        :material_id           => @copper.id, 
+        :is_pre_production     => true , 
+        :is_production         => true, 
+        :is_post_production    => true, 
+        :is_delivered          => true, 
+        :delivery_address      => "Perumahan Citra Garden 1 Blok AC2/3G",
+        :quantity              => @quantity_in_sales_item,
+        :description           => "Bla bla bla bla bla", 
+        :delivery_address      => "Yeaaah babyy", 
+        :requested_deadline    => Date.new(2013, 3,5 ), 
+        :weight_per_piece      => '15' ,
+        :name                  => "Sales Item",
+        :is_pending_pricing    => false, 
+        :is_pricing_by_weight  => false , 
+        :pre_production_price  => "50000", 
+        :production_price      => "20000",
+        :post_production_price => "150000" 
       })
+      
     
-    
-   
-
     @sales_order.confirm(@admin)
     @complete_cycle_sales_item.reload
     

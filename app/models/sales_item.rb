@@ -82,15 +82,15 @@ class SalesItem < ActiveRecord::Base
     new_object.description           = params[:description]   
     new_object.name                  = params[:name]
     
-    new_object.is_pending_pricing = params[:is_pending_pricing]
+    
 
     
-    
+    new_object.is_pending_pricing = params[:is_pending_pricing]
     if not new_object.is_pending_pricing
       new_object.pre_production_price  = BigDecimal( params[:pre_production_price]  )
       new_object.production_price      = BigDecimal( params[:production_price]      )
       new_object.post_production_price = BigDecimal( params[:post_production_price] )
-      new_object.is_pricing_by_weight  = BigDecimal( params[:is_pricing_by_weight]  )
+      new_object.is_pricing_by_weight  =  params[:is_pricing_by_weight]  
     else 
       new_object.pre_production_price   = BigDecimal("0")
       new_object.production_price       = BigDecimal("0")
@@ -130,7 +130,7 @@ class SalesItem < ActiveRecord::Base
       self.pre_production_price  = BigDecimal( params[:pre_production_price]  )
       self.production_price      = BigDecimal( params[:production_price]      )
       self.post_production_price = BigDecimal( params[:post_production_price] )
-      self.is_pricing_by_weight  = BigDecimal( params[:is_pricing_by_weight]  )
+      self.is_pricing_by_weight  =  params[:is_pricing_by_weight]   
     else
       self.pre_production_price  = BigDecimal( '0' )
       self.production_price      = BigDecimal( '0' )

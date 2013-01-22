@@ -46,9 +46,13 @@ describe Invoice do
         :description => "Bla bla bla bla bla", 
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
-        :price_per_piece => "90000", 
         :weight_per_piece   => '15' ,
-        :name => "Sales Item"
+        :name => "Sales Item",
+        :is_pending_pricing    => false, 
+        :is_pricing_by_weight  => false , 
+        :pre_production_price  => "50000", 
+        :production_price      => "20000",
+        :post_production_price => "150000"
       })
     
     
@@ -155,20 +159,35 @@ describe Invoice do
     @final_outstanding_payment = @customer.outstanding_payment 
     diff = @final_outstanding_payment - @initial_outstanding_payment
     
-    diff.should == @quantity_sent*@complete_cycle_sales_item.price_per_piece
+    price = BigDecimal("0")
+    price += @complete_cycle_sales_item.pre_production_price if @complete_cycle_sales_item.is_pre_production?
+    price += @complete_cycle_sales_item.production_price if @complete_cycle_sales_item.is_production?
+    price += @complete_cycle_sales_item.post_production_price if @complete_cycle_sales_item.is_post_production?
+    
+    diff.should == @quantity_sent*price
   end
   
   it "should be able to extract the amount payable" do
     invoice = @delivery.invoice
     total_amount = BigDecimal('0')
+    double_check_total_amount = BigDecimal('0')
+    
     @delivery.delivery_entries.each do |de|
-      quantity_sent  = de.quantity_sent
-      price_per_piece = @complete_cycle_sales_item.price_per_piece
+      sales_item = de.sales_item 
+      price = BigDecimal("0")
+      price += sales_item.pre_production_price if   sales_item.is_pre_production?
+      price += sales_item.production_price if       sales_item.is_production?
+      price += sales_item.post_production_price if  sales_item.is_post_production?
       
-      total_amount += quantity_sent * price_per_piece
+      
+      quantity_sent  = de.quantity_sent
+       
+      total_amount += quantity_sent * price
+      double_check_total_amount += de.total_delivery_entry_price
     end
     
-    invoice.amount_payable.should == total_amount 
+    invoice.amount_payable.should == total_amount
+    invoice.amount_payable.should ==  double_check_total_amount
   end
   
   context "post delivery confirmation" do
@@ -207,20 +226,36 @@ describe Invoice do
     it "should adjust the amount payable" do
       invoice = @delivery.invoice
       total_amount = BigDecimal('0')
+      double_check_total_amount = BigDecimal('0')
+      
       @delivery.delivery_entries.each do |de|
-        quantity_confirmed  = de.quantity_confirmed
-        price_per_piece = @complete_cycle_sales_item.price_per_piece
+        quantity_confirmed  = de.quantity_confirmed 
+        
+        sales_item = de.sales_item 
+        price = BigDecimal("0")
+        price += sales_item.pre_production_price if   sales_item.is_pre_production?
+        price += sales_item.production_price if       sales_item.is_production?
+        price += sales_item.post_production_price if  sales_item.is_post_production?
   
-        total_amount += quantity_confirmed * price_per_piece
+        total_amount += quantity_confirmed * price
+        double_check_total_amount += de.total_delivery_entry_price
       end
   
       invoice.amount_payable.should == total_amount
+      invoice.amount_payable.should == double_check_total_amount
     end
     
     it 'should adjust the outstanding payment' do
       @final_outstanding_payment = @customer.outstanding_payment
       diff = @initial_outstanding_payment - @final_outstanding_payment
-      diff.should == (@quantity_sent - @delivery_entry.quantity_confirmed)*@complete_cycle_sales_item.price_per_piece
+      
+      sales_item = @delivery_entry.sales_item 
+      price = BigDecimal("0")
+      price += sales_item.pre_production_price if   sales_item.is_pre_production?
+      price += sales_item.production_price if       sales_item.is_production?
+      price += sales_item.post_production_price if  sales_item.is_post_production?
+      
+      diff.should == (@quantity_sent - @delivery_entry.quantity_confirmed)*price
     end
     
     context "on payment confirmation" do 

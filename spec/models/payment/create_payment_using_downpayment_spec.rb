@@ -50,9 +50,13 @@ describe Payment do
         :description => "Bla bla bla bla bla", 
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
-        :price_per_piece => "90000", 
         :weight_per_piece   => '15' ,
-        :name => "Sales Item"
+        :name => "Sales Item",
+        :is_pending_pricing    => false, 
+        :is_pricing_by_weight  => false , 
+        :pre_production_price  => "50000", 
+        :production_price      => "20000",
+        :post_production_price => "150000"
       })
     
     
@@ -171,7 +175,9 @@ describe Payment do
     
     # create initial fund, downpayment 
     @customer.reload
-    @downpayment_addition = "500000"
+    
+    
+    @downpayment_addition = @delivery.invoice.confirmed_pending_payment.to_i.to_s
     @payment = Payment.create_by_employee(@admin, {
       :payment_method => PAYMENT_METHOD[:bank_transfer],
       :customer_id    => @customer.id , 
@@ -199,7 +205,7 @@ describe Payment do
   
   it 'should be able to create payment, using only remaining downpayment' do
     pending_payment =  @delivery.invoice.confirmed_pending_payment
-    total_sum = ( pending_payment*0.5 ).to_s
+    total_sum = ( pending_payment*0.5 ).to_s  
     payment = Payment.create_by_employee(@admin, {
       :payment_method => PAYMENT_METHOD[:bank_transfer],
       :customer_id    => @customer.id , 

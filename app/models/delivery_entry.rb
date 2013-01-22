@@ -292,11 +292,11 @@ class DeliveryEntry < ActiveRecord::Base
     quantity = 0 
     weight = BigDecimal('0')
     if delivery.is_confirmed?  and not delivery.is_finalized?
-      quantity = de.quantity_sent
-      weight = de.quantity_sent_weight 
+      quantity = self.quantity_sent
+      weight = self.quantity_sent_weight 
     elsif  delivery.is_confirmed?  and  delivery.is_finalized?
-      quantity = de.quantity_confirmed
-      weight = de.quantity_confirmed_weight 
+      quantity = self.quantity_confirmed
+      weight = self.quantity_confirmed_weight 
     end 
     
     total_amount = BigDecimal("0")
@@ -307,9 +307,9 @@ class DeliveryEntry < ActiveRecord::Base
     
     if sales_item.is_production? 
       if sales_item.is_pricing_by_weight? 
-        total_amount += production_price * weight
+        total_amount += sales_item.production_price * weight
       else
-        total_amount += production_price * quantity
+        total_amount += sales_item.production_price * quantity
       end
     end
   

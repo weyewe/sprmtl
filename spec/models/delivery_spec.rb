@@ -44,9 +44,13 @@ describe Delivery do
         :description => "Bla bla bla bla bla", 
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
-        :price_per_piece => "90000", 
         :weight_per_piece   => '15',
-        :name => "Sales Item" 
+        :name => "Sales Item" ,
+        :is_pending_pricing    => false, 
+        :is_pricing_by_weight  => false , 
+        :pre_production_price  => "50000", 
+        :production_price      => "20000",
+        :post_production_price => "150000"
       })
     
     
