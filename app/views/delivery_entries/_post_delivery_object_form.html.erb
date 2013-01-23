@@ -15,6 +15,8 @@
 								:hint => "Jumlah yang diterima oleh customer <br />"+ 
 											" (tertera di <b>bukti terima barang</b> )"   %> 
  
+		<%= f.input :quantity_confirmed_weight, :label =>"Berat Diterima", 
+								:hint => "Dalam kilogram, sensitif sampai 2 decimal. Contoh: <b>2.15</b>kg"   %>
 	<hr />
 		<%= f.input :quantity_returned, :label =>"Jumlah Retur"   %>
 		<%= f.input :quantity_returned_weight, :label =>"Berat Total Retur", 

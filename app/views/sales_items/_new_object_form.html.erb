@@ -28,6 +28,9 @@
 		<%= f.input :weight_per_piece, :label =>"Berat satuan", 
 				:hint => "Dalam kilogram, sensitif sampai 2 decimal. Contoh: <b>2.15</b>kg"   %> 
 
+
+		<%= f.input :is_pending_pricing, :label =>"Pending Pricing?", 
+					:hint => "Tunda Pembuatan Harga?" %>
 	<hr />
 		<%= f.input :is_pre_production, :label =>"Pattern?", :hint => "Termasuk jasa pembuatan pattern?" %>
 		<%= f.input :pre_production_price, :label =>"Biaya Pola",

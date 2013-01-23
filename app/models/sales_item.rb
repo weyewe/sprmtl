@@ -169,11 +169,27 @@ class SalesItem < ActiveRecord::Base
     end
     
     
-    string = "#{header}SI" + "/" + 
-              self.created_at.year.to_s + '/' + 
-              self.created_at.month.to_s+ '/' + 
-              counter .to_s
+    
+    # Misalnya ada order FCD pada tanggal 21 januari 2013 dengan nomor urut 2 berarti nulisnya 
+    # B13-0102 (Kode material Tahun order - Bulan order Nomor urut)
+    # 
+    material_code = "" 
+    if not self.material_id.nil?
+      material_code = Material.find_by_id( self.material_id ) .code 
+    else
+      material_code = "N"
+    end
+    
+    string = "#{header}#{material_code}" + 
+              ( self.created_at.year%1000).to_s + "-" + 
+              ( self.created_at.month).to_s + 
+              ( counter.to_s ) 
               
+    # string = "#{header}SI" + "/" + 
+    #           self.created_at.year.to_s + '/' + 
+    #           self.created_at.month.to_s+ '/' + 
+    #           counter .to_s
+    #           
     self.code =  string 
     self.save 
   end

@@ -1,7 +1,7 @@
 class Material < ActiveRecord::Base
-  attr_accessible :name
+  attr_accessible :name, :code 
   
-  validates_presence_of :name 
+  validates_presence_of :name  
   
   def self.active_objects
     self.where(:is_active => true).order("created_at DESC")

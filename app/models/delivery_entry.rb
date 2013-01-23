@@ -147,6 +147,7 @@ class DeliveryEntry < ActiveRecord::Base
     # puts "quantity_lost: #{params[:quantity_lost]}"
     
     self.quantity_confirmed         = params[:quantity_confirmed]
+    self.quantity_confirmed_weight         = params[:quantity_confirmed_weight]
     self.quantity_returned          = params[:quantity_returned]
     self.quantity_returned_weight   = BigDecimal( params[:quantity_returned_weight] ) 
     self.quantity_lost              = params[:quantity_lost]
@@ -277,9 +278,9 @@ class DeliveryEntry < ActiveRecord::Base
   def billed_weight
     weight = 0 
     if delivery.is_confirmed? and  not delivery.is_finalized? 
-      weight = self.weight_quantity_sent  
+      weight = self.quantity_sent_weight
     elsif delivery.is_confirmed? and  delivery.is_finalized? 
-      weight = self.weight_quantity_confirmed 
+      weight = self.quantity_confirmed_weight
     end
     
     return weight
