@@ -8,6 +8,8 @@ class CreateItemReceivalEntries < ActiveRecord::Migration
       t.string  :code
       
       t.integer :quantity 
+      
+      t.boolean :is_confirmed, :default => false 
 
       t.timestamps
     end

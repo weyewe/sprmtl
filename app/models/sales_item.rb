@@ -71,8 +71,8 @@ class SalesItem < ActiveRecord::Base
     
     new_object.material_id           = params[:material_id]       
     new_object.is_pre_production     = params[:is_pre_production] 
-    # new_object.is_production       = params[:is_production]    
-    new_object.is_production         = true # by default  
+    new_object.is_production       = params[:is_production]    
+    # new_object.is_production         = true # by default  
     new_object.is_post_production    = params[:is_post_production]
     new_object.is_delivered          = params[:is_delivered]      
     new_object.delivery_address      = params[:delivery_address]  
@@ -114,8 +114,8 @@ class SalesItem < ActiveRecord::Base
     
     self.material_id           = params[:material_id]       
     self.is_pre_production     = params[:is_pre_production] 
-    # self.is_production       = params[:is_production]     
-    self.is_production         = true # by default 
+    self.is_production       = params[:is_production]     
+    # self.is_production         = true # by default 
     self.is_post_production    = params[:is_post_production]
     self.is_delivered          = params[:is_delivered]      
     self.delivery_address      = params[:delivery_address]  
@@ -198,7 +198,7 @@ class SalesItem < ActiveRecord::Base
     return nil if self.is_confirmed == true 
     
     if self.only_machining?
-      PostProductionOrder.create_machining_only_sales_production_order( self )
+       
     elsif self.casting_included?
       production_order = ProductionOrder.create_sales_production_order( self )
       self.update_on_confirm 
@@ -402,6 +402,7 @@ class SalesItem < ActiveRecord::Base
     if self.is_production? and post_production_history.quantity_to_be_reproduced != 0 
       ProductionOrder.generate_post_production_failure_production_order( post_production_history  ) 
     else
+      # if no production, just post production.. don't do anything.. do it as it is 
     end 
     
   end
@@ -429,7 +430,8 @@ class SalesItem < ActiveRecord::Base
   end
   
   def post_production_fail_quantity
-    return self.post_production_histories.where(:is_confirmed => true ).sum("broken_quantity")
+    return self.post_production_histories.where(:is_confirmed => true ).sum("broken_quantity") + 
+          self.post_production_histories.where(:is_confirmed => true ).sum("bad_source_quantity")
   end
   
   def update_number_of_post_production
@@ -630,13 +632,14 @@ class SalesItem < ActiveRecord::Base
   def update_pending_post_production  
     produced = self.post_production_finished_quantity    + self.post_production_fail_quantity 
     
-    post_production_order_adjustment =    self.sales_return_entries.where(:is_confirmed => true ).
-                                        sum("quantity_for_post_production")
+    # no such thing as adjustment.. on sales return.. it will be decided whether
+      # it will have post production as fix or production => ProductionOrder || PostProductionOrder
+    # post_production_order_adjustment =    self.sales_return_entries.where(:is_confirmed => true ).
+    #                                     sum("quantity_for_post_production")
     
                            
     self.pending_post_production = self.post_production_orders.sum("quantity")  - 
-                                      produced # - 
-                                      #                                       post_production_order_adjustment  
+                                      produced   
     self.save
   end
   
@@ -718,7 +721,11 @@ class SalesItem < ActiveRecord::Base
 =begin
   SPECIAL CASE: ONLY POST PRODUCTION
 =end
-  def update_on_item_receival_confirm
+  def update_on_item_receival_confirm( item_receival_entry )
+    # create PostProductionOrder
+    PostProductionOrder.generate_item_receival_post_production_order( item_receival_entry )
+    
+    # update pending post production
     update_pending_post_production
   end
 ##########################################
@@ -735,6 +742,7 @@ class SalesItem < ActiveRecord::Base
       update_ready 
     else
       update_number_of_post_production
+      update_pending_post_production
       update_number_of_failed_post_production  # sum of bad item and company failure 
       update_ready
     end

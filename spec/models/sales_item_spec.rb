@@ -122,8 +122,8 @@ describe SalesItem do
     # end
     
     it 'should not allow only_machining' do
-      @only_machining_sales_item.only_machining?.should be_false
-      @only_machining_sales_item.is_production?.should be_true 
+      @only_machining_sales_item.only_machining?.should be_true 
+      @only_machining_sales_item.is_production?.should be_false 
     end
     
     it 'should have propagate the sales order confirmation to the sales item' do
@@ -132,12 +132,12 @@ describe SalesItem do
     end
     
     it 'should produce 1 production order for those including production phase' do
-      ProductionOrder.count.should == 2 
+      ProductionOrder.count.should == 1 
       PostProductionOrder.count.should == 0 
       @has_production_sales_item.production_orders.count.should == 1 
       @has_production_sales_item.post_production_orders.count.should == 0 
       
-      @only_machining_sales_item.production_orders.count.should == 1 
+      @only_machining_sales_item.production_orders.count.should == 0 
       @only_machining_sales_item.post_production_orders.count.should == 0
     end
     

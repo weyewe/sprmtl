@@ -166,8 +166,9 @@ ActiveRecord::Schema.define(:version => 20130123044109) do
     t.integer  "item_receival_id"
     t.string   "code"
     t.integer  "quantity"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.boolean  "is_confirmed",     :default => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
   end
 
   create_table "item_receivals", :force => true do |t|

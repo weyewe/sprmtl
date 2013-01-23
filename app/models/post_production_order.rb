@@ -45,7 +45,7 @@ class PostProductionOrder < ActiveRecord::Base
   
   def PostProductionOrder.generate_sales_return_repair_post_production_order( sales_return_entry )
     # puts "\n$$$$$$$$$$$$$$$$$$$$ called from post production order: sales return repair \n"
-    ppo = PostProductionOrder.create(
+    PostProductionOrder.create(
       :sales_item_id            => sales_return_entry.delivery_entry.sales_item_id      ,
       :case                     =>  POST_PRODUCTION_ORDER[:sales_return_repair]  ,
       :quantity                 => sales_return_entry.quantity_for_post_production, 
@@ -56,12 +56,19 @@ class PostProductionOrder < ActiveRecord::Base
       :source_document_id       => sales_return_entry.sales_return_id
     )
     
-    # if ppo.valid?
-    #   puts "ppo is valid... the quantity: #{ppo.quantity}"
-    #   puts "The sales item id: #{ppo.sales_item_id}"
-    # else
-    #   puts "ppo is NOT valid "
-    # end
+  end
+  
+  def PostProductionOrder.generate_item_receival_post_production_order( item_receival_entry )
+    PostProductionOrder.create(
+      :sales_item_id            => item_receival_entry.sales_item_id      ,
+      :case                     =>  POST_PRODUCTION_ORDER[:sales_order_only_post_production]  ,
+      :quantity                 => item_receival_entry.quantity, 
+      
+      :source_document_entry    => item_receival_entry.class.to_s          ,
+      :source_document_entry_id => item_receival_entry.id                  ,
+      :source_document          => item_receival_entry.item_receival.class.to_s          ,
+      :source_document_id       => item_receival_entry.item_receival_id
+    )
   end
   
 end
