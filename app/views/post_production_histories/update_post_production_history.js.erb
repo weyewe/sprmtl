@@ -43,7 +43,8 @@ $(document).ready(function(){
 		
 			<% new_form = escape_javascript(  render :partial => "post_production_histories/new_object_form", :locals => {
 		    :new_object => @object , 
-				:url => update_post_production_history_url(@object) 
+				:url => update_post_production_history_url(@object) ,
+				:parent => @parent 
 		  })%>
 	 
 			//replace the form, show the edit

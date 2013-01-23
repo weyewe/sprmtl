@@ -93,9 +93,11 @@ describe SalesReturn do
     @post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
       :ok_quantity           => @post_production_ok_1, 
       :broken_quantity       => @post_production_broken_1, 
+      :bad_source_quantity => 0, 
 
       :ok_weight             =>  "#{@post_production_ok_1*15}" ,  # in kg.. .00 
       :broken_weight         =>  "#{@post_production_broken_1*10}" ,
+      :bad_source_weight => '0',
 
       # :person_in_charge      => nil ,# list of employee id 
       :start_date            => Date.new( 2012, 10,10 ) ,

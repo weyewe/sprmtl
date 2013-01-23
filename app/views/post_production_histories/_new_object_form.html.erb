@@ -22,11 +22,22 @@
 <hr />
 
 	<%= f.input :broken_quantity  , :input_html => {:class => "input-xlarge "}, 
-  			:label => "Jumlah Rusak" %>
+  			:label => "Jumlah Gagal",
+ 				:hint => "Kegagalan karena kesalahan bubut" %>
 	<%= f.input :broken_weight  , :input_html => {:class => "input-xlarge "}, 
-  			:label => "Berat Rusak",
+  			:label => "Berat Gagal",
 				:hint => "Dalam kilogram. Contoh: <b>15.5</b> kg" %>
 <hr /> 
+
+ 
+	<%= f.input :bad_source_quantity  , :input_html => {:class => "input-xlarge "}, 
+				:label => "Jumlah Rusak (keropos)", 
+				:hint => "Kegagalan karena cast keropos" %>
+	
+	<%= f.input :bad_source_weight  , :input_html => {:class => "input-xlarge "}, 
+  			:label => "Berat Rusak (keropos)",
+				:hint => "Dalam kilogram. Contoh: <b>15.5</b> kg" %>
+<hr />
 
 	<%= f.input :start_date  , :input_html => {:class => "input-xlarge datepicker", 
 																							:value => "#{print_date_input(new_object.start_date)}"}, 

@@ -7,6 +7,10 @@ gem 'rails', '3.2.11'
 
 gem 'pg'
 
+# error notification heroku 
+gem 'honeybadger'
+
+
 gem 'friendly_id'
 gem 'devise'
 gem 'transloadit-rails' , ">= 1.0.2"

@@ -1,12 +1,12 @@
 class PostProductionHistory < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_item 
-  validates_presence_of   :ok_quantity,  :broken_quantity, 
-                          :ok_weight,   :broken_weight,    
+  validates_presence_of   :ok_quantity,  :broken_quantity, :bad_source_quantity, 
+                          :ok_weight,   :broken_weight,   :bad_source_weight ,  
                           :start_date, :finish_date
                           
-  validates_numericality_of :ok_quantity, :broken_quantity  ,  
-                          :ok_weight, :broken_weight           
+  validates_numericality_of :ok_quantity, :broken_quantity  ,  :bad_source_quantity, 
+                          :ok_weight, :broken_weight    , :bad_source_weight         
                   
    
   validate :no_all_zero_quantity
@@ -18,9 +18,11 @@ class PostProductionHistory < ActiveRecord::Base
    
 
   def no_all_zero_quantity
-    if  ok_quantity.present? and broken_quantity.present? and ok_quantity == 0  and  broken_quantity == 0   
+    if  ok_quantity.present? and broken_quantity.present? and bad_source_quantity.present? and 
+        ok_quantity == 0  and  broken_quantity == 0   and bad_source_quantity == 0 
       errors.add(:ok_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" ) 
       errors.add(:broken_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" )   
+      errors.add(:bad_source_quantity , "OK, gagal, dan perbaiki tidak boleh bernilai 0 bersamaan" )   
     end
   end
   
@@ -33,6 +35,10 @@ class PostProductionHistory < ActiveRecord::Base
       errors.add(:broken_quantity , "Kuantitas tidak boleh lebih kecil dari 0" )   
     end 
     
+    if bad_source_quantity.present? and  bad_source_quantity <0 
+      errors.add(:bad_source_quantity , "Kuantitas tidak boleh lebih kecil dari 0" )   
+    end
+    
   
   end
   
@@ -43,6 +49,10 @@ class PostProductionHistory < ActiveRecord::Base
     
     if broken_weight.present? and  broken_weight < BigDecimal('0')
       errors.add(:broken_weight , "Berat tidak boleh negative" )   
+    end
+    
+    if bad_source_weight.present? and  bad_source_weight < BigDecimal('0')
+      errors.add(:bad_source_weight , "Berat tidak boleh negative" )   
     end
   
   end
@@ -55,6 +65,10 @@ class PostProductionHistory < ActiveRecord::Base
     if broken_quantity.present? and broken_weight.present? and broken_quantity >  0  and broken_weight <=  BigDecimal('0')
       errors.add(:broken_weight , "Berat tidak boleh 0 jika kuantity > 0 " )   
     end
+    
+    if bad_source_quantity.present? and bad_source_weight.present? and bad_source_quantity >  0  and bad_source_weight <=  BigDecimal('0')
+      errors.add(:bad_source_weight , "Berat tidak boleh 0 jika kuantity > 0 " )   
+    end
   end
   
   def prevent_excess_post_production
@@ -62,10 +76,11 @@ class PostProductionHistory < ActiveRecord::Base
     pending_post_production = sales_item.pending_post_production
     # puts "pending post production from validation: #{pending_post_production}"
     
-    if ok_quantity.present? and broken_quantity.present? and 
-          ( ok_quantity + broken_quantity > sales_item.pending_post_production ) 
-      errors.add(:ok_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )   
-      errors.add(:broken_quantity , "Jumlah kuantitas oK dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )
+    if ok_quantity.present? and broken_quantity.present? and bad_source_quantity.present?  and 
+          ( ok_quantity + broken_quantity + bad_source_quantity > sales_item.pending_post_production ) 
+      errors.add(:ok_quantity , "Jumlah kuantitas oK, gagal, dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )   
+      errors.add(:broken_quantity , "Jumlah kuantitas oK, gagal, dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )
+      errors.add(:bad_source_quantity , "Jumlah kuantitas oK, gagal, dan kuantitas rusak tidak boleh lebih dari #{pending_post_production}" )
     end
   end
   
@@ -82,8 +97,15 @@ class PostProductionHistory < ActiveRecord::Base
     
     new_object.ok_quantity         = params[:ok_quantity]
     new_object.broken_quantity     = params[:broken_quantity] 
+    new_object.bad_source_quantity = params[:bad_source_quantity] 
+    
+     
+    
     new_object.ok_weight           = params[:ok_weight] 
     new_object.broken_weight       = params[:broken_weight] 
+    new_object.bad_source_weight   = params[:bad_source_weight] 
+
+
     new_object.start_date          = params[:start_date] 
     new_object.finish_date         = params[:finish_date] 
 
@@ -102,12 +124,18 @@ class PostProductionHistory < ActiveRecord::Base
     
     
     
-    self.creator_id         =  employee.id
-    self.sales_item_id      =  sales_item.id
-    self.ok_quantity        =  params[:ok_quantity]
-    self.broken_quantity    =  params[:broken_quantity]  
+    self.creator_id          = employee.id
+    self.sales_item_id       = sales_item.id
+    self.ok_quantity         = params[:ok_quantity]
+    self.broken_quantity     = params[:broken_quantity]  
+    self.bad_source_quantity = params[:bad_source_quantity] 
+    
     self.ok_weight           = params[:ok_weight] 
     self.broken_weight       = params[:broken_weight]
+    self.bad_source_weight   = params[:bad_source_weight] 
+
+
+    
     self.start_date         =  params[:start_date]
     self.finish_date        =  params[:finish_date]
 
@@ -127,8 +155,12 @@ class PostProductionHistory < ActiveRecord::Base
   
   def update_processed_quantity 
     self.processed_quantity = self.ok_quantity  + 
-                                  self.broken_quantity
+                                  self.broken_quantity + self.bad_source_quantity 
     self.save
+  end
+  
+  def quantity_to_be_reproduced
+    self.broken_quantity + self.bad_source_quantity 
   end
   
   
@@ -150,27 +182,14 @@ class PostProductionHistory < ActiveRecord::Base
       end
       
       sales_item = self.sales_item
-      
        
-      # if only post production
-      
-      sales_item.generate_next_phase_after_post_production( self ) 
-      puts "confirm post production history"
-      puts "quantity_broken: #{self.broken_quantity}" 
-      puts "quantity_ok: #{self.ok_quantity}"
-      puts "processed_quantity: #{self.processed_quantity}"
-      
-      
-      sales_item.update_on_post_production_history_confirm 
-      puts "after_update, pending_production: #{sales_item.pending_production}"
-      # sales_item.update_post_production_statistics    
-      # sales_item.update_pending_production # the failure will add production
-      
-      
-       
+      sales_item.generate_next_phase_after_post_production( self )   
+      sales_item.update_on_post_production_history_confirm    
     end
     
   end
+  
+  
   
   def is_a_number?(s)
     s.to_s.match(/\A[+-]?\d+?(\.\d+)?\Z/) == nil ? false : true 

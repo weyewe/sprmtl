@@ -101,15 +101,21 @@ describe PostProductionHistory do
     post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
       :ok_quantity           => ok_quantity, 
       :broken_quantity       => broken_quantity, 
-
+      :bad_source_quantity => 0, 
+  
       :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
       :broken_weight         =>  "#{2*10}" ,
-
+      :bad_source_weight => '0',
+  
       # :person_in_charge      => nil ,# list of employee id 
       :start_date            => Date.new( 2012, 10,10 ) ,
       :finish_date           => Date.new( 2013, 1, 15) 
     })
     
+    puts "THe sHITE\n"*10
+    post_production_history.errors.messages.each do |message|
+      puts "The message is : #{message}"
+    end
     post_production_history.should be_valid 
   end
   
@@ -121,10 +127,12 @@ describe PostProductionHistory do
     post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
       :ok_quantity           => ok_quantity, 
       :broken_quantity       => broken_quantity, 
-
+      :bad_source_quantity => 0, 
+  
       :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
       :broken_weight         =>  "#{2*10}" ,
-
+      :bad_source_weight => '0',
+  
       # :person_in_charge      => nil ,# list of employee id 
       :start_date            => Date.new( 2012, 10,10 ) ,
       :finish_date           => Date.new( 2013, 1, 15) 
@@ -144,10 +152,12 @@ describe PostProductionHistory do
     post_production_history_1 = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
       :ok_quantity           => ok_quantity_1, 
       :broken_quantity       => broken_quantity_1, 
-
+      :bad_source_quantity => 0, 
+  
       :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
       :broken_weight         =>  "#{2*10}" ,
-
+      :bad_source_weight => '0',
+  
       # :person_in_charge      => nil ,# list of employee id 
       :start_date            => Date.new( 2012, 10,10 ) ,
       :finish_date           => Date.new( 2013, 1, 15) 
@@ -160,10 +170,10 @@ describe PostProductionHistory do
     post_production_history_2 = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
       :ok_quantity           => ok_quantity_2, 
       :broken_quantity       => broken_quantity_2, 
-
+  
       :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
       :broken_weight         =>  "#{2*10}" ,
-
+  
       # :person_in_charge      => nil ,# list of employee id 
       :start_date            => Date.new( 2012, 10,10 ) ,
       :finish_date           => Date.new( 2013, 1, 15) 
@@ -183,10 +193,12 @@ describe PostProductionHistory do
       @post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
         :ok_quantity           => @post_production_ok_1, 
         :broken_quantity       => @post_production_broken_1, 
-
+        :bad_source_quantity => 0, 
+  
         :ok_weight             =>  "#{@post_production_ok_1*15}" ,  # in kg.. .00 
         :broken_weight         =>  "#{@post_production_broken_1*10}" ,
-
+        :bad_source_weight => '0',
+  
         # :person_in_charge      => nil ,# list of employee id 
         :start_date            => Date.new( 2012, 10,10 ) ,
         :finish_date           => Date.new( 2013, 1, 15) 
@@ -199,7 +211,7 @@ describe PostProductionHistory do
       @initial_pending_production  =  @complete_cycle_sales_item.pending_production 
       
       @post_production_history.confirm( @admin ) 
-
+  
       @complete_cycle_sales_item.reload 
     end
     

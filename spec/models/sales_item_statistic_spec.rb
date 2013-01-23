@@ -131,8 +131,7 @@ describe "sales item statistic spec" do
       
       context "creating post_production history" do
         before(:each) do
-          puts "\n\n"
-          puts "$$$$$$$$$$$$$$$$$$$$$$$$ uniqly post production\n"*5
+      
           @total_post_production_1 = @ok_quantity -2 
 
           @post_production_broken_1 = 1 
@@ -140,9 +139,11 @@ describe "sales item statistic spec" do
           @post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
             :ok_quantity           => @post_production_ok_1, 
             :broken_quantity       => @post_production_broken_1, 
+            :bad_source_quantity => 0, 
 
             :ok_weight             =>  "#{@post_production_ok_1*15}" ,  # in kg.. .00 
             :broken_weight         =>  "#{@post_production_broken_1*10}" ,
+            :bad_source_weight => '0',
 
             # :person_in_charge      => nil ,# list of employee id 
             :start_date            => Date.new( 2012, 10,10 ) ,
@@ -443,9 +444,11 @@ describe "sales item statistic spec" do
                   @post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
                     :ok_quantity           => @quantity_ok, 
                     :broken_quantity       => @quantity_broken, 
+                    :bad_source_quantity => 0, 
               
                     :ok_weight             =>  "#{@quantity_ok*15}" ,  # in kg.. .00 
                     :broken_weight         =>  "#{@quantity_broken*10}" ,
+                    :bad_source_weight => '0',
               
                     # :person_in_charge      => nil ,# list of employee id 
                     :start_date            => Date.new( 2012, 10,10 ) ,

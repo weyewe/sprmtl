@@ -7,6 +7,7 @@ $(document).ready(function(){
 	<% new_form = escape_javascript(  render :partial => "post_production_histories/new_object_form", :locals => {
     :new_object => @new_object , 
 		:url => sales_item_post_production_histories_url(@parent),
+		:parent => @parent 
   })%>
 
  

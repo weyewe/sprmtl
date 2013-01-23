@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130123035401) do
+ActiveRecord::Schema.define(:version => 20130123044109) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -160,6 +160,27 @@ ActiveRecord::Schema.define(:version => 20130123035401) do
     t.datetime "updated_at",                                                           :null => false
   end
 
+  create_table "item_receival_entries", :force => true do |t|
+    t.integer  "creator_id"
+    t.integer  "sales_item_id"
+    t.integer  "item_receival_id"
+    t.string   "code"
+    t.integer  "quantity"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  create_table "item_receivals", :force => true do |t|
+    t.string   "code"
+    t.integer  "creator_id"
+    t.integer  "customer_id"
+    t.boolean  "is_confirmed", :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
   create_table "materials", :force => true do |t|
     t.string   "name"
     t.boolean  "is_active",  :default => true
@@ -191,15 +212,17 @@ ActiveRecord::Schema.define(:version => 20130123035401) do
     t.integer  "processed_quantity"
     t.integer  "ok_quantity"
     t.integer  "broken_quantity"
-    t.decimal  "ok_weight",          :precision => 7, :scale => 2, :default => 0.0
-    t.decimal  "broken_weight",      :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "ok_weight",           :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "broken_weight",       :precision => 7, :scale => 2, :default => 0.0
     t.date     "start_date"
     t.date     "finish_date"
-    t.boolean  "is_confirmed",                                     :default => false
+    t.boolean  "is_confirmed",                                      :default => false
     t.integer  "confirmer_id"
     t.datetime "confirmed_at"
-    t.datetime "created_at",                                                          :null => false
-    t.datetime "updated_at",                                                          :null => false
+    t.datetime "created_at",                                                           :null => false
+    t.datetime "updated_at",                                                           :null => false
+    t.integer  "bad_source_quantity",                               :default => 0
+    t.decimal  "bad_source_weight",   :precision => 7, :scale => 2, :default => 0.0
   end
 
   create_table "post_production_orders", :force => true do |t|

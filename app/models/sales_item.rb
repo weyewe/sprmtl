@@ -215,6 +215,10 @@ class SalesItem < ActiveRecord::Base
     self.is_production == false && self.is_post_production == true 
   end
   
+  def only_post_production?
+    only_machining? 
+  end
+  
   def casting_included? 
     self.is_production == true 
   end
@@ -395,44 +399,9 @@ class SalesItem < ActiveRecord::Base
     
     # puts "Total number of broken quantity: #{post_production_history.broken_quantity}\n"*10
     # for the failure 
-    if self.is_production? and post_production_history.broken_quantity != 0 
-      ProductionOrder.generate_post_production_failure_production_order( post_production_history  )
-      
-      # ProductionOrder.generate_post_production_failure_production_order( post_production_history ) 
-      # 
-      # 
-      # if self.sales_return_pending_production_replacement_quota >  0 
-      #   ProductionOrder.generate_sales_return_post_production_failure_production_order(post_production_history )
-      # end
-      # 
-      # broken_quantity  = post_production_history.broken_quantity 
-      # replacement_quota = self.sales_return_pending_production_replacement_quota
-      # to_be_replaced = 0 
-      # not_replaced = 0 
-      # 
-      # if replacement_quota < broken_quantity
-      #   to_be_replaced = replacement_quota 
-      #   not_replaced = broken_quantity - to_be_replaced
-      # elsif self.sales_return_pending_production_replacement_quota >=  broken_quantity
-      #   to_be_replaced = broken_quantity 
-      #   not_replaced = 0 
-      # end
-      # 
-      # if not_replaced != 0 
-      #   ProductionOrder.generate_post_production_failure_production_order( post_production_history, not_replaced ) 
-      # end
-      # 
-      # if to_be_replaced != 0 
-      #   ProductionOrder.generate_sales_return_post_production_failure_production_order(post_production_history,to_be_replaced )
-      # end
-      # 
-      
-      
+    if self.is_production? and post_production_history.quantity_to_be_reproduced != 0 
+      ProductionOrder.generate_post_production_failure_production_order( post_production_history  ) 
     else
-      
-      
-      # ASK the company for the policy
-      # reimburse? or, there is no case of this at all?
     end 
     
   end
@@ -743,12 +712,32 @@ class SalesItem < ActiveRecord::Base
     update_ready 
   end
   
-  def update_on_post_production_history_confirm
-    update_number_of_post_production
-    update_number_of_failed_post_production 
-    update_pending_production
+##########################################
+########## START OF ONLY_POST_PRODUCTION 
+##########################################
+=begin
+  SPECIAL CASE: ONLY POST PRODUCTION
+=end
+  def update_on_item_receival_confirm
     update_pending_post_production
-    update_ready 
+  end
+##########################################
+########## END OF ONLY_POST_PRODUCTION 
+##########################################
+  
+  def update_on_post_production_history_confirm
+    
+    if not self.only_post_production? 
+      update_number_of_post_production
+      update_number_of_failed_post_production 
+      update_pending_production
+      update_pending_post_production
+      update_ready 
+    else
+      update_number_of_post_production
+      update_number_of_failed_post_production  # sum of bad item and company failure 
+      update_ready
+    end
   end
   
   
