@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130123044109) do
+ActiveRecord::Schema.define(:version => 20130123130306) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -130,6 +130,31 @@ ActiveRecord::Schema.define(:version => 20130123044109) do
     t.datetime "updated_at",                    :null => false
   end
 
+  create_table "guarantee_return_entries", :force => true do |t|
+    t.integer  "creator_id"
+    t.integer  "sales_item_id"
+    t.integer  "guarantee_return_id"
+    t.string   "code"
+    t.integer  "quantity_for_post_production",                               :default => 0
+    t.decimal  "weight_for_post_production",   :precision => 7, :scale => 2, :default => 0.0
+    t.integer  "quantity_for_production",                                    :default => 0
+    t.decimal  "weight_for_production",        :precision => 7, :scale => 2, :default => 0.0
+    t.boolean  "is_confirmed",                                               :default => false
+    t.datetime "created_at",                                                                    :null => false
+    t.datetime "updated_at",                                                                    :null => false
+  end
+
+  create_table "guarantee_returns", :force => true do |t|
+    t.string   "code"
+    t.integer  "creator_id"
+    t.integer  "customer_id"
+    t.boolean  "is_confirmed", :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
   create_table "invoice_payments", :force => true do |t|
     t.integer  "invoice_id"
     t.integer  "payment_id"
@@ -166,9 +191,8 @@ ActiveRecord::Schema.define(:version => 20130123044109) do
     t.integer  "item_receival_id"
     t.string   "code"
     t.integer  "quantity"
-    t.boolean  "is_confirmed",     :default => false
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "item_receivals", :force => true do |t|
@@ -213,17 +237,16 @@ ActiveRecord::Schema.define(:version => 20130123044109) do
     t.integer  "processed_quantity"
     t.integer  "ok_quantity"
     t.integer  "broken_quantity"
-    t.decimal  "ok_weight",           :precision => 7, :scale => 2, :default => 0.0
-    t.decimal  "broken_weight",       :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "ok_weight",          :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "broken_weight",      :precision => 7, :scale => 2, :default => 0.0
     t.date     "start_date"
     t.date     "finish_date"
-    t.boolean  "is_confirmed",                                      :default => false
+    t.boolean  "is_confirmed",                                     :default => false
     t.integer  "confirmer_id"
     t.datetime "confirmed_at"
-    t.datetime "created_at",                                                           :null => false
-    t.datetime "updated_at",                                                           :null => false
-    t.integer  "bad_source_quantity",                               :default => 0
-    t.decimal  "bad_source_weight",   :precision => 7, :scale => 2, :default => 0.0
+    t.datetime "created_at",                                                          :null => false
+    t.datetime "updated_at",                                                          :null => false
+    t.integer  "bad_source",                                       :default => 0
   end
 
   create_table "post_production_orders", :force => true do |t|
@@ -323,43 +346,49 @@ ActiveRecord::Schema.define(:version => 20130123044109) do
     t.integer  "creator_id"
     t.integer  "sales_order_id"
     t.string   "code"
-    t.boolean  "is_repeat_order",                                                 :default => false
+    t.boolean  "is_repeat_order",                                                   :default => false
     t.string   "past_sales_item_id"
     t.integer  "material_id"
-    t.boolean  "is_pre_production",                                               :default => false
-    t.boolean  "is_production",                                                   :default => false
-    t.boolean  "is_post_production",                                              :default => false
-    t.boolean  "is_delivered",                                                    :default => false
-    t.decimal  "weight_per_piece",                 :precision => 7,  :scale => 2, :default => 0.0
+    t.boolean  "is_pre_production",                                                 :default => false
+    t.boolean  "is_production",                                                     :default => false
+    t.boolean  "is_post_production",                                                :default => false
+    t.boolean  "is_delivered",                                                      :default => false
+    t.decimal  "weight_per_piece",                   :precision => 7,  :scale => 2, :default => 0.0
     t.integer  "quantity"
     t.text     "delivery_address"
-    t.boolean  "is_sales_order_delivery_address",                                 :default => false
+    t.boolean  "is_sales_order_delivery_address",                                   :default => false
     t.string   "name"
     t.text     "description"
     t.date     "requested_deadline"
     t.date     "estimated_internal_deadline"
-    t.integer  "number_of_pre_production",                                        :default => 0
-    t.integer  "number_of_production",                                            :default => 0
-    t.integer  "number_of_post_production",                                       :default => 0
-    t.integer  "number_of_delivery",                                              :default => 0
-    t.integer  "number_of_sales_return",                                          :default => 0
-    t.integer  "number_of_delivery_lost",                                         :default => 0
-    t.integer  "number_of_failed_production",                                     :default => 0
-    t.integer  "number_of_failed_post_production",                                :default => 0
-    t.integer  "pending_production",                                              :default => 0
-    t.integer  "pending_post_production",                                         :default => 0
-    t.integer  "ready",                                                           :default => 0
-    t.integer  "on_delivery",                                                     :default => 0
-    t.integer  "fulfilled_order",                                                 :default => 0
-    t.boolean  "is_confirmed",                                                    :default => false
-    t.boolean  "is_deleted",                                                      :default => false
-    t.datetime "created_at",                                                                         :null => false
-    t.datetime "updated_at",                                                                         :null => false
-    t.decimal  "pre_production_price",             :precision => 12, :scale => 2, :default => 0.0
-    t.decimal  "production_price",                 :precision => 12, :scale => 2, :default => 0.0
-    t.decimal  "post_production_price",            :precision => 12, :scale => 2, :default => 0.0
-    t.boolean  "is_pricing_by_weight",                                            :default => false
-    t.boolean  "is_pending_pricing",                                              :default => false
+    t.integer  "number_of_pre_production",                                          :default => 0
+    t.integer  "number_of_production",                                              :default => 0
+    t.integer  "number_of_post_production",                                         :default => 0
+    t.integer  "number_of_delivery",                                                :default => 0
+    t.integer  "number_of_sales_return",                                            :default => 0
+    t.integer  "number_of_delivery_lost",                                           :default => 0
+    t.integer  "number_of_failed_production",                                       :default => 0
+    t.integer  "number_of_failed_post_production",                                  :default => 0
+    t.integer  "pending_production",                                                :default => 0
+    t.integer  "pending_post_production",                                           :default => 0
+    t.integer  "ready",                                                             :default => 0
+    t.integer  "on_delivery",                                                       :default => 0
+    t.integer  "fulfilled_order",                                                   :default => 0
+    t.boolean  "is_confirmed",                                                      :default => false
+    t.boolean  "is_deleted",                                                        :default => false
+    t.datetime "created_at",                                                                           :null => false
+    t.datetime "updated_at",                                                                           :null => false
+    t.decimal  "pre_production_price",               :precision => 12, :scale => 2, :default => 0.0
+    t.decimal  "production_price",                   :precision => 12, :scale => 2, :default => 0.0
+    t.decimal  "post_production_price",              :precision => 12, :scale => 2, :default => 0.0
+    t.boolean  "is_pricing_by_weight",                                              :default => false
+    t.boolean  "is_pending_pricing",                                                :default => false
+    t.integer  "pending_guarantee_return_delivery",                                 :default => 0
+    t.integer  "pending_bad_source_delivery",                                       :default => 0
+    t.integer  "pending_technical_failure_delivery",                                :default => 0
+    t.integer  "number_of_guarantee_return",                                        :default => 0
+    t.integer  "number_of_bad_source",                                              :default => 0
+    t.integer  "number_of_technical_failure",                                       :default => 0
   end
 
   create_table "sales_orders", :force => true do |t|

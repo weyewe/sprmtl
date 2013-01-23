@@ -215,17 +215,51 @@ DOWNPAYMENT_CASE  = {
   :deduction => 2 
 }
 
-CASH_ACCOUNT_CASE     = {
-  :bank     => {
-    :value   => 1, 
-    :name    => "Bank" 
+CASH_ACCOUNT_CASE = {
+  :bank           => {
+    :value        => 1, 
+    :name         => "Bank" 
   } ,
-  :cash    =>  {
-    :value   => 2, 
-    :name    => "Cash"
+  :cash           =>  {
+    :value        => 2, 
+    :name         => "Cash"
   } 
 }
 
+
+DELIVERY_ENTRY_CASE = {
+  :ready_production                  => 1 , 
+  :ready_post_production             => 2, 
+  :guarantee_return                  => 11 ,
+  :bad_source_fail_post_production   => 21, 
+  :technical_failure_post_production => 22  
+}
+
+=begin
+    CASE 1: if there is only production: 
+  1. Sending out the ready production 
+  
+    Case 2: if there is production + post production 
+  2. Sending out the ready post production  ( billed for production + post production )
+  3. Sending out the ready production       ( billed only for production ).. not recommended. but, maybe the 
+    customer need it so much. So, just give it out.. not billed for it. 
+  
+    Case 3: if the customer do Guarantee Return 
+  4. We receive the Guarantee Return. Fix it. Send it out as the Guarantee Return => Free of Charge
+  
+    Case 5. only post production 
+    The customer sends the cast to us. We have to perform machining on it 
+  5.Failure because the cast is in deep shite
+    bad_source_fail_post_production (billed for the post production work)
+    
+  6.Failure because of Company's fault 
+    technical_failure_post_production  => policy is unclear. for now.
+    Probability of this happening ~> near 0
+    Possible reconciliation: free of charge + reimburse? no idea 
+    # handle it later. 
+    
+# pending post_production => can be because it is waiting for fix from sales return, or it is 
+=end
 
 
 ROLE_NAME = {
