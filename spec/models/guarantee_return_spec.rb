@@ -237,9 +237,24 @@ describe GuaranteeReturn do
         @complete_cycle_sales_item.reload 
         @initial_pending_production = @complete_cycle_sales_item.pending_production 
         @initial_pending_post_production = @complete_cycle_sales_item.pending_post_production 
+        @initial_number_of_guarantee_return = @complete_cycle_sales_item.number_of_guarantee_return
+        @initial_pending_guarantee_return_delivery = @complete_cycle_sales_item.pending_guarantee_return_delivery
         
         @guarantee_return.confirm(@admin)
         @complete_cycle_sales_item.reload 
+      end
+      
+      # sales item statistic
+      it 'should increase number_of_guarantee_return' do
+        @final_number_of_guarantee_return = @complete_cycle_sales_item.number_of_guarantee_return
+        diff = @final_number_of_guarantee_return - @initial_number_of_guarantee_return
+        diff.should == @gre_post_production + @gre_production
+      end
+      
+      it 'should increase pending_guarantee_return_delivery' do
+        @final_pending_guarantee_return_delivery = @complete_cycle_sales_item.pending_guarantee_return_delivery
+        diff = @final_pending_guarantee_return_delivery - @initial_pending_guarantee_return_delivery
+        diff.should == @gre_post_production + @gre_production
       end
       
       it 'should increase the pending production'   do
@@ -253,7 +268,7 @@ describe GuaranteeReturn do
           :sales_item_id            => @complete_cycle_sales_item.id       ,
           :case                     => PRODUCTION_ORDER[:guarantee_return]     ,
           :quantity                 => @gre_production     ,
-
+      
           :source_document_entry    => @guarantee_return_entry.class.to_s          ,
           :source_document_entry_id => @guarantee_return_entry.id                  ,
           :source_document          => @guarantee_return_entry.guarantee_return.class.to_s          ,
@@ -272,7 +287,7 @@ describe GuaranteeReturn do
           :sales_item_id            => @complete_cycle_sales_item.id       ,
           :case                     => POST_PRODUCTION_ORDER[:guarantee_return]     ,
           :quantity                 => @gre_post_production     ,
-
+      
           :source_document_entry    => @guarantee_return_entry.class.to_s          ,
           :source_document_entry_id => @guarantee_return_entry.id                  ,
           :source_document          => @guarantee_return_entry.guarantee_return.class.to_s          ,

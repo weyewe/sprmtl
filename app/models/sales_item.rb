@@ -15,6 +15,8 @@ class SalesItem < ActiveRecord::Base
   has_many :sales_return_entries #  SalesReturnEntry
   has_many :delivery_lost_entries #  DeliveryLostEntry
   
+  has_many :guarantee_return_entries
+  
   validates_presence_of :description
   validates_presence_of :name 
   validates_presence_of :creator_id
@@ -225,6 +227,10 @@ class SalesItem < ActiveRecord::Base
   
   def has_post_production?
     self.is_post_production?
+  end
+  
+  def only_production?
+    stop_at_production?
   end
   
   def stop_at_production?
@@ -764,6 +770,32 @@ class SalesItem < ActiveRecord::Base
     update_number_of_sales_return
   end
   
+  def update_on_guarantee_return_delivery_item_finalize
+    update_on_delivery
+    update_guarantee_return_statistic
+  end
+  
+  def update_guarantee_return_statistic
+    # update number_of_guarantee_return 
+    number_of_guarantee_return_count = self.guarantee_return_entries.
+                        where(:is_confirmed => true).sum("quantity_for_post_production")
+    number_of_guarantee_return_count += self.guarantee_return_entries.
+                        where(:is_confirmed => true).sum("quantity_for_production")
+    self.number_of_guarantee_return  = number_of_guarantee_return_count
+                        
+                        
+    # update pending_guarantee_return_delivery 
+    # total production order involving guarantee_return - total guarantee_return delivery 
+    guarantee_return_delivery_count = self.delivery_entries.where(:is_finalized => true,
+      :entry_case => DELIVERY_ENTRY_CASE[:guarantee_return ]
+    ).sum("quantity_confirmed")
+    self.pending_guarantee_return_delivery = number_of_guarantee_return_count -  guarantee_return_delivery_count 
+    self.save
+    
+    # policy: what if you do sales return on delivery_entry with guarantee_return? 
+    # take it as confirmed. create a new guarantee_return
+  end
+  
   def update_on_delivery_lost_entry_confirm
     update_number_of_delivery_lost
     update_pending_production #for delivery lost
@@ -775,9 +807,31 @@ class SalesItem < ActiveRecord::Base
     update_pending_post_production
   end
   
+  
+  
   def update_on_guarantee_return_confirm
     update_pending_production
     update_pending_post_production 
+    
+    
+    # update number_of_guarantee_return 
+    number_of_guarantee_return_count = self.guarantee_return_entries.
+                        where(:is_confirmed => true).sum("quantity_for_post_production")
+    number_of_guarantee_return_count += self.guarantee_return_entries.
+                        where(:is_confirmed => true).sum("quantity_for_production")
+    self.number_of_guarantee_return  = number_of_guarantee_return_count
+                        
+                        
+    # update pending_guarantee_return_delivery 
+    # total production order involving guarantee_return - total guarantee_return delivery 
+    guarantee_return_delivery_count = self.delivery_entries.where(:is_finalized => true,
+      :entry_case => DELIVERY_ENTRY_CASE[:guarantee_return ]
+    ).sum("quantity_confirmed")
+    self.pending_guarantee_return_delivery = number_of_guarantee_return_count -  guarantee_return_delivery_count 
+    self.save
+    
+    # policy: what if you do sales return on delivery_entry with guarantee_return? 
+    # take it as confirmed. create a new guarantee_return 
   end
   
 end

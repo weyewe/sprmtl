@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GuaranteeReturn do
+describe "delivery return delivery spec" do
   before(:each) do
     # @admin = FactoryGirl.create(:user, :email => "admin@gmail.com", :password => "willy1234", :password_confirmation => "willy1234")
     role = {
@@ -186,6 +186,109 @@ describe GuaranteeReturn do
     @complete_cycle_sales_item.reload
   end
   
+  # create the delivery 
+  # create the delivery entry
+  # confirm delivery 
+  # finalize delivery => the delivery with entry case == guaranteed return will be assumed to be confirmed
+  # => can't be edited => will be confirmed 
+  
+  # to be checked: deduct the number of pending guarantee return
+  # the number_of_guarantee_return stays constant   # so MANY parts for the admin to edit
+  
+  context "creating the delivery only for this guarantee return delivery" do
+    before(:each) do
+      @delivery   = Delivery.create_by_employee( @admin , {
+        :customer_id    => @customer.id,          
+        :delivery_address   => "some address",    
+        :delivery_date     => Date.new(2012, 12, 15)
+      })
+      
+      # quantity_sent = 10
+      #gre_production = 2
+      #gre_post_production = 3
+      # remaining ready = 4
+      
+      @gr_delivery_quantity  = 2 
+      
+      
+      @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery,  {
+          :quantity_sent => @gr_delivery_quantity, 
+          :quantity_sent_weight => "#{@gr_delivery_quantity * 10}" ,
+          :sales_item_id => @complete_cycle_sales_item.id,
+          :entry_case => DELIVERY_ENTRY_CASE[:guarantee_return]
+        })
+    end
+    
+    it 'should create delivery and delivery_entry' do
+      @delivery.should be_valid
+      @delivery_entry.should be_valid
+    end
+    
+    it 'should create entry case as guarantee return' do
+      @delivery_entry.entry_case.should ==  DELIVERY_ENTRY_CASE[:guarantee_return]
+    end
+    
+    context "confirming delivery" do
+      before(:each) do 
+        @delivery.confirm(@admin)
+      end
+      
+      it 'should confirm delivery' do
+        @delivery.is_confirmed.should be_true 
+      end
+      
+      context "finalizing delivery" do
+        before(:each) do
+          @delivery.reload 
+          @delivery_entry.reload 
+          @complete_cycle_sales_item.reload 
+          
+          @initial_number_of_guarantee_return = @complete_cycle_sales_item.number_of_guarantee_return
+          @initial_pending_guarantee_return_delivery = @complete_cycle_sales_item.pending_guarantee_return_delivery
+          @initial_fulfilled_order = @complete_cycle_sales_item.fulfilled_order
+          
+          @delivery_entry.update_post_delivery(@admin, {
+            :quantity_confirmed => @delivery_entry.quantity_sent , 
+            :quantity_confirmed_weight => "#{@delivery_entry.quantity_sent * 10}",
+            :quantity_returned => 0 ,
+            :quantity_returned_weight => '0' ,
+            :quantity_lost => 0
+          })
+           
+          @delivery.finalize(@admin)
+          @delivery.reload 
+          @complete_cycle_sales_item.reload 
+        end
+        
+        it 'should finalize' do
+          @delivery.is_finalized.should be_true 
+        end
+        
+        it 'should deduct the pending_guarantee_return_delivery' do
+          @final_pending_guarantee_return_delivery = @complete_cycle_sales_item.pending_guarantee_return_delivery
+          diff =  @initial_pending_guarantee_return_delivery - @final_pending_guarantee_return_delivery 
+          diff.should == @delivery_entry.quantity_sent 
+        end
+        
+        it 'should do nothing to the number of guarantee_return' do
+           @final_number_of_guarantee_return = @complete_cycle_sales_item.number_of_guarantee_return
+           diff = @final_number_of_guarantee_return - @initial_number_of_guarantee_return
+           diff.should == 0 
+        end
+        
+        it 'should do nothing to the fulfilled_order' do
+          @final_fulfilled_order = @complete_cycle_sales_item.fulfilled_order
+          diff=  @initial_fulfilled_order  - @final_fulfilled_order
+          diff.should == 0 
+        end
+        
+      end # "finalizing delivery"
+      
+      
+    end
+    
+    
+  end # "creating the delivery only for this guarantee return delivery" 
   
   
    

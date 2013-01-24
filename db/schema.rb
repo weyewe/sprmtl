@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130123130306) do
+ActiveRecord::Schema.define(:version => 20130124153234) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(:version => 20130123130306) do
     t.datetime "created_at",                                                                 :null => false
     t.datetime "updated_at",                                                                 :null => false
     t.decimal  "quantity_confirmed_weight", :precision => 7, :scale => 2, :default => 0.0
+    t.integer  "entry_case"
   end
 
   create_table "delivery_lost_entries", :force => true do |t|

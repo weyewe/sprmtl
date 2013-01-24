@@ -232,6 +232,7 @@ CASH_ACCOUNT_CASE = {
 
 
 DELIVERY_ENTRY_CASE = {
+  
   :ready_production                  => 1 , 
   :ready_post_production             => 2, 
   :guarantee_return                  => 11 ,

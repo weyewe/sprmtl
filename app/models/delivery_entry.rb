@@ -56,7 +56,8 @@ class DeliveryEntry < ActiveRecord::Base
     
     new_object.quantity_sent        = params[:quantity_sent]       
     new_object.quantity_sent_weight = BigDecimal( params[:quantity_sent_weight ])
-    
+    new_object.entry_case           = params[:entry_case] 
+
     
     
     if new_object.save 
@@ -75,10 +76,9 @@ class DeliveryEntry < ActiveRecord::Base
     self.sales_item_id        = params[:sales_item_id] 
     self.quantity_sent        = params[:quantity_sent]       
     self.quantity_sent_weight = BigDecimal( params[:quantity_sent_weight ])
-    
+    self.entry_case           = params[:entry_case] 
 
-    
-    
+ 
     if self.save 
     end
     
@@ -148,8 +148,18 @@ class DeliveryEntry < ActiveRecord::Base
     
     self.quantity_confirmed        = params[:quantity_confirmed]
     self.quantity_confirmed_weight = BigDecimal( params[:quantity_confirmed_weight] ) 
-    self.quantity_returned         = params[:quantity_returned]
-    self.quantity_returned_weight  = BigDecimal( params[:quantity_returned_weight] ) 
+    
+    
+    # no sales return for guarantee return.
+    # you accept it as confirmed. and create a new guarantee return 
+    if self.entry_case == DELIVERY_ENTRY_CASE[:guarantee_return]
+      self.quantity_returned         = 0 
+      self.quantity_returned_weight  = BigDecimal( '0' ) 
+    else
+      self.quantity_returned         = params[:quantity_returned]
+      self.quantity_returned_weight  = BigDecimal( params[:quantity_returned_weight] )
+    end
+    
     self.quantity_lost             = params[:quantity_lost]
 
     
@@ -208,6 +218,17 @@ class DeliveryEntry < ActiveRecord::Base
     end
   end
   
+  def generate_delivery_entry_case 
+    if self.entry_case.nil? 
+      sales_item  = self.sales_item 
+      if sales_item.is_post_production? # contains post production.. don't really care about production 
+        self.entry_case = DELIVERY_ENTRY_CASE[:ready_post_production]
+      elsif sales_item.only_production?
+        self.entry_case = DELIVERY_ENTRY_CASE[:ready_production]
+      end
+    end
+  end
+  
   def confirm 
     return nil if self.is_confirmed == true  
     self.is_confirmed = true 
@@ -215,6 +236,8 @@ class DeliveryEntry < ActiveRecord::Base
     self.save 
     
     self.generate_code
+    
+    self.generate_delivery_entry_case 
     
     validate_pricing_availability
     
@@ -263,9 +286,33 @@ class DeliveryEntry < ActiveRecord::Base
     
     # puts "&&&&&&&&&&&&&&&&&&BEFORE UPDATING ON FINALIZE\n"*10
     sales_item = self.sales_item 
-    sales_item.update_on_delivery_item_finalize
-    # sales_item.update_on_delivery_statistics
-    # sales_item.update_post_delivery_statistics 
+    
+    # depend on the delivery case 
+    # if it is the normal  ( entry_case is according to what it is ordered)
+    if self.normal_delivery_entry? 
+      sales_item.update_on_delivery_item_finalize 
+    elsif self.entry_case == DELIVERY_ENTRY_CASE[:guarantee_return] 
+      puts "This is the DELIVERY_ENTRY_CASE[:guarantee_return]\n"*10
+      sales_item.update_on_guarantee_return_delivery_item_finalize
+    end
+    
+    
+    # if it is the case of guarantee_sales_return 
+    # => update pending delivery 
+    
+    # if it is the case of failure / bad source 
+    # => update pending failure / bad source delivery 
+    
+    # if it is emergency return.. WTF.. ordered post production as well. 
+  end
+  
+  def normal_delivery_entry?
+    sales_item = self.sales_item
+    if sales_item.only_production?
+      return self.entry_case == DELIVERY_ENTRY_CASE[:ready_production]
+    elsif sales_item.is_post_production? 
+      return self.entry_case == DELIVERY_ENTRY_CASE[:ready_post_production]
+    end
   end
   
   def billed_quantity
