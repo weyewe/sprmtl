@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SalesReturn do
+describe GuaranteeReturn do
   before(:each) do
     # @admin = FactoryGirl.create(:user, :email => "admin@gmail.com", :password => "willy1234", :password_confirmation => "willy1234")
     role = {
@@ -44,8 +44,8 @@ describe SalesReturn do
         :description => "Bla bla bla bla bla", 
         :delivery_address => "Yeaaah babyy", 
         :requested_deadline => Date.new(2013, 3,5 ),
-        :weight_per_piece   => '15' ,
-        :name => "Sales Item",
+        :weight_per_piece   => '15',
+        :name => "Sales Item" ,
         :is_pending_pricing    => false, 
         :is_pricing_by_weight  => false , 
         :pre_production_price  => "50000", 
@@ -114,83 +114,80 @@ describe SalesReturn do
 
     @complete_cycle_sales_item.reload
     
-    # creating delivery
+  
+  ###### 
+  ###### 
+  ######  
+  # => By now, post production ok == 15 
+  ######
+  ###### 
+  ###### 
+    
     @delivery   = Delivery.create_by_employee( @admin , {
       :customer_id    => @customer.id,          
       :delivery_address   => "some address",    
-      :delivery_date     => Date.new(2012, 12, 15)
+      :delivery_date     => Date.new(2012, 12, 15)   
     })
     
+    @quantity_sent = 10 
     
-    #create delivery entry
-    @pending_delivery = @complete_cycle_sales_item.ready 
-    
-    @quantity_sent = 1 
-    if @pending_delivery > 1 
-      @quantity_sent = @pending_delivery - 1 
-    end
-    
-    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery, {
+    @delivery_entry = DeliveryEntry.create_delivery_entry( @admin, @delivery,  {
         :quantity_sent => @quantity_sent, 
         :quantity_sent_weight => "#{@quantity_sent * 10}" ,
-        :sales_item_id =>  @complete_cycle_sales_item.id 
+        :sales_item_id => @complete_cycle_sales_item.id
       })
-      
-    #confirm delivery
-    @complete_cycle_sales_item.reload 
-    @initial_on_delivery = @complete_cycle_sales_item.on_delivery 
     
-    @delivery.confirm( @admin ) 
-    @complete_cycle_sales_item.reload 
-    @delivery_entry.reload
-    
-    # create finalization
-    @quantity_returned = 5 
-    @quantity_confirmed =   @delivery_entry.quantity_sent - @quantity_returned
-    
-    puts "quantity_confirmed: #{@quantity_confirmed}"
-    puts "quantity_returned: #{@quantity_returned}"
-    
+    #
+    # => Confirm Delivery 
+    #
+    @delivery.confirm( @admin )
+    @delivery.reload 
+    @delivery_entry.reload  
+    # 
     @delivery_entry.update_post_delivery(@admin, {
-      :quantity_confirmed => @quantity_confirmed , 
-      :quantity_confirmed_weight =>  "#{@quantity_confirmed*10 }", 
-      :quantity_returned => @quantity_returned ,
-      :quantity_returned_weight => "#{@quantity_returned*20}" ,
-      :quantity_lost => 0 
-    }) 
-    
-    
-    @complete_cycle_sales_item.reload 
-    @initial_on_delivery_item = @complete_cycle_sales_item.on_delivery 
-    @initial_fulfilled = @complete_cycle_sales_item.fulfilled_order
-    
+      :quantity_confirmed => @delivery_entry.quantity_sent , 
+      :quantity_confirmed_weight => "#{@delivery_entry.quantity_sent * 10}",
+      :quantity_returned => 0 ,
+      :quantity_returned_weight => '0' ,
+      :quantity_lost => 0
+    })
     
     @delivery.reload 
+    @delivery_entry.reload 
+    
     @delivery.finalize(@admin)
-    @delivery.reload
     
-    # @delivery.finalize(@admin)  
+    @delivery_entry.reload
+    @delivery.reload 
+    @complete_cycle_sales_item.reload 
+    
+    @guarantee_return = GuaranteeReturn.create_by_employee(@admin, {
+      :customer_id => @customer.id 
+    })
+    
+    # quantity_sent == 10 
+    @gre_post_production = 3
+    @gre_production = 2 
+   
+    
+    @guarantee_return_entry = GuaranteeReturnEntry.create_guarantee_return_entry( @admin, @guarantee_return ,  {
+      :sales_item_id                  => @complete_cycle_sales_item.id ,
+      :quantity_for_post_production   => @gre_post_production,
+      :quantity_for_production        => @gre_production,
+      :weight_for_post_production     => "#{@gre_post_production*10}", 
+      :weight_for_production          => "#{@gre_production*10}"
+    } )    
+    
+    @complete_cycle_sales_item.reload 
+    @initial_pending_production = @complete_cycle_sales_item.pending_production 
+    @initial_pending_post_production = @complete_cycle_sales_item.pending_post_production 
+    
+    @guarantee_return.confirm(@admin)
     @complete_cycle_sales_item.reload
-    
   end
   
-  it 'should give sales return to delivery' do
-    @delivery.is_finalized.should be_true 
-    @delivery.sales_return.should be_valid
-    
-  end
-  
-  it 'should produce exact copy of returned delivery entry as its sales return entry' do
-    sales_return = @delivery.sales_return
-    
-    sales_return.sales_return_entries.count.should == @delivery.delivery_entries.
-                                              where{(quantity_returned.not_eq 0)}.count
-    
-  end
-  
-  # deciding the quantity going for production, and the quantity going for post production 
-  # go in detail in sales_return_spec => confirming the sales return, produce the shite 
   
   
-  
+   
+   
 end

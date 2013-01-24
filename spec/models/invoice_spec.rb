@@ -203,6 +203,7 @@ describe Invoice do
       
       @delivery_entry.update_post_delivery(@admin, {
         :quantity_confirmed => @quantity_confirmed , 
+        :quantity_confirmed_weight =>  "#{@quantity_confirmed*10 }", 
         :quantity_returned => @quantity_returned ,
         :quantity_returned_weight => "#{@quantity_returned*20}" ,
         :quantity_lost => 0 

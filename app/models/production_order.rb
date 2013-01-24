@@ -94,4 +94,20 @@ class ProductionOrder < ActiveRecord::Base
       :source_document_id       => delivery_lost_entry.delivery_lost_id
     )
   end
+  
+  
+  def ProductionOrder.generate_guarantee_return_production_order( guarantee_return_entry )
+    return nil if guarantee_return_entry.quantity_for_production == 0 
+    ProductionOrder.create(
+      :sales_item_id            => guarantee_return_entry.sales_item_id       ,
+      :case                     => PRODUCTION_ORDER[:guarantee_return]     ,
+      :quantity                 => guarantee_return_entry.quantity_for_production     ,
+
+      :source_document_entry    => guarantee_return_entry.class.to_s          ,
+      :source_document_entry_id => guarantee_return_entry.id                  ,
+      :source_document          => guarantee_return_entry.guarantee_return.class.to_s          ,
+      :source_document_id       => guarantee_return_entry.guarantee_return_id
+    ) 
+     
+  end
 end

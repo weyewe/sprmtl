@@ -135,7 +135,9 @@ PRODUCTION_ORDER = {
   :post_production_failure => 3, 
   :sales_return            => 4, 
   :delivery_lost           => 5,
-  :sales_return_post_production_failure => 10  
+  :sales_return_post_production_failure => 10  ,
+  
+  :guarantee_return => 15
 
 }
 
@@ -143,7 +145,9 @@ POST_PRODUCTION_ORDER = {
   :sales_order_only_post_production => 1,  # so the guy put the iron @us. 
   :sales_order                      => 2,
   :production_repair                => 3, 
-  :sales_return_repair              => 4
+  :sales_return_repair              => 4,
+  
+  :guarantee_return => 15
 }
 
 RECYCLE_ORDER  = {

@@ -191,8 +191,9 @@ ActiveRecord::Schema.define(:version => 20130123130306) do
     t.integer  "item_receival_id"
     t.string   "code"
     t.integer  "quantity"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.boolean  "is_confirmed",     :default => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
   end
 
   create_table "item_receivals", :force => true do |t|
@@ -237,16 +238,17 @@ ActiveRecord::Schema.define(:version => 20130123130306) do
     t.integer  "processed_quantity"
     t.integer  "ok_quantity"
     t.integer  "broken_quantity"
-    t.decimal  "ok_weight",          :precision => 7, :scale => 2, :default => 0.0
-    t.decimal  "broken_weight",      :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "ok_weight",           :precision => 7, :scale => 2, :default => 0.0
+    t.decimal  "broken_weight",       :precision => 7, :scale => 2, :default => 0.0
     t.date     "start_date"
     t.date     "finish_date"
-    t.boolean  "is_confirmed",                                     :default => false
+    t.boolean  "is_confirmed",                                      :default => false
     t.integer  "confirmer_id"
     t.datetime "confirmed_at"
-    t.datetime "created_at",                                                          :null => false
-    t.datetime "updated_at",                                                          :null => false
-    t.integer  "bad_source",                                       :default => 0
+    t.datetime "created_at",                                                           :null => false
+    t.datetime "updated_at",                                                           :null => false
+    t.integer  "bad_source_quantity",                               :default => 0
+    t.decimal  "bad_source_weight",   :precision => 7, :scale => 2, :default => 0.0
   end
 
   create_table "post_production_orders", :force => true do |t|

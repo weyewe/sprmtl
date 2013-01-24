@@ -721,13 +721,14 @@ class SalesItem < ActiveRecord::Base
 =begin
   SPECIAL CASE: ONLY POST PRODUCTION
 =end
-  def update_on_item_receival_confirm( item_receival_entry )
+  def update_on_item_receival_confirm 
     # create PostProductionOrder
-    PostProductionOrder.generate_item_receival_post_production_order( item_receival_entry )
+    
     
     # update pending post production
     update_pending_post_production
   end
+  
 ##########################################
 ########## END OF ONLY_POST_PRODUCTION 
 ##########################################
@@ -772,7 +773,11 @@ class SalesItem < ActiveRecord::Base
     update_number_of_sales_return
     update_pending_production
     update_pending_post_production
-    
+  end
+  
+  def update_on_guarantee_return_confirm
+    update_pending_production
+    update_pending_post_production 
   end
   
 end

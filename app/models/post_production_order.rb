@@ -45,6 +45,8 @@ class PostProductionOrder < ActiveRecord::Base
   
   def PostProductionOrder.generate_sales_return_repair_post_production_order( sales_return_entry )
     # puts "\n$$$$$$$$$$$$$$$$$$$$ called from post production order: sales return repair \n"
+    
+    return nil if sales_return_entry.quantity_for_post_production == 0 
     PostProductionOrder.create(
       :sales_item_id            => sales_return_entry.delivery_entry.sales_item_id      ,
       :case                     =>  POST_PRODUCTION_ORDER[:sales_return_repair]  ,
@@ -55,9 +57,9 @@ class PostProductionOrder < ActiveRecord::Base
       :source_document          => sales_return_entry.sales_return.class.to_s          ,
       :source_document_id       => sales_return_entry.sales_return_id
     )
-    
   end
   
+  # item receival : for post production order 
   def PostProductionOrder.generate_item_receival_post_production_order( item_receival_entry )
     PostProductionOrder.create(
       :sales_item_id            => item_receival_entry.sales_item_id      ,
@@ -70,5 +72,22 @@ class PostProductionOrder < ActiveRecord::Base
       :source_document_id       => item_receival_entry.item_receival_id
     )
   end
+  
+  def PostProductionOrder.generate_guarantee_return_post_production_order( guarantee_return_entry ) 
+    return nil if guarantee_return_entry.quantity_for_post_production ==0  
+    PostProductionOrder.create(
+      :sales_item_id            => guarantee_return_entry.sales_item_id      ,
+      :case                     =>  POST_PRODUCTION_ORDER[:guarantee_return]  ,
+      :quantity                 => guarantee_return_entry.quantity_for_post_production, 
+      
+      :source_document_entry    => guarantee_return_entry.class.to_s          ,
+      :source_document_entry_id => guarantee_return_entry.id                  ,
+      :source_document          => guarantee_return_entry.guarantee_return.class.to_s          ,
+      :source_document_id       => guarantee_return_entry.guarantee_return_id
+    )
+  end
+  
+  
+  
   
 end

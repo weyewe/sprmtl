@@ -94,8 +94,8 @@ class GuaranteeReturn < ActiveRecord::Base
         raise ActiveRecord::Rollback, "Call tech support!" 
       end
       
-      self.guarantee_return_entries.each do |item_receival_entry|
-        item_receival_entry.confirm 
+      self.guarantee_return_entries.each do |guarantee_return_entry|
+        guarantee_return_entry.confirm 
       end
     end 
   end

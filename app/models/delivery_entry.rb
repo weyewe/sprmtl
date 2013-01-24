@@ -146,16 +146,20 @@ class DeliveryEntry < ActiveRecord::Base
     # puts "quantity_returned: #{params[:quantity_returned]}"
     # puts "quantity_lost: #{params[:quantity_lost]}"
     
-    self.quantity_confirmed         = params[:quantity_confirmed]
-    self.quantity_confirmed_weight         = params[:quantity_confirmed_weight]
-    self.quantity_returned          = params[:quantity_returned]
-    self.quantity_returned_weight   = BigDecimal( params[:quantity_returned_weight] ) 
-    self.quantity_lost              = params[:quantity_lost]
+    self.quantity_confirmed        = params[:quantity_confirmed]
+    self.quantity_confirmed_weight = BigDecimal( params[:quantity_confirmed_weight] ) 
+    self.quantity_returned         = params[:quantity_returned]
+    self.quantity_returned_weight  = BigDecimal( params[:quantity_returned_weight] ) 
+    self.quantity_lost             = params[:quantity_lost]
+
     
     
     
     self.validate_post_production_update
-    # puts "after validate_post_production_update, errors: #{self.errors.size.to_s}"
+    puts "after validate_post_production_update, errors: #{self.errors.size.to_s}"
+    self.errors.messages.each do |message|
+      puts "The message: #{message}"
+    end
     
     return self if  self.errors.size != 0 
     # puts "Not supposed to be printed out if there is error"

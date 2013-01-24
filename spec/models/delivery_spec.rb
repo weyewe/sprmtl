@@ -204,6 +204,7 @@ describe Delivery do
         it 'should not finalize if there is returned weight, but 0 returned quantity'  do
           @delivery_entry.update_post_delivery(@admin, {
             :quantity_confirmed => @delivery_entry.quantity_sent , 
+            :quantity_confirmed_weight =>  "#{@delivery_entry.quantity_sent*10 }", 
             :quantity_returned => 0 ,
             :quantity_returned_weight => '10' ,
             :quantity_lost => 0
@@ -225,6 +226,7 @@ describe Delivery do
         it 'should not finalize if quantity_sent != quantity_confirmed + quantity return + quantity loss ' do
           @delivery_entry.update_post_delivery(@admin, {
             :quantity_confirmed => @delivery_entry.quantity_sent , 
+            :quantity_confirmed_weight =>  "#{@delivery_entry.quantity_sent*10 }", 
             :quantity_returned => 1 ,
             :quantity_returned_weight => '10' ,
             :quantity_lost => 1
@@ -245,6 +247,7 @@ describe Delivery do
           @quantity_confirmed =   @delivery_entry.quantity_sent  
           @delivery_entry.update_post_delivery(@admin, {
             :quantity_confirmed => @quantity_confirmed , 
+            :quantity_confirmed_weight =>  "#{@quantity_confirmed*10 }", 
             :quantity_returned => 0 ,
             :quantity_returned_weight => '0' ,
             :quantity_lost => 0 
@@ -272,7 +275,8 @@ describe Delivery do
           before(:each) do
             @quantity_confirmed =   @delivery_entry.quantity_sent 
             @delivery_entry.update_post_delivery(@admin, {
-              :quantity_confirmed => @quantity_confirmed , 
+              :quantity_confirmed => @quantity_confirmed ,
+              :quantity_confirmed_weight =>  "#{@quantity_confirmed*10 }",  
               :quantity_returned => 0 ,
               :quantity_returned_weight => '0' ,
               :quantity_lost => 0 
@@ -327,6 +331,7 @@ describe Delivery do
             
             @delivery_entry.update_post_delivery(@admin, {
               :quantity_confirmed => @quantity_confirmed , 
+              :quantity_confirmed_weight =>  "#{@quantity_confirmed*10 }", 
               :quantity_returned => @quantity_returned ,
               :quantity_returned_weight => "#{@quantity_returned*20}" ,
               :quantity_lost => 0 
@@ -401,6 +406,7 @@ describe Delivery do
             
             @delivery_entry.update_post_delivery(@admin, {
               :quantity_confirmed => @quantity_confirmed , 
+              :quantity_confirmed_weight =>  "#{@quantity_confirmed*10 }", 
               :quantity_returned => @quantity_returned ,
               :quantity_returned_weight => "#{@quantity_returned*20}" ,
               :quantity_lost => @quantity_lost  

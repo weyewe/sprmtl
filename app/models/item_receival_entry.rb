@@ -54,8 +54,10 @@ class ItemReceivalEntry < ActiveRecord::Base
       raise ActiveRecord::Rollback, "Call tech support!" 
     end
     
+    PostProductionOrder.generate_item_receival_post_production_order( self )
+    
     sales_item = self.sales_item 
-    sales_item.update_on_item_receival_confirm(self)  # update pending post production? 
+    sales_item.update_on_item_receival_confirm  # update pending post production? 
   end
   
   def generate_code
