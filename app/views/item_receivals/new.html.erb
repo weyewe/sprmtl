@@ -1,0 +1,129 @@
+<%= render :partial => "layouts/masthead" ,:locals => {
+	:title => "Penerimaan Bubut",
+	:description => "Terima Cast"
+}%>
+
+<%= create_breadcrumb(@breadcrumbs).html_safe %>
+
+
+<div id="content">
+
+	<div class="container">
+		
+		
+		<div class="row">
+			
+			<div class="span12">
+				
+				<%= link_to new_item_receival_url, :class => "new_entry btn btn-primary" do %>
+					<i class="icon-plus"></i>Penerimaan Bubut Baru
+				<% end %> 
+				<hr />
+				 
+				
+				<%#= render :partial => "customers/new_object_form", :locals => {
+					:new_object => @new_object , 
+					:url => customers_url
+				}%>
+
+
+				<table class="table table-bordered table-striped table-highlight" id='tableview'>
+					<thead>
+						<tr>
+							<th>Code</th>
+							<th>Customer</th>
+							<th>Tanggal Terima</th>  
+							<th>Status</th>  
+							<th>Total Penerimaan Bubut Item</th>  
+							<th colspan='2'>Action</th>
+						</tr>
+					</thead>
+					<tbody> 
+						<% @objects.each do |object| %>
+							<%= render :partial =>  'item_receivals/entry', :locals => {
+								:object => object 
+							} %> 
+						<% end %>
+					</tbody>
+				</table>
+
+				
+				
+				
+			 
+				
+			</div> <!-- /.span12 -->
+			
+			
+			<!-- <div class="span4">
+				
+						
+				<a href="javascript:;" class="btn btn-large btn-primary btn-block btn-big-block">Tree View</a>	
+				
+				
+				<a href="javascript:;" class="btn btn-large btn-tertiary btn-block btn-big-block">Contact Support</a>
+				
+				
+				<div>
+				</div>  
+						
+				
+			</div>  --><!-- /.span4 -->
+			
+		</div> <!-- /.row -->
+		
+	
+	</div> <!-- /.container -->
+
+</div> <!-- /#content -->
+
+
+<div class="modal fade hide" id="editEntry">
+  <div class="modal-header">
+    <h3>Edit Penerimaan Bubut</h3>
+  </div>
+  <div class="modal-body"> 
+	<!-- content -->
+  </div>
+  <div class="modal-footer">
+    <!-- <a href="javascript:;" class="btn" data-dismiss="modal">Close</a> -->
+		<a  class="btn modal_closer"  >Close</a>
+  </div>
+</div>
+
+<div class="modal fade hide" id="newEntry">
+  <div class="modal-header">
+    <h3>New Penerimaan Bubut</h3>
+  </div>
+  <div class="modal-body"> 
+	<!-- content -->
+  </div>
+  <div class="modal-footer">
+    <!-- <a href="javascript:;" class="btn" data-dismiss="modal">Close</a> -->
+		<a  class="btn modal_closer"  >Close</a>
+  </div>
+</div>
+
+
+<div class="hidden" id="delete_entry_form_wrapper">
+  <%= form_for SalesOrder.new, :url =>delete_item_receival_url , :method => :post   do |f| %>
+    <%= hidden_field_tag 'object_to_destroy_id' , ''  %> 
+  <% end %>
+</div>
+
+
+<%# content_for :additional_js do %> 
+	<%#= javascript_include_tag "common_order/entry_creation"  	%>
+<%# end %>
+
+<% content_for :additional_js do %> 
+  <%= javascript_include_tag "common_order/entry_creation","jquery.tokeninput" 	%> 
+	<script type="text/javascript"> 
+
+  </script>
+<% end %>
+
+<% content_for :additional_css do %> 
+  <%= stylesheet_link_tag "token-input", "token-input-facebook" 	%> 
+<% end %>
+

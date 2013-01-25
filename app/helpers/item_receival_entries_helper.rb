@@ -1,0 +1,2 @@
+module ItemReceivalEntriesHelper
+end

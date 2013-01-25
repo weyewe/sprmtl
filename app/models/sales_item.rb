@@ -16,6 +16,7 @@ class SalesItem < ActiveRecord::Base
   has_many :delivery_lost_entries #  DeliveryLostEntry
   
   has_many :guarantee_return_entries
+  has_many :item_receival_entries
   
   validates_presence_of :description
   validates_presence_of :name 
@@ -178,9 +179,9 @@ class SalesItem < ActiveRecord::Base
     # B13-0102 (Kode material Tahun order - Bulan order Nomor urut)
     # 
     material_code = "" 
-    if not self.material_id.nil?
+    if not self.only_post_production? and not self.material_id.nil?
       material_code = Material.find_by_id( self.material_id ) .code 
-    else
+    elsif self.only_post_production?
       material_code = "N"
     end
     

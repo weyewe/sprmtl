@@ -14,12 +14,12 @@ class DeliveryEntry < ActiveRecord::Base
   def quantity_sent_is_not_zero_and_less_than_ready_quantity
     sales_item = self.sales_item
     if  self.normal_delivery_entry?  and  self.delivery.is_confirmed == false and ( quantity_sent <= 0 or quantity_sent > sales_item.ready ) 
-      errors.add(:quantity_sent , "Kuantitas harus lebih dari 0 dan kurang ato sama dengan #{sales_item.ready}" )  
+      errors.add(:quantity_sent , "Kuantitas harus lebih dari 0 dan kurang atau sama dengan #{sales_item.ready}" )  
     end
     
     if self.entry_case == DELIVERY_ENTRY_CASE[:guarantee_return] and 
         self.delivery.is_confirmed == false and ( quantity_sent <= 0 or quantity_sent > sales_item.pending_guarantee_return_delivery)
-      errors.add(:quantity_sent , "Kuantitas harus lebih dari 0 dan kurang ato sama dengan #{sales_item.ready} (pengembalian retur garansi)" )  
+      errors.add(:quantity_sent , "Kuantitas harus lebih dari 0 dan kurang atau sama dengan #{sales_item.ready} (pengembalian retur garansi)" )  
     end
   end
   

@@ -1,0 +1,63 @@
+<% if new_object.persisted? %>
+	<% id = 'edit_object'%>
+<% else %>
+	<% id = 'new_object'%>
+<% end %>
+
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => " prevent_double_submit ajax-form   no_content_form",
+        :id => "#{id}"}) do |f| %>
+
+	 
+
+
+  <%= f.input :customer_id  , :input_html => {:class => "input-xlarge "}, 
+  			:label => "Customer" %>
+
+ 
+
+	<%= f.input :receival_date  ,:input_html => {:class => "input-xlarge datepicker", 
+																		:value =>"#{print_date_input(new_object.receival_date)}"}, 
+			  			:label => "Tanggal Penerimaan", 
+			 				:hint => "format: <b>dd</b>/<b>mm</b>/<b>yyyy</b>. <br />" + 
+											"Contoh untuk 7 july 2003: 7/7/2003 <br />" + 
+											"Contoh untuk 13 October 2003: 13/10/2003",
+							:as => :string				%>
+
+ 
+
+  <div class="form-actions">
+	
+		<% if new_object.persisted? %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update Penerimaan Bubut" %>
+		<% else %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Penerimaan Bubut" %>
+		<% end %>
+		
+  </div>
+<% end %>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	 $("#item_receival_customer_id").tokenInput('<%=	search_customer_url %>', {
+		prePopulate:   	[
+				<% if not new_object.customer_id.nil? %> 
+				{id: <%= new_object.customer_id %>, name: '<%= new_object.customer.name %>'}
+				<% end %>
+			],
+		zindex: 9999,
+		propertyToSearch: "name",
+		tokenLimit: 1
+	});
+
+
+ 
+	
+	
+});
+</script>

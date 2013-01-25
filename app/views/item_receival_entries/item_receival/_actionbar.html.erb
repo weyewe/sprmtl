@@ -1,0 +1,24 @@
+<table class="table table-bordered table-striped table-highlight" id='actionbar'>
+	<tbody>
+		<tr>
+			<td style='text-align:left;'>
+				<%= link_to new_item_receival_item_receival_entry_url( parent ), 
+					:class => "new_entry btn btn-primary" do %>
+					<i class="icon-plus"></i>Penerimaan Bubut baru
+				<% end %>
+			</td>
+			
+			<td style='text-align: right;'> 
+				
+			 
+				
+				
+				<%= link_to confirm_item_receival_url(parent),
+					:id => 'confirm' , 
+					:class => " btn btn-primary" do %>
+					<i class="icon-ok"></i> Confirm
+				<% end %>
+			</td>
+		</tr>
+	</tbody>
+</table>

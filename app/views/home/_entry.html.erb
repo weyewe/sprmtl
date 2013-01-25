@@ -14,6 +14,9 @@
 	
 	<td>
 		 <%= object.pending_production %> 
+		
+		
+		
 		<hr />
 		Total Pengerjaan: 
 		<b>
@@ -27,6 +30,15 @@
 	
 	<td>
 		<%= object.pending_post_production %>
+		
+		<% if object.only_post_production? %>
+			<hr />
+			Total Penerimaan: 
+			<b>
+				<%=  object.item_receival_entries.where(:is_confirmed => true ).sum('quantity') %>
+			</b>
+		<% end %>
+		
 		<hr />
 		Total Pengerjaan: 
 		<b>

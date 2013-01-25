@@ -2,6 +2,16 @@ class ItemReceivalEntry < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :item_receival
   belongs_to :sales_item 
+  
+  validates_presence_of :quantity
+  
+  validate :quantity_is_not_zero
+  
+  def quantity_is_not_zero
+    if  quantity.present? and quantity <= 0 
+      errors.add(:quantity , "Kuantitas harus lebih dari 0 " )  
+    end
+  end
 
   def self.create_item_receival_entry( employee, item_receival,  params ) 
     return nil if employee.nil?

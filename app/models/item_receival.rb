@@ -18,6 +18,7 @@ class ItemReceival < ActiveRecord::Base
     new_object = self.new
     new_object.creator_id                 = employee.id
     new_object.customer_id                = params[:customer_id] 
+    new_object.receival_date              = params[:receival_date]
     
     
     if new_object.save
@@ -42,6 +43,7 @@ class ItemReceival < ActiveRecord::Base
     
     self.creator_id                 = employee.id
     self.customer_id                = params[:customer_id] 
+    self.receival_date              = params[:receival_date]
     
     
     if self.save

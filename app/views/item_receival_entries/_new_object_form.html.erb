@@ -1,0 +1,38 @@
+<% if new_object.persisted? %>
+	<% id = 'edit_object'%>
+<% else %>
+	<% id = 'new_object'%>
+<% end %>
+
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => " form-horizontal prevent_double_submit ajax-form   no_content_form",
+        :id => "#{id}"}) do |f| %>
+ 
+   
+ 
+
+	<%= f.input :sales_item_id, :label => "Hanya Bubut Sales Item" do %>
+     <%= f.select :sales_item_id, 
+         customer.all_only_post_production_sales_items %>
+  <% end %>
+
+ 
+	
+	<hr />
+		<%= f.input :quantity, :label =>"Jumlah Penerimaan" , :as => :string  %>
+  
+
+  <div class="form-actions">
+	
+		<% if new_object.persisted? %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update Penerimaan Bubut Entry" %>
+		<% else %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Penerimaan Bubut Entry" %>
+		<% end %>
+		
+  </div>
+<% end %>
+
+
+ 

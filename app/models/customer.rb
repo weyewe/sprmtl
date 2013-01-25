@@ -90,6 +90,22 @@ class Customer < ActiveRecord::Base
     return result
   end
   
+  def all_only_post_production_sales_items
+    customer = self 
+    selectables = SalesItem.joins(:sales_order).where(
+      :sales_order => {:customer_id => customer.id },
+      :is_pre_production => false, 
+      :is_production => false, 
+      :is_post_production => true
+    )
+    result = []
+    selectables.each do |selectable| 
+      result << [ "#{selectable.code}" , 
+                      selectable.id ]  
+    end
+    return result
+  end
+  
   def all_selectable_unpaid_invoices
     selectables  =  self.invoices.where(:is_paid => false ).order("created_at ASC") 
     result = []
@@ -104,6 +120,8 @@ class Customer < ActiveRecord::Base
     customer_id_list = Invoice.where(:is_paid => false).pluck(:customer_id).uniq
     Customer.includes(:invoices).where(:id => customer_id_list )
   end
+  
+
   
   def pending_confirmed_payment_amount
     self.invoices.sum("amount_payable") - self.payments.where(:is_confirmed => true).sum("amount_paid")

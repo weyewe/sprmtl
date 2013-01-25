@@ -1,0 +1,109 @@
+<%= render :partial => "layouts/masthead" ,:locals => {
+	:title => "Penerimaan Barang",
+	:description => "Lengkapi isi dari penerimaan barang bubut <b>#{@parent.code}</b>".html_safe
+}%>
+
+<%= create_breadcrumb(@breadcrumbs).html_safe %>
+
+<div id="content">
+
+	<div class="container">
+		
+		
+		<div class="row">
+			
+			<div class="span12">
+				
+				<% if @parent.is_confirmed == false %>
+					<%= render :partial => "item_receival_entries/item_receival/actionbar", :locals => {
+						:parent => @parent
+					}%>
+				<% else %>
+					<%= render :partial => "item_receival_entries/item_receival/post_confirm_bar", :locals => {
+						:parent => @parent
+					}%>
+				<% end %>
+				 
+				
+				<hr />
+				 
+				 <%= render :partial => 'item_receival_entries/item_receival/item_list', :locals => {
+					:objects => @objects, 
+					:parent => @parent
+				}%>
+
+				
+
+				
+				 
+				
+				
+				
+			 
+				
+			</div> <!-- /.span12 -->
+			
+	 
+		</div> <!-- /.row -->
+		
+	
+	</div> <!-- /.container -->
+
+</div> <!-- /#content -->
+
+
+<div class="modal fade hide" id="editEntry">
+  <div class="modal-header">
+    <h3>Edit Penerimaan Bubut Entry</h3>
+  </div>
+  <div class="modal-body"> 
+	<!-- content -->
+  </div>
+  <div class="modal-footer">
+    <!-- <a href="javascript:;" class="btn" data-dismiss="modal">Close</a> -->
+		<a  class="btn modal_closer"  >Close</a>
+  </div>
+</div>
+
+<div class="modal fade hide" id="newEntry">
+  <div class="modal-header">
+    <h3>New Penerimaan Bubut Entry</h3>
+  </div>
+  <div class="modal-body"> 
+	<!-- content -->
+  </div>
+  <div class="modal-footer">
+    <!-- <a href="javascript:;" class="btn" data-dismiss="modal">Close</a> -->
+		<a  class="btn modal_closer"  >Close</a>
+  </div>
+</div>
+
+
+<div class="hidden" id="delete_entry_form_wrapper">
+  <%= form_for SalesOrder.new, :url =>delete_item_receival_entry_url , :method => :post   do |f| %>
+    <%= hidden_field_tag 'object_to_destroy_id' , ''  %> 
+  <% end %>
+</div>
+
+<div class="hidden" id="confirm_order">
+  <%= form_for SalesEntry.new, :url => confirm_item_receival_url(@parent)  do |f| %> 
+  <% end %>
+</div>
+
+ 
+
+<%# content_for :additional_js do %> 
+	<%#= javascript_include_tag "common_order/entry_creation"  	%>
+<%# end %>
+
+<% content_for :additional_js do %> 
+  <%= javascript_include_tag "common_order/entry_creation","jquery.tokeninput" 	%> 
+	<script type="text/javascript"> 
+
+  </script>
+<% end %>
+
+<% content_for :additional_css do %> 
+  <%= stylesheet_link_tag "token-input", "token-input-facebook" 	%> 
+<% end %>
+

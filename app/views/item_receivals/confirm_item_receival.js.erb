@@ -1,0 +1,49 @@
+$(document).ready(function(){
+	var $form_wrapper = $("#actionbar"); 
+	$form_wrapper.spin(false); 
+ 
+
+	<% if  @item_receival.is_confirmed?  %>
+	 
+	// replace the actionbar  with postConfirmBar => to delete the sales order 
+		<% post_confirm_bar = escape_javascript(  render :partial => "item_receival_entries/item_receival/post_confirm_bar", 
+			:locals => {
+		    :parent => @item_receival  
+	  })%>
+		
+		$("#actionbar").replaceWith('<%=  post_confirm_bar %>');
+	
+	// refresh the itemList => no edit or delete 
+		<% item_list = escape_javascript(  render :partial => "item_receival_entries/item_receival/item_list", 
+		:locals => {
+	    :parent => @item_receival ,
+			:objects => @item_receival.item_receival_entries.order("created_at DESC") 
+	  })%>
+	
+		$("#tableview").replaceWith('<%= item_list %>');
+		
+		
+	
+	// alert msgbox: success confirming 
+		$.msgbox("Berhasil Konfirmasi penerimaan bubut: <%= @item_receival.code %>", 
+						{type: "info"});
+						 
+		
+		
+	<% else %> 
+		// replace the form, show the edit 
+		<% actionbar = escape_javascript(  render :partial => "item_receival_entries/item_receival/actionbar", 
+		:locals => {
+	    :parent => @item_receival  
+	  })%>
+	
+		$("#actionbar").replaceWith("<%= actionbar %>");
+		 
+		$.msgbox("Error konfirmasi  penerimaan bubut: <%= @item_receival.code %>", 
+					{type: "error"});
+	<% end %>
+ 
+	jQuery('.prevent_double_submit').preventDoubleSubmit();
+});
+
+

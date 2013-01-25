@@ -21,6 +21,10 @@ Supermetal::Application.routes.draw do
     resources :sales_items 
   end
   
+  resources :item_receivals do
+    resources :item_receival_entries 
+  end
+  
   resources :sales_items do 
     resources :pre_production_histories
     resources :production_histories
@@ -244,6 +248,25 @@ Supermetal::Application.routes.draw do
   # match 'edit_post_delivery_delivery_entry/:delivery_entry_id'  => 'delivery_entries#edit_post_delivery_delivery_entry', :as => :edit_post_delivery_delivery_entry , :method => :get
   # match 'update_post_delivery_delivery_entry/:delivery_entry_id'  => 'delivery_entries#update_post_delivery_delivery_entry', :as => :update_post_delivery_delivery_entry , :method => :post
 
+
+
+##################################################
+##################################################
+######### Item Receival
+##################################################
+##################################################
+  match 'update_item_receival/:item_receival_id' => 'item_receivals#update_item_receival', :as => :update_item_receival , :method => :post 
+  match 'delete_item_receival' => 'item_receivals#delete_item_receival', :as => :delete_item_receival , :method => :post
+  match 'confirm_item_receival/:item_receival_id' => "item_receivals#confirm_item_receival", :as => :confirm_item_receival, :method => :post
+  
+##################################################
+##################################################
+######### Item Receival Entry
+##################################################
+##################################################
+  match 'update_item_receival_entry/:item_receival_entry_id' => 'item_receival_entries#update_item_receival_entry', :as => :update_item_receival_entry , :method => :post 
+  match 'delete_item_receival_entry' => 'item_receival_entries#delete_item_receival_entry', :as => :delete_item_receival_entry , :method => :post
+  
 
 ##################################################
 ##################################################

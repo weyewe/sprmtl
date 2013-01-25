@@ -180,7 +180,23 @@ module NavigationHelper
     :has_dropdown => true, 
     :only_icon => false , 
     :blocks => [
-      # block 1 
+      # block receive item 
+      [
+        {
+          :name => "Penerimaan  Bubut",
+          :url  => 'new_item_receival_url',
+          :icon => "icon-folder-close",
+          :activities => [
+            {
+              :controller => "item_receivals",
+              :action     => "new"
+            } 
+          ]
+        }
+      ],
+      
+      
+      # block production progress
       [
         {
           :name => "Pre Production",

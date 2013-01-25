@@ -208,10 +208,38 @@ has_production_sales_item = SalesItem.create_sales_item( admin, sales_order,  {
     :post_production_price => "150000"
   })
   
+pp_sales_order   = SalesOrder.create_by_employee( admin , {
+  :customer_id    => customer_1.id,          
+  :payment_term   => PAYMENT_TERM[:cash],    
+  :order_date     => Date.new(2012, 12, 15)   
+})
+
+quantity_in_only_pp = 50 
+only_post_production_sales_item = SalesItem.create_sales_item( admin, pp_sales_order,  {
+    :material_id => copper.id, 
+    :is_pre_production => false , 
+    :is_production     => false, 
+    :is_post_production => true, 
+    :is_delivered => true, 
+    :delivery_address => "Perumahan Citra Garden 1 Blok AC2/3G",
+    :quantity => quantity_in_only_pp,
+    :description => "Bla bla bla bla bla", 
+    :delivery_address => "Yeaaah babyy", 
+    :requested_deadline => Date.new(2013, 3,5 ),
+    :weight_per_piece   => '15',
+    :name => "Sales Item Ini" ,
+    :is_pending_pricing    => false, 
+    :is_pricing_by_weight  => false , 
+    :pre_production_price  => "50000", 
+    :production_price      => "20000",
+    :post_production_price => "150000"
+  })
+  
   
   
 puts "BEFORE CONFIRM the sales order code: #{sales_order.code}\n"*10
 sales_order.confirm( admin )
+pp_sales_order.confirm(admin)
 puts "AFTER CONFIRM the sales order code: #{sales_order.code}\n"*10
 
 

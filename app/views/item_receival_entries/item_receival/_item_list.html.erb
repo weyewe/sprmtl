@@ -1,0 +1,22 @@
+<table class="table table-bordered table-striped table-highlight" id='tableview'>
+	<thead>
+		<tr>
+			<th>Code Sales Item</th> 
+			<th>Jumlah</th> 
+			
+			<% if not parent.is_confirmed? %>
+				<th colspan='2'>Action</th> 
+			<% elsif parent.is_confirmed?   %>
+				<th>Status</th>
+			<% end %>
+		</tr>
+	</thead>
+	<tbody> 
+		<% objects.each do |object| %>
+			<%= render :partial =>  'item_receival_entries/entry', :locals => {
+				:object => object ,
+				:parent => parent 
+			} %> 
+		<% end %>
+	</tbody>
+</table>
