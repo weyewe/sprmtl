@@ -29,6 +29,8 @@ class SalesItem < ActiveRecord::Base
   validate :quantity_must_be_at_least_one
   validate  :weight_per_piece_must_not_be_less_than_zero
   
+  belongs_to :customer 
+  
   def material_must_present_if_production_is_true
     if  is_production == true  and  material_id.nil?
       errors.add(:material_id , "Pilih Material karena ada produksi" )  

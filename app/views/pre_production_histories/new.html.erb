@@ -105,6 +105,28 @@
 				var search_url = $("#search_url").val(); 
 		    $search_box.tokenInput( search_url , {
 						propertyToSearch: "code",
+						resultsFormatter: function(item){ 
+							var string =  "<li>" + 
+										"<div style='display: inline-block; padding-left: 10px;'>"+ 
+											"<div class='full_name'>" + item.code + "</div>"+
+											"<div class='email'>" + item.customer_name + "</div>"+
+										"</div>"+  "</li>" ;
+										
+							return string; 
+						},
+						
+						tokenFormatter: function(item) { 
+							
+							var string =  "<li>" + 
+										"<div style='display: inline-block; padding-left: 10px;'>"+ 
+											"<div class='full_name'>" + item.code + "</div>"+
+											"<div class='email'>" + item.customer_name + "</div>"+
+										"</div>"+  "</li>" ;
+										
+							return string;
+						},
+						
+						
 						tokenLimit: 1, 
 		        onAdd: function (item) {
 								$form.spin("large", "black"); 
