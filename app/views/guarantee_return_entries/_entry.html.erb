@@ -1,0 +1,43 @@
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%= object.sales_item.code %>
+	</td>
+	<td>
+		<%= object.sales_item.name %>
+	</td>
+	
+	<td>
+		<b>Lebur Ulang</b><br />
+		Kuantitas: <b><%= object.quantity_for_production %></b> <br />
+		Berat		: <b><%= object.weight_for_production.to_s %></b> kg
+		
+		<hr />
+		<b>Perbaiki</b><br />
+		Kuantitas: <b><%= object.quantity_for_post_production %></b> <br />
+		Berat		: <b><%= object.weight_for_post_production.to_s %></b> kg
+		
+	</td>
+	 
+  
+	
+	
+	<% if not parent.is_confirmed? %>
+		<td>
+			<%= link_to delete_guarantee_return_entry_url( object) , :class =>"delete_entry", 
+				:style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-remove'></i>Delete
+			<% end %> 
+		</td>
+
+		<td>
+			<%= link_to edit_guarantee_return_guarantee_return_entry_url(parent, object), 
+				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
+				<i class='icon-edit'></i>Edit
+			<% end %>
+		</td>
+	<% else %>
+		<td colspan='2'>
+			NA
+		</td>
+	<% end %>
+</tr>

@@ -248,6 +248,21 @@ module NavigationHelper
               :action     => "new"
             }
           ]
+        },
+        {
+          :name => "Garansi  Retur",
+          :url  => 'new_guarantee_return_url',
+          :icon => "icon-wrench",
+          :activities => [
+            {
+              :controller => "guarantee_returns",
+              :action     => "new"
+            },
+            {
+              :controller => "guarantee_return_entries",
+              :action     => "new"
+            }
+          ]
         }
       ]
       

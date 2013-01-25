@@ -184,7 +184,7 @@ class SalesItem < ActiveRecord::Base
     
     string = "#{header}#{material_code}" + 
               ( self.created_at.year%1000).to_s + "-" + 
-              ( self.created_at.month).to_s + 
+              ( self.created_at.month).to_s + '-' + 
               ( counter.to_s ) 
               
     # string = "#{header}SI" + "/" + 

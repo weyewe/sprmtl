@@ -1,0 +1,49 @@
+$(document).ready(function(){
+	var $form_wrapper = $("#actionbar"); 
+	$form_wrapper.spin(false); 
+ 
+
+	<% if  @guarantee_return.is_confirmed?  %>
+	 
+	// replace the actionbar  with postConfirmBar => to delete the sales order 
+		<% post_confirm_bar = escape_javascript(  render :partial => "guarantee_return_entries/guarantee_return/post_confirm_bar", 
+			:locals => {
+		    :parent => @guarantee_return  
+	  })%>
+		
+		$("#actionbar").replaceWith('<%=  post_confirm_bar %>');
+	
+	// refresh the itemList => no edit or delete 
+		<% item_list = escape_javascript(  render :partial => "guarantee_return_entries/guarantee_return/item_list", 
+		:locals => {
+	    :parent => @guarantee_return ,
+			:objects => @guarantee_return.guarantee_return_entries.order("created_at DESC") 
+	  })%>
+	
+		$("#tableview").replaceWith('<%= item_list %>');
+		
+		
+	
+	// alert msgbox: success confirming 
+		$.msgbox("Berhasil Konfirmasi  garansi return: <%= @guarantee_return.code %>", 
+						{type: "info"});
+						 
+		
+		
+	<% else %> 
+		// replace the form, show the edit 
+		<% actionbar = escape_javascript(  render :partial => "guarantee_return_entries/guarantee_return/actionbar", 
+		:locals => {
+	    :parent => @guarantee_return  
+	  })%>
+	
+		$("#actionbar").replaceWith("<%= actionbar %>");
+		 
+		$.msgbox("Error konfirmasi  garansi return: <%= @guarantee_return.code %>", 
+					{type: "error"});
+	<% end %>
+ 
+	jQuery('.prevent_double_submit').preventDoubleSubmit();
+});
+
+

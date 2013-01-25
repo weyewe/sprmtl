@@ -36,6 +36,10 @@ Supermetal::Application.routes.draw do
     resources :sales_return_entries
   end
   
+  resources :guarantee_returns do 
+    resources :guarantee_return_entries 
+  end
+  
   resources :invoices 
   
   resources :payments  do
@@ -208,7 +212,31 @@ Supermetal::Application.routes.draw do
 ##################################################
   match 'update_sales_return_entry/:sales_return_entry_id' => 'sales_return_entries#update_sales_return_entry', :as => :update_sales_return_entry , :method => :post 
   
-  
+
+
+##################################################
+##################################################
+######### Guarantee Return
+##################################################
+##################################################
+  match 'update_guarantee_return/:guarantee_return_id' => 'guarantee_returns#update_guarantee_return', :as => :update_guarantee_return , :method => :post 
+  match 'delete_guarantee_return' => 'guarantee_returns#delete_guarantee_return', :as => :delete_guarantee_return , :method => :post
+  match 'confirm_guarantee_return/:guarantee_return_id' => "guarantee_returns#confirm_guarantee_return", :as => :confirm_guarantee_return, :method => :post
+  # match 'finalize_delivery/:delivery_id' => "deliveries#finalize_delivery", :as => :finalize_delivery, :method => :post
+  # 
+  # 
+  # match 'print_delivery/:delivery_id' => 'deliveries#print_delivery' , :as => :print_delivery
+##################################################
+##################################################
+######### Guarantee Return Entry
+##################################################
+##################################################
+  match 'update_guarantee_return_entry/:guarantee_return_entry_id' => 'guarantee_return_entries#update_guarantee_return_entry', :as => :update_guarantee_return_entry , :method => :post 
+  match 'delete_guarantee_return_entry' => 'guarantee_return_entries#delete_guarantee_return_entry', :as => :delete_guarantee_return_entry , :method => :post
+  # match 'edit_post_delivery_delivery_entry/:delivery_entry_id'  => 'delivery_entries#edit_post_delivery_delivery_entry', :as => :edit_post_delivery_delivery_entry , :method => :get
+  # match 'update_post_delivery_delivery_entry/:delivery_entry_id'  => 'delivery_entries#update_post_delivery_delivery_entry', :as => :update_post_delivery_delivery_entry , :method => :post
+
+
 ##################################################
 ##################################################
 ######### Invoice

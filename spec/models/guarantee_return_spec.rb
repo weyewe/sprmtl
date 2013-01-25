@@ -207,7 +207,8 @@ describe GuaranteeReturn do
   context "doing the guarantee return" do
     before(:each) do
       @guarantee_return = GuaranteeReturn.create_by_employee(@admin, {
-        :customer_id => @customer.id 
+        :customer_id => @customer.id ,
+        :receival_date => Date.new( 2012,12,8)
       })
       
       # quantity_sent == 10 

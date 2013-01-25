@@ -1,0 +1,2 @@
+module GuaranteeReturnsHelper
+end

@@ -147,13 +147,14 @@ ActiveRecord::Schema.define(:version => 20130124153234) do
 
   create_table "guarantee_returns", :force => true do |t|
     t.string   "code"
+    t.date     "receival_date"
     t.integer  "creator_id"
     t.integer  "customer_id"
-    t.boolean  "is_confirmed", :default => false
+    t.boolean  "is_confirmed",  :default => false
     t.integer  "confirmer_id"
     t.datetime "confirmed_at"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   create_table "invoice_payments", :force => true do |t|

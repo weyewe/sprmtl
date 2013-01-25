@@ -1,0 +1,47 @@
+<% if new_object.persisted? %>
+	<% id = 'edit_object'%>
+<% else %>
+	<% id = 'new_object'%>
+<% end %>
+
+<%= simple_form_for( new_object, :url => url,
+      :method => :post , 
+      :html => {:class => " form-horizontal prevent_double_submit ajax-form   no_content_form",
+        :id => "#{id}"}) do |f| %>
+ 
+   
+ 
+
+	<%= f.input :sales_item_id, :label => "Material" do %>
+     <%= f.select :sales_item_id, 
+         customer.all_selectable_sales_items %>
+  <% end %>
+
+ 
+	
+	<hr />
+		<%= f.input :quantity_for_production, :label =>"Kuantitas Lebur Ulang" , :as => :string  %>
+		<%= f.input :weight_for_production , :label =>"Berat Lebur Ulang", 
+				:hint => "Dalam kilogram, sensitif sampai 2 decimal. Contoh: <b>2.15</b>kg", :as => :string   %>
+	 
+ 
+	<hr />
+		<%= f.input :quantity_for_post_production, :label =>"Kuantitas Perbaiki" , :as => :string  %>
+		<%= f.input :weight_for_post_production , :label =>"Berat Perbaiki", 
+				:hint => "Dalam kilogram, sensitif sampai 2 decimal. Contoh: <b>2.15</b>kg", :as => :string   %>	
+	
+	
+
+  <div class="form-actions">
+	
+		<% if new_object.persisted? %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Update Garansi Retur Entry" %>
+		<% else %>
+			<%= f.button :submit , :class => "btn btn-primary", :value=> "Create Garansi Retur Entry" %>
+		<% end %>
+		
+  </div>
+<% end %>
+
+
+ 

@@ -3,6 +3,9 @@ class CreateGuaranteeReturns < ActiveRecord::Migration
     create_table :guarantee_returns do |t|
       t.string  :code 
       
+      t.date        :receival_date 
+      
+      
       t.integer     :creator_id 
       t.integer     :customer_id
       # confirmed means that the goods are ready to leave the office.
