@@ -30,16 +30,32 @@ class DeliveryEntry < ActiveRecord::Base
   end
   
   def uniqueness_of_sales_item
+    # but allow it, if it is from different CASE 
     parent  = self.delivery
     sales_item_id_list = parent.delivery_entries.map{|x| x.sales_item_id }
     post_uniq_sales_item_id_list = sales_item_id_list.uniq 
    
+   
+    delivery_entry_count = DeliveryEntry.where(
+      :sales_item_id => self.sales_item_id,
+      :delivery_id => parent.id 
+    ).count 
     
-    if not self.persisted? and post_uniq_sales_item_id_list.include?( self.sales_item_id)
-        errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
-    elsif self.persisted? and sales_item_id_list.length !=  post_uniq_sales_item_id_list.length
-        errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
+    # if not self.persisted? and post_uniq_sales_item_id_list.include?( self.sales_item_id)
+    #   errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
+    # elsif self.persisted? and sales_item_id_list.length !=  post_uniq_sales_item_id_list.length
+    #   errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
+    # end
+    
+    # i want to check.. if there has been such delivery entry with  similar entry_case and sales_item_id 
+    # =>  error 
+    if not self.persisted? and delivery_entry_count != 0
+      errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
+    elsif self.persisted? and delivery_entry_count != 1 
+      errors.add(:sales_item_id , "Sales item #{self.sales_item.code} sudah terdaftar di surat jalan" ) 
     end
+    
+    
   end
   
   def customer_ownership_to_sales_item
@@ -64,9 +80,10 @@ class DeliveryEntry < ActiveRecord::Base
     new_object.entry_case           = params[:entry_case] 
 
     
-    
+    new_object.generate_delivery_entry_case
     if new_object.save 
       new_object.generate_code 
+      
     end
     
     return new_object 
@@ -83,7 +100,7 @@ class DeliveryEntry < ActiveRecord::Base
     self.quantity_sent_weight = BigDecimal( params[:quantity_sent_weight ])
     self.entry_case           = params[:entry_case] 
 
- 
+    new_object.generate_delivery_entry_case
     if self.save 
     end
     

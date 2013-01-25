@@ -220,6 +220,13 @@ describe "delivery return delivery spec" do
     end
     
     it 'should create delivery and delivery_entry' do
+      puts "Total number of errors in delivery: #{@delivery.errors.size}"
+      puts "Total number of errors in delivery_entry: #{@delivery_entry.errors.size}"
+      
+      @delivery_entry.errors.messages.each do |message|
+        puts "The message : #{message}"
+      end
+      
       @delivery.should be_valid
       @delivery_entry.should be_valid
     end
