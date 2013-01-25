@@ -38,7 +38,8 @@ class DeliveryEntry < ActiveRecord::Base
    
     delivery_entry_count = DeliveryEntry.where(
       :sales_item_id => self.sales_item_id,
-      :delivery_id => parent.id 
+      :delivery_id => parent.id ,
+      :entry_case => self.entry_case 
     ).count 
     
     # if not self.persisted? and post_uniq_sales_item_id_list.include?( self.sales_item_id)

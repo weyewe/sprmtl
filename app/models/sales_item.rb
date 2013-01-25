@@ -678,11 +678,19 @@ class SalesItem < ActiveRecord::Base
   end
   
   def update_fulfilled_order
-    self.fulfilled_order = self.delivery_entries.where(
-                            :is_confirmed => true, 
-                            :is_finalized => true 
-                          ).sum("quantity_confirmed")
+    # self.fulfilled_order = self.delivery_entries.where(
+    #                         :is_confirmed => true, 
+    #                         :is_finalized => true 
+    #                       ).sum("quantity_confirmed")
+    # 
+   
+    self.fulfilled_order = self.delivery_entries.where{
+      (is_confirmed.eq true ) & 
+      (is_finalized.eq true) & 
+      (entry_case.not_eq DELIVERY_ENTRY_CASE[:guarantee_return] )
+    }.sum("quantity_confirmed")
     
+     
     self.save
   end
   
