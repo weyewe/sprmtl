@@ -15,6 +15,8 @@ class Invoice < ActiveRecord::Base
     return nil if employee.nil?
     return nil if delivery.nil? 
     return nil if delivery.is_confirmed == false 
+    
+    return nil if delivery.only_delivering_non_invoicable_goods? 
 
     new_object = Invoice.new 
     new_object.creator_id   = employee.id 

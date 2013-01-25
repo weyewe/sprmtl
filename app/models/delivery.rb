@@ -115,6 +115,20 @@ class Delivery < ActiveRecord::Base
     end 
   end
   
+  def only_delivering_non_invoicable_goods? 
+    entry_case_list = self.delivery_entries.map{ |x| x.entry_case }
+    entry_case_list.uniq! 
+    
+    non_invoicable_entry_case = [
+      DELIVERY_ENTRY_CASE[:guarantee_return ] ,
+      DELIVERY_ENTRY_CASE[:technical_failure_post_production]
+    ]
+    
+    return true if (entry_case_list - non_invoicable_entry_case).length == 0 
+    
+    return false  
+  end
+  
   
   def finalize(employee)
     return nil if employee.nil? 
@@ -129,7 +143,7 @@ class Delivery < ActiveRecord::Base
       self.is_finalized = true 
       self.save 
       
-      invoice = self.invoice 
+      invoice = self.invoice  
       
       if  self.errors.size != 0  
         raise ActiveRecord::Rollback, "Call tech support!" 
@@ -153,7 +167,9 @@ class Delivery < ActiveRecord::Base
         delivery_lost.confirm( employee )
       end
       
-      invoice.update_amount_payable
+      
+      
+      invoice.update_amount_payable if not invoice.nil? 
 
       # by finalizing delivery, we adjust the outstanding payment 
       # adjustment for sales return or lost delivery 

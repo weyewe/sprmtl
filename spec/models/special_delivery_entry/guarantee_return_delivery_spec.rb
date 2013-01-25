@@ -210,6 +210,10 @@ describe "delivery return delivery spec" do
         })
     end
     
+    it 'should not create sales invoice' do
+      @delivery.invoice.should be_nil 
+    end
+    
     it 'should create delivery and delivery_entry' do
       puts "Total number of errors in delivery: #{@delivery.errors.size}"
       puts "Total number of errors in delivery_entry: #{@delivery_entry.errors.size}"
