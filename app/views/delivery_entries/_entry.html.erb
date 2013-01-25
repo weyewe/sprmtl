@@ -7,8 +7,19 @@
 	</td>
 	
 	<td>
+		
+		<% if object.entry_case == DELIVERY_ENTRY_CASE[:guarantee_return] %>
+      [Hasil Retur Garansi]
+    <% elsif object.entry_case == DELIVERY_ENTRY_CASE[:bad_source_fail_post_production] %>
+      [Casting Keropos]
+    <% elsif object.entry_case == DELIVERY_ENTRY_CASE[:technical_failure_post_production] %> 
+      [Gagal Bubut]
+    <% end %>
+		<br />
 		Kuantitas: <b><%= object.quantity_sent %></b> <br />
 		Berat		: <b><%= object.quantity_sent_weight.to_s %></b> kg
+		
+		
 	</td>
 	 
   
@@ -23,7 +34,15 @@
 		</td>
 
 		<td>
-			<%= link_to edit_delivery_delivery_entry_url(parent, object), 
+			<% edit_url = '' %>
+			<% if object. normal_delivery_entry?  %>
+				<% edit_url  = edit_delivery_delivery_entry_url(parent, object) %>
+			<% else %>
+				<% edit_url  = edit_special_delivery_entry_url(object) %>
+			<% end %>
+			
+			
+			<%= link_to edit_url , 
 				:class =>"edit_entry modal-toggler", :style => "cursor:pointer; text-decoration:none;" do %>
 				<i class='icon-edit'></i>Edit
 			<% end %>

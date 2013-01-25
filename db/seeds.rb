@@ -98,7 +98,23 @@ data_entry_role = {
         :update_sales_return_entry => true ,
         :delete_sales_return_entry => true 
       },
-      
+  
+  :guarantee_returns => {
+    :new => true,
+    :create => true, 
+    :edit => true, 
+    :update_guarantee_return => true ,
+    :delete_guarantee_return => true,
+    :confirm_guarantee_return => true
+  },
+      :guarantee_return_entries => {
+        :new => true,
+        :create => true, 
+        :edit => true, 
+        :update_guarantee_return_entry => true ,
+        :delete_guarantee_return_entry => true 
+      },    
+  
   :invoices => {
     :new => true,
     :create => true, 
@@ -247,6 +263,10 @@ delivery = Delivery.create_by_employee( admin, {
 } )  
 
 has_production_sales_item.reload 
+
+# ok quantity = 10
+# quantity sent = ok_quantity - 5 
+# quantity sent = 5 
 quantity_sent = has_production_sales_item.ready - 5
 
 delivery_entry = DeliveryEntry.create_delivery_entry( admin, delivery,  {
@@ -273,7 +293,7 @@ delivery_entry.update_post_delivery(admin, {
 delivery_entry.reload 
  
 delivery.reload 
-
-
 delivery.finalize(admin)
+
+# phase 2. Creating  
 

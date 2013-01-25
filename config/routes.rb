@@ -197,6 +197,12 @@ Supermetal::Application.routes.draw do
   match 'edit_post_delivery_delivery_entry/:delivery_entry_id'  => 'delivery_entries#edit_post_delivery_delivery_entry', :as => :edit_post_delivery_delivery_entry , :method => :get
   match 'update_post_delivery_delivery_entry/:delivery_entry_id'  => 'delivery_entries#update_post_delivery_delivery_entry', :as => :update_post_delivery_delivery_entry , :method => :post
   
+  match 'new_special_delivery_entry/:delivery_id' => 'delivery_entries#new_special_delivery_entry', :as => :new_special_delivery_entry 
+  match 'create_special_delivery_entry/:delivery_id' => 'delivery_entries#create_special_delivery_entry', :as => :create_special_delivery_entry, :method => :post  
+  
+  match 'edit_special_delivery_entry/:id' => 'delivery_entries#edit_special_delivery_entry', :as => :edit_special_delivery_entry 
+  match 'update_special_delivery_entry/:delivery_entry_id' => 'delivery_entries#update_special_delivery_entry', :as => :update_special_delivery_entry , :method => :post  
+  
   
 ##################################################
 ##################################################

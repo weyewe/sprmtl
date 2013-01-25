@@ -74,5 +74,25 @@ class DeliveryEntriesController < ApplicationController
     @customer = @parent.customer
     @has_no_errors  = @object.errors.size  == 0
   end
+   
+  
+=begin
+  SPECIAL DELIVERY ENTRY
+=end
+  def new_special_delivery_entry
+    new  
+  end
+  
+  def create_special_delivery_entry
+    create
+    
+  end
+  
+  def edit_special_delivery_entry
+    edit
+  end
+  
+  def update_special_delivery_entry
+    update_delivery_entry
+  end
 end
-

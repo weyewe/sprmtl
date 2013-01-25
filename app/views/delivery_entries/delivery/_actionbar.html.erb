@@ -8,11 +8,14 @@
 				<% end %>
 			</td>
 			
+			<td style='text-align:left;'>
+				<%= link_to new_special_delivery_entry_url( parent), 
+					:class => "new_entry btn btn-primary" do %>
+					<i class="icon-plus"></i>Special Delivery Baru
+				<% end %>
+			</td>
+			
 			<td style='text-align: right;'> 
-				
-			 
-				
-				
 				<%= link_to confirm_delivery_url(parent),
 					:id => 'confirm' , 
 					:class => " btn btn-primary" do %>

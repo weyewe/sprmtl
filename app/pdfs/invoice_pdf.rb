@@ -16,6 +16,7 @@ class InvoicePdf < Prawn::Document
     @page_length = page_length
     @invoice = invoice
     @delivery = @invoice.delivery 
+    @company = Company.first 
     @view = view
     # page_size  [684, 792]
     font("Courier")
@@ -28,7 +29,8 @@ class InvoicePdf < Prawn::Document
     move_down 20 
     company_customer_details 
     
-    subscription_details
+    # subscription_details
+    document_details
     # subscription_details
     # subscription_amount
     regards_message
@@ -62,15 +64,15 @@ class InvoicePdf < Prawn::Document
     
     bounding_box( [0,cursor], :width => @page_width) do
       bounding_box([gap, bounds.top - gap], :width => width) do 
-        text  "Bangjay"  #{}"#{@company.name}"
-        text  "Alamat Bangjay"  #}"#{@company.address}"
-        text  "telpon bangjay" #  "#{@company.phone}"
+        text  "#{@company.name}"
+        text  "#{@company.address}"
+        text  "#{@company.phone}"
       end
       
       if not @customer.nil?
         bounding_box([half_page + box_separator, bounds.top - gap], :width => width) do 
           text "#{@customer.name}"
-          # text 'Kompleks Pergudangan Rawa Lele nomor 3315'
+          text "#{@delivery.delivery_address}"
         end 
       end
     end
@@ -93,11 +95,11 @@ class InvoicePdf < Prawn::Document
    #{@invoice.updated_at.strftime("%d/%m/%Y")}", :size => 13
   end
    
-  def subscription_details
+  def document_details
     move_down 40
     total_active_sales_entries = @delivery.delivery_entries.count 
     
-    table subscription_item_rows , :position => :center , :width => @page_width -100 do
+    table document_data  , :position => :center , :width => @page_width -100 do
       row(0).font_style = :bold
       row( total_active_sales_entries + 1).font_style = :bold 
       columns(1..3).align = :left
@@ -114,33 +116,35 @@ class InvoicePdf < Prawn::Document
     # end
   end
    
-  def subscription_amount
-    subscription_amount = @invoice.total_amount_to_be_paid
-    vat = @invoice.calculated_vat
-    delivery_charges = @invoice.calculated_delivery_charges
-    sales_tax =  @invoice.calculated_sales_tax
-    table ([
-      ["", "Vat (12.5% of Amount)", "", "", "#{precision(vat)}"] ,
-      ["","Sales Tax (10.3% of half the Amount)", "", "",
-              "#{precision(sales_tax)}"]   ,
-      ["", "Delivery charges", "", "", "#{precision(delivery_charges)}  "],
-      ["", "", "", "Total Amount", "#{precision(@invoice.total_amount_to_be_paid) }  "]
-    # ]),
-    #  :width => 500 do
-    ]) do 
-      columns(2).align = :left
-      columns(3).align = :left
-      self.header = true
-      self.column_widths = {0 => 200, 1 => 100, 2 => 100, 3 => 100}
-      columns(2).font_style = :bold
-    end
+  # def subscription_amount
+  #   subscription_amount = @invoice.total_amount_to_be_paid
+  #   vat = @invoice.calculated_vat
+  #   delivery_charges = @invoice.calculated_delivery_charges
+  #   sales_tax =  @invoice.calculated_sales_tax
+  #   table ([
+  #     ["", "Vat (12.5% of Amount)", "", "", "#{precision(vat)}"] ,
+  #     ["","Sales Tax (10.3% of half the Amount)", "", "",
+  #             "#{precision(sales_tax)}"]   ,
+  #     ["", "Delivery charges", "", "", "#{precision(delivery_charges)}  "],
+  #     ["", "", "", "Total Amount", "#{precision(@invoice.total_amount_to_be_paid) }  "]
+  #   # ]),
+  #   #  :width => 500 do
+  #   ]) do 
+  #     columns(2).align = :left
+  #     columns(3).align = :left
+  #     self.header = true
+  #     self.column_widths = {0 => 200, 1 => 100, 2 => 100, 3 => 100}
+  #     columns(2).font_style = :bold
+  #   end
+  # end
+  
+  def document_data_header
+    [["No", "Item", "Quantity", "Price", "Total"]]
   end
-   
-  def subscription_item_rows
-    count = 0
+  
+  def document_data_body
+    count =  0 
     total_price_in_invoice = BigDecimal("0")
-    
-    [["No", "Item", "Quantity", "Price", "Total"]] +
     (@delivery.delivery_entries).map do |delivery_entry|
       sales_item = delivery_entry.sales_item 
       count = count + 1 
@@ -161,32 +165,42 @@ class InvoicePdf < Prawn::Document
       end
       
       price_details = ""
-      if sales_item.is_pending_pricing?
-        price_details << "Biaya Pending"
-      else
-        if sales_item.is_pre_production?
-          price_details << "Biaya Pola: #{precision( sales_item.pre_production_price) }" + "\n"
-        end
-
-        if sales_item.is_production?
-          price_details << "Biaya Cetak: #{precision( sales_item.production_price) }" 
-          if sales_item.is_pricing_by_weight?
-            price_details <<" per kg"  
+      if delivery_entry.normal_delivery_entry? 
+          if sales_item.is_pending_pricing?
+            price_details << "Biaya Pending"
           else
-            price_details <<" per piece" 
+            if sales_item.is_pre_production?
+              price_details << "Biaya Pola: #{precision( sales_item.pre_production_price) }" + "\n"
+            end
+
+            if sales_item.is_production?
+              price_details << "Biaya Cetak: #{precision( sales_item.production_price) }" 
+              if sales_item.is_pricing_by_weight?
+                price_details <<" per kg"  
+              else
+                price_details <<" per piece" 
+              end
+          
+              price_details << "\n"
+            end
+
+            if sales_item.is_post_production?
+              price_details << "Biaya Bubut: #{precision( sales_item.post_production_price) }" 
+            end
           end
           
-          price_details << "\n"
+          total_price = delivery_entry.total_delivery_entry_price
+          total_price_in_invoice += delivery_entry.total_delivery_entry_price
+      else
+        if delivery_entry.entry_case == DELIVERY_ENTRY_CASE[:guarantee_return]
+          price_details << "FREE" + "\n"
+          price_details << "Pengembalian Garansi Retur"
         end
-
-        if sales_item.is_post_production?
-          price_details << "Biaya Bubut: #{precision( sales_item.post_production_price) }" 
-        end
+        
+        total_price = BigDecimal('0')
       end
       
       
-      total_price = delivery_entry.total_delivery_entry_price
-      total_price_in_invoice += delivery_entry.total_delivery_entry_price
       
       [ "#{count}", 
         "#{item_data} ", quantity_details,
@@ -199,6 +213,10 @@ class InvoicePdf < Prawn::Document
     "Total  ",  
     "#{precision(total_price_in_invoice)}"
     ]]
+  end
+   
+  def document_data 
+    document_data_header + document_data_body  
   end
    
   def precision(num)

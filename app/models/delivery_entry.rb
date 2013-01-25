@@ -324,6 +324,25 @@ class DeliveryEntry < ActiveRecord::Base
     # if it is emergency return.. WTF.. ordered post production as well. 
   end
   
+  def self.all_selectable_delivery_entry_cases
+    result = []
+    
+    result << [ "#{DELIVERY_ENTRY_CASE_VALUE[:ready_production]}" , 
+                    DELIVERY_ENTRY_CASE[:ready_production] ] 
+                    
+    result << [ "#{DELIVERY_ENTRY_CASE_VALUE[:ready_post_production]}" , 
+                    DELIVERY_ENTRY_CASE[:ready_post_production] ] 
+    
+    result << [ "#{DELIVERY_ENTRY_CASE_VALUE[:guarantee_return]}" , 
+                    DELIVERY_ENTRY_CASE[:guarantee_return] ] 
+    result << [ "#{DELIVERY_ENTRY_CASE_VALUE[:bad_source_fail_post_production]}" , 
+                    DELIVERY_ENTRY_CASE[:bad_source_fail_post_production] ]
+                    
+    result << [ "#{DELIVERY_ENTRY_CASE_VALUE[:technical_failure_post_production]}" , 
+                    DELIVERY_ENTRY_CASE[:technical_failure_post_production] ]
+    return result
+  end
+  
   def normal_delivery_entry?
     sales_item = self.sales_item
     if sales_item.only_production?
@@ -369,21 +388,36 @@ class DeliveryEntry < ActiveRecord::Base
     
     total_amount = BigDecimal("0")
     
-    if sales_item.is_pre_production?
-      total_amount += sales_item.pre_production_price * quantity
-    end
-    
-    if sales_item.is_production? 
-      if sales_item.is_pricing_by_weight? 
-        total_amount += sales_item.production_price * weight
-      else
-        total_amount += sales_item.production_price * quantity
+    if self.normal_delivery_entry? 
+      if sales_item.is_pre_production?
+        total_amount += sales_item.pre_production_price * quantity
       end
-    end
+    
+      if sales_item.is_production? 
+        if sales_item.is_pricing_by_weight? 
+          total_amount += sales_item.production_price * weight
+        else
+          total_amount += sales_item.production_price * quantity
+        end
+      end
   
     
-    if sales_item.is_post_production?
-      total_amount += sales_item.post_production_price * quantity
+      if sales_item.is_post_production?
+        total_amount += sales_item.post_production_price * quantity
+      end
+    else
+      if self.entry_case == DELIVERY_ENTRY_CASE[:guarantee_return]
+        # price == FREE 
+      end
+      
+      if self.entry_case == DELIVERY_ENTRY_CASE[:technical_failure_post_production]
+        # price == FREE.. in fact.. we have to pay this guy some $$$ 
+      end
+      
+      if self.entry_case == DELIVERY_ENTRY_CASE[:bad_source_fail_post_production]
+        total_amount += sales_item.post_production_price * quantity
+      end
+       
     end
     
     return total_amount

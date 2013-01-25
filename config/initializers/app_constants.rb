@@ -232,13 +232,22 @@ CASH_ACCOUNT_CASE = {
 
 
 DELIVERY_ENTRY_CASE = {
-  
   :ready_production                  => 1 , 
   :ready_post_production             => 2, 
   :guarantee_return                  => 11 ,
   :bad_source_fail_post_production   => 21, 
   :technical_failure_post_production => 22  
 }
+
+DELIVERY_ENTRY_CASE_VALUE = {
+  :ready_production                  =>  "Selesai Cast", 
+  :ready_post_production             => "Selesai Bubut", 
+  :guarantee_return                  => "Retur Garansi" ,
+  :bad_source_fail_post_production   => "Cast Keropos (hanya bubut)", 
+  :technical_failure_post_production => "Gagal bubut (hanya bubut)"  
+}
+
+# http://www.mangareader.net/303-55068-12/drifters/chapter-14.html
 
 =begin
     CASE 1: if there is only production: 

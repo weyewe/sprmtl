@@ -16,7 +16,11 @@
      <%= f.select :sales_item_id, 
          customer.all_selectable_sales_items %>
   <% end %>
- 
+
+	<%= f.input :entry_case, :label => "Kondisi Barang" do %>
+     <%= f.select :entry_case, 
+         DeliveryEntry.all_selectable_delivery_entry_cases %>
+  <% end %>
 
  
 	
@@ -42,4 +46,3 @@
 <% end %>
 
 
- 

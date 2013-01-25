@@ -22,15 +22,22 @@ class DeliveryOrderPdf < Prawn::Document
     # text "My report caption", :size => 18, :align => :right
     # move_down font.height * 2
     
+    @company = Company.first
     
+    
+    # printing the document title 
     title 
     move_down 20 
+    
+    # printing the company header, and customer header 
     company_customer_details 
     
-    subscription_details
-    # subscription_details
-    # subscription_amount
+    # printing the core data: table 
+    document_details 
+    
+    # say thanks or something? => signature
     regards_message
+    
     
     page_numbering 
   end
@@ -61,85 +68,64 @@ class DeliveryOrderPdf < Prawn::Document
     
     bounding_box( [0,cursor], :width => @page_width) do
       bounding_box([gap, bounds.top - gap], :width => width) do 
-        text  "Bangjay"  #{}"#{@company.name}"
-        text  "Alamat Bangjay"  #}"#{@company.address}"
-        text  "telpon bangjay" #  "#{@company.phone}"
+        text  "#{@company.name}"
+        text  "#{@company.address}"
+        text  "#{@company.phone}"
       end
       
       if not @customer.nil?
         bounding_box([half_page + box_separator, bounds.top - gap], :width => width) do 
           text "#{@customer.name}"
-          text 'Kompleks Pergudangan Rawa Lele nomor 3315'
+          text "#{@delivery_order.delivery_address}"
         end 
       end
     end
   end
+    
    
-  def thanks_message
-    move_down 80
-    text "Hello Customer Name" #"Hello #{@delivery_order.customer.profile.first_name.capitalize},"
-    move_down 15
-    text "Thank you for your order.Print this receipt as confirmation of your order.",
-    :indent_paragraphs => 40, :size => 13
-  end
    
-  def subscription_date
-    move_down 40
-    text "Subscription start date:
-   #{@delivery_order.created_at.strftime("%d/%m/%Y")} ", :size => 13
-    move_down 20
-    text "Subscription end date : 
-   #{@delivery_order.updated_at.strftime("%d/%m/%Y")}", :size => 13
-  end
-   
-  def subscription_details
+  def document_details
     move_down 40
     total_active_sales_entries = @delivery_order.delivery_entries.count 
     
-    table subscription_item_rows , :position => :center , :width => @page_width -100 do
+    table document_data , :position => :center , :width => @page_width -100 do
       row(0).font_style = :bold
       row( total_active_sales_entries + 1).font_style = :bold 
       columns(1..3).align = :left
       self.header = true
       self.column_widths = { 1 => 400 }
     end
-    
-    
-    # table subscription_item_rows do
-    #   row(0).font_style = :bold
-    #   columns(1..3).align = :right
-    #   self.header = true
-    #   self.column_widths = {0 => 100, 1 => 200, 2 => 100, 3 => 100, 4 => 100}
-    # end
+     
   end
    
-  def subscription_amount
-    subscription_amount = @delivery_order.total_amount_to_be_paid
-    vat = @delivery_order.calculated_vat
-    delivery_charges = @delivery_order.calculated_delivery_charges
-    sales_tax =  @delivery_order.calculated_sales_tax
-    table ([
-      ["", "Vat (12.5% of Amount)", "", "", "#{precision(vat)}"] ,
-      ["","Sales Tax (10.3% of half the Amount)", "", "",
-              "#{precision(sales_tax)}"]   ,
-      ["", "Delivery charges", "", "", "#{precision(delivery_charges)}  "],
-      ["", "", "", "Total Amount", "#{precision(@delivery_order.total_amount_to_be_paid) }  "]
-    # ]),
-    #  :width => 500 do
-    ]) do 
-      columns(2).align = :left
-      columns(3).align = :left
-      self.header = true
-      self.column_widths = {0 => 200, 1 => 100, 2 => 100, 3 => 100}
-      columns(2).font_style = :bold
-    end
+  # def subscription_amount
+  #   subscription_amount = @delivery_order.total_amount_to_be_paid
+  #   vat = @delivery_order.calculated_vat
+  #   delivery_charges = @delivery_order.calculated_delivery_charges
+  #   sales_tax =  @delivery_order.calculated_sales_tax
+  #   table ([
+  #     ["", "Vat (12.5% of Amount)", "", "", "#{precision(vat)}"] ,
+  #     ["","Sales Tax (10.3% of half the Amount)", "", "",
+  #             "#{precision(sales_tax)}"]   ,
+  #     ["", "Delivery charges", "", "", "#{precision(delivery_charges)}  "],
+  #     ["", "", "", "Total Amount", "#{precision(@delivery_order.total_amount_to_be_paid) }  "]
+  #   # ]),
+  #   #  :width => 500 do
+  #   ]) do 
+  #     columns(2).align = :left
+  #     columns(3).align = :left
+  #     self.header = true
+  #     self.column_widths = {0 => 200, 1 => 100, 2 => 100, 3 => 100}
+  #     columns(2).font_style = :bold
+  #   end
+  # end
+  
+  def document_data_header
+    [["No", "Item", "Quantity", "Diterima", "Retur", "Hilang"]] 
   end
-   
-  def subscription_item_rows
+  
+  def document_data_body
     count = 0
-    total_price_in_sales_order = BigDecimal("0")
-    
-    [["No", "Item", "Quantity", "Diterima", "Retur", "Hilang"]] +
     (@delivery_order.delivery_entries).map do |delivery_entry|
       count = count + 1 
       sales_item = delivery_entry.sales_item
@@ -147,13 +133,31 @@ class DeliveryOrderPdf < Prawn::Document
       item_data << "\n"
       item_data << "#{sales_item.name}" 
        
+      quantity_data = "#{delivery_entry.quantity_sent}" 
+      quantity_data << "\n"
+      
+      if delivery_entry.entry_case == DELIVERY_ENTRY_CASE[:guarantee_return]
+        quantity_data << "Hasil Retur Garansi"
+      elsif delivery_entry.entry_case == DELIVERY_ENTRY_CASE[:bad_source_fail_post_production]
+        quantity_data << "Casting Keropos"
+      elsif delivery_entry.entry_case == DELIVERY_ENTRY_CASE[:technical_failure_post_production]
+        quantity_data << "Gagal Bubut"
+      end
+      
+       
       [ "#{count}", 
-        "#{item_data} ", delivery_entry.quantity_sent,
+        "#{item_data} ", quantity_data,
         '',
         '',
         ''
        ]
-    end   
+    end
+  end
+   
+  def document_data 
+    count = 0
+    total_price_in_sales_order = BigDecimal("0")
+    document_data_header + document_data_body  
   end
    
   def precision(num)
