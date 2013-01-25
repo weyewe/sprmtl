@@ -5,12 +5,16 @@
 	</td>
 	
 	<td>
-		<%= link_to print_money(object.pending_confirmed_payment_amount),
+		<%= link_to print_money(object.outstanding_payment),
 		 			outstanding_payment_details_url(object)%>
 		
 		<% if object.has_unconfirmed_payment? %>
 		(*)
 		<% end %>
+	</td>
+	
+	<td>
+		<%= link_to print_money(object.remaining_downpayment), customer_downpayment_histories_url(object) %>
 	</td>
 	 
 	 

@@ -1,0 +1,23 @@
+<% payment = object.payment %>
+<tr id="entry-<%= object.id %>">
+	<td>
+		<%= print_date( object.created_at ) %>
+	</td>
+	<td>
+		<%= "#{payment.code}"     %>
+		<% if not payment.is_confirmed == true %>
+		<br />
+		Not Confirmed 
+		<% end %>
+	</td>
+	
+	<td>
+		<% if object.case ==  DOWNPAYMENT_CASE[:addition] %>
+			<%= print_money( object.amount )%>
+		<% elsif  object.case ==  DOWNPAYMENT_CASE[:deduction] %> 
+			( 	<%= print_money( object.amount )%>   ) 
+		<% end %> 
+	</td>
+	 
+	
+</tr>

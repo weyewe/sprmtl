@@ -33,7 +33,11 @@
 	</td>
 	
 	<td>
-		<%= print_money( object.amount_paid )  %>
+		Cash Pembayaran: <%= print_money( object.amount_paid )  %>
+		<hr />
+		Penggunaan DP : <%= print_money( object.downpayment_usage_amount )%>
+		<hr />
+		Penambahan DP : <%= print_money( object.downpayment_addition_amount )%>
 	</td>
 	
 	

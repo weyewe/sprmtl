@@ -6,7 +6,9 @@ Supermetal::Application.routes.draw do
 
   root :to => 'home#index'
   
-  resources :customers
+  resources :customers do
+    resources :downpayment_histories 
+  end
   resources :materials
   resources :companies 
   match 'edit_main_company' => 'companies#edit_main_company', :as => :edit_main_company, :method => :post 
