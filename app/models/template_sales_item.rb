@@ -17,6 +17,6 @@ class TemplateSalesItem < ActiveRecord::Base
   end
   
   def confirmed_sales_items
-    self.sales_items.where(:is_confirmed => true )
+    self.sales_items.where(:is_confirmed => true ).order("created_at ASC")
   end
 end

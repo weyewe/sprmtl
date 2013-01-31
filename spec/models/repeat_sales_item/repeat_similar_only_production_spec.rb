@@ -69,22 +69,41 @@ describe SalesItem do
 
       @repeat_quantity = 20 
       
-      @repeat_si = SalesItem.create_repeat_sales_item(@admin, @second_sales_order, 
-                                                      @has_production_sales_item, {
-        :quantity => @repeat_quantity, 
-        :is_pre_production => true , 
-        :is_production     => true, 
-        :is_post_production => false,
-        :pre_production_price  => "50000", 
-        :production_price      => "20000",
-        :post_production_price => "150000",
-        :is_delivered => true, 
-        :delivery_address => "Hahahahaa"
+      @initial_template_sales_item_count = TemplateSalesItem.count 
+      
+      @repeat_si = SalesItem.create_repeat_sales_item(@admin, @second_sales_order, {
+        :quantity               => @repeat_quantity, 
+        :is_pre_production      => true , 
+        :is_production          => true, 
+        :is_post_production     => false,
+        :pre_production_price   => "50000", 
+        :production_price       => "20000",
+        :post_production_price  => "150000",
+        :is_delivered           => true, 
+        :delivery_address       => "Hahahahaa",
+        :template_sales_item_id => @has_production_sales_item.template_sales_item_id 
+
       }) 
+      @repeat_si.reload 
     end
     
     it 'should create repeat_si' do
       @repeat_si.should be_valid 
+      @repeat_si.case.should == SALES_ITEM_CREATION_CASE[:repeat]
+    end
+    
+    it 'should not create template' do
+      @final_template_sales_item_count = TemplateSalesItem.count 
+      diff = @final_template_sales_item_count-  @initial_template_sales_item_count
+      diff.should == 0 
+    end
+  
+    it 'should give the appropriate template' do
+      @repeat_si.template_sales_item_id.should == @has_production_sales_item.template_sales_item_id 
+    end
+    
+    it 'should not have sales item subcription (before confirmation)'  do
+      @repeat_si.sales_item_subcription.should be_nil 
     end
   end
     

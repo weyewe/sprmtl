@@ -170,7 +170,7 @@ class SalesItem < ActiveRecord::Base
   def SalesItem.create_repeat_sales_item( employee, sales_order,  params )
     return nil if employee.nil?
     return nil if sales_order.nil? 
-    return nil if template_sales_item.nil? 
+    return nil if params[:template_sales_item_id].nil? 
     
     new_object = SalesItem.new
     new_object.creator_id = employee.id 
@@ -232,6 +232,12 @@ class SalesItem < ActiveRecord::Base
     
     if self.template_sales_item_id != template.id
       # change the template and the data related to it 
+      sample_sales_item  = template.confirmed_sales_items.first 
+      self.material_id           = sample_sales_item.material_id 
+      self.weight_per_piece      = sample_sales_item.weight_per_piece 
+      self.description           = sample_sales_item.description
+      self.name                  = sample_sales_item.name
+      self.template_sales_item_id = template.id 
     end
     
     self.quantity              = params[:quantity]
