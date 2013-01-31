@@ -158,6 +158,118 @@ class SalesItem < ActiveRecord::Base
     return self 
   end
   
+=begin
+##############################
+##############################
+##############################
+  CREATING THE REPEAT_SALES_ITEM
+##############################
+##############################
+##############################
+=end
+  def SalesItem.create_repeat_sales_item( employee, sales_order,  params )
+    return nil if employee.nil?
+    return nil if sales_order.nil? 
+    return nil if template_sales_item.nil? 
+    
+    new_object = SalesItem.new
+    new_object.creator_id = employee.id 
+    new_object.sales_order_id = sales_order.id 
+    new_object.customer_id = sales_order.customer_id 
+    
+    template = TemplateSalesItem.find_by_id params[:template_sales_item_id]
+    # related to the template sales item 
+    sample_sales_item  = template.confirmed_sales_items.first 
+    new_object.material_id           = sample_sales_item.material_id 
+    new_object.weight_per_piece      = sample_sales_item.weight_per_piece 
+    new_object.description           = sample_sales_item.description
+    new_object.name                  = sample_sales_item.name
+    
+    
+    # from params  
+    new_object.quantity               = params[:quantity]  
+    new_object.template_sales_item_id = params[:template_sales_item_id]
+    new_object.is_pre_production      = params[:is_pre_production] 
+    new_object.is_production          = params[:is_production]
+    new_object.is_post_production     = params[:is_post_production]
+    new_object.is_delivered           = params[:is_delivered]      
+    new_object.delivery_address       = params[:delivery_address]  
+    new_object.case                   = SALES_ITEM_CREATION_CASE[:repeat] 
+    new_object.is_pending_pricing     = params[:is_pending_pricing]
+
+    if not new_object.is_pending_pricing
+      new_object.pre_production_price  = BigDecimal( params[:pre_production_price]  )
+      new_object.production_price      = BigDecimal( params[:production_price]      )
+      new_object.post_production_price = BigDecimal( params[:post_production_price] )
+      new_object.is_pricing_by_weight  =  params[:is_pricing_by_weight]  
+    else 
+      new_object.pre_production_price   = BigDecimal("0")
+      new_object.production_price       = BigDecimal("0")
+      new_object.post_production_price  = BigDecimal("0") 
+    end                               
+     
+
+    new_object.requested_deadline    = params[:requested_deadline] # Date.new( 2013, 3,5 )
+    
+    if sample_sales_item.is_production? and new_object.is_production == false 
+      new_object.errors.add(:is_production , "Harus ada casting karena pesanan terdahulu memiliki casting" )  
+      return new_object 
+    end
+ 
+    
+    if new_object.save 
+      new_object.code = template.code 
+      new_object.save 
+    end
+    
+    return new_object
+  end
+  
+  
+  def update_repeat_sales_item( params ) 
+    return nil if self.is_confirmed? 
+    template = TemplateSalesItem.find_by_id params[:template_sales_item_id]
+    
+    if self.template_sales_item_id != template.id
+      # change the template and the data related to it 
+    end
+    
+    self.quantity              = params[:quantity]
+    
+    self.is_pre_production     = params[:is_pre_production] 
+    self.is_production       = params[:is_production]     
+    self.is_post_production    = params[:is_post_production]
+    self.is_delivered          = params[:is_delivered]      
+    self.delivery_address      = params[:delivery_address]   
+    self.is_pending_pricing = params[:is_pending_pricing]
+    
+    if not self.is_pending_pricing
+      self.pre_production_price  = BigDecimal( params[:pre_production_price]  )
+      self.production_price      = BigDecimal( params[:production_price]      )
+      self.post_production_price = BigDecimal( params[:post_production_price] )
+      self.is_pricing_by_weight  =  params[:is_pricing_by_weight]   
+    else
+      self.pre_production_price  = BigDecimal( '0' )
+      self.production_price      = BigDecimal( '0' )
+      self.post_production_price = BigDecimal( '0' )
+    end
+    
+    
+    self.requested_deadline    = params[:requested_deadline] 
+    self.save 
+    
+    return self
+  end
+  
+=begin
+##############################
+##############################
+##############################
+  END OF REPEAT_SALES_ITEM
+##############################
+##############################
+##############################
+=end
   
   def generate_code
     
@@ -217,6 +329,7 @@ class SalesItem < ActiveRecord::Base
   end
   
   def generate_customer_subcription
+    return nil if not self.sales_item_subcription.nil? 
     si_subcription = SalesItemSubcription.create_subcription(self) 
     self.sales_item_subcription_id = si_subcription.id 
     self.save 
@@ -231,8 +344,11 @@ class SalesItem < ActiveRecord::Base
     self.is_confirmed = true 
     self.save
     
-    self.generate_code
-    self.generate_template_sales_item 
+    if self.case == SALES_ITEM_CREATION_CASE[:new]
+      self.generate_code
+      self.generate_template_sales_item 
+    end
+    
     self.generate_customer_subcription
     self.reload 
     if self.only_machining?

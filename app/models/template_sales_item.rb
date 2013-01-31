@@ -15,4 +15,8 @@ class TemplateSalesItem < ActiveRecord::Base
     
     return new_object 
   end
+  
+  def confirmed_sales_items
+    self.sales_items.where(:is_confirmed => true )
+  end
 end
