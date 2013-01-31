@@ -117,23 +117,23 @@ describe SalesItem do
       @has_production_sales_item.customer.should be_valid 
     end
     
-    # it 'should create sales_item_subcription' do
-    #   sales_item_subcription = @has_production_sales_item.sales_item_subcription
-    #   sales_item_subcription.customer_id.should == @customer.id 
-    # end
-    # 
-    # it 'should create abstract sales item'  do
-    #   abstract_sales_item = @has_production_sales_item.abstract_sales_item
-    #   abstract_sales_item.should be_valid 
-    #   abstract_sales_item.code.should == @has_production_sales_item.code 
-    # end
+    it 'should create sales_item_subcription' do
+      sales_item_subcription = @has_production_sales_item.sales_item_subcription
+      sales_item_subcription.customer_id.should == @customer.id 
+    end
     
-    # it 'should link production order with sales_item_subcription + abstract_sales_item' do
-    #   production_order = @has_production_sales_item.production_orders.first 
-    #   production_order.abstract_sales_item_id.should == @has_production_sales_item.abstract_sales_item_id 
-    #   production_order.sales_item_subcription_id.should == @has_production_sales_item.sales_item_subcription_id 
-    # end
-    # 
+    it 'should create abstract sales item'  do
+      template_sales_item = @has_production_sales_item.template_sales_item
+      template_sales_item.should be_valid 
+      template_sales_item.code.should == @has_production_sales_item.code 
+    end
+    
+    it 'should link production order with sales_item_subcription + abstract_sales_item' do
+      production_order = @has_production_sales_item.production_orders.first 
+      production_order.template_sales_item_id.should == @has_production_sales_item.template_sales_item_id 
+      production_order.sales_item_subcription_id.should == @has_production_sales_item.sales_item_subcription_id 
+    end
+    
     it 'should not allow only_machining' do
       @only_machining_sales_item.only_machining?.should be_true 
       @only_machining_sales_item.is_production?.should be_false 
