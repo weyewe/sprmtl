@@ -289,3 +289,10 @@ HALF_CONTINUOUS_FORM_LENGTH = 342
 FULL_CONTINUOUS_FORM_LENGTH = 684
 
 
+
+
+SALES_ITEM_CREATION_CASE= {
+  :new =>   1,
+  :repeat =>  2 , 
+  :generic => 3
+}

@@ -9,7 +9,7 @@ class ItemReceivalEntriesController < ApplicationController
     
     add_breadcrumb "Garansi Retur", 'new_item_receival_url'
     set_breadcrumb_for @parent, 'new_item_receival_item_receival_entry_url' + "(#{@parent.id})", 
-                "Tambah  Item ke Garansi Retur"
+                "Tambah  Item ke Penerimaan Bubut"
   end
   
   def create

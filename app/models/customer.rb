@@ -7,7 +7,13 @@ class Customer < ActiveRecord::Base
   has_many :invoices 
   has_many :downpayment_histories
   
-  has_many :vehicles 
+ 
+  has_many :sales_items  
+  has_many :sales_item_subcriptions 
+  
+  has_many :template_sales_items, :through => :sales_item_subcriptions
+  
+
   
   
   

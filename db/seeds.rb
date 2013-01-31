@@ -114,6 +114,22 @@ data_entry_role = {
         :update_guarantee_return_entry => true ,
         :delete_guarantee_return_entry => true 
       },    
+   
+  :item_receivals => {
+    :new => true,
+    :create => true, 
+    :edit => true, 
+    :update_item_receival => true ,
+    :delete_item_receival => true,
+    :confirm_item_receival => true
+  },
+      :item_receival_entries => {
+        :new => true,
+        :create => true, 
+        :edit => true, 
+        :update_item_receival_entry => true ,
+        :delete_item_receival_entry => true 
+      },
   
   :invoices => {
     :new => true,

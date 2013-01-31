@@ -24,6 +24,7 @@ class SalesItem < ActiveRecord::Base
   # validates_presence_of :price_per_piece
   validates_presence_of :weight_per_piece
   validates_presence_of :quantity 
+  validates_presence_of :case 
   
   validate :material_must_present_if_production_is_true 
   validate :delivery_address_must_present_if_delivered_is_true 
@@ -31,6 +32,8 @@ class SalesItem < ActiveRecord::Base
   validate  :weight_per_piece_must_not_be_less_than_zero
   
   belongs_to :customer 
+  belongs_to :template_sales_item 
+  belongs_to :sales_item_subcription 
   
   def material_must_present_if_production_is_true
     if  is_production == true  and  material_id.nil?
@@ -86,6 +89,12 @@ class SalesItem < ActiveRecord::Base
     new_object.quantity              = params[:quantity]          
     new_object.description           = params[:description]   
     new_object.name                  = params[:name]
+    
+    new_object.customer_id = sales_order.customer_id 
+    
+    if params[:case].nil?
+      new_object.case  = SALES_ITEM_CREATION_CASE[:new]
+    end
     
     
 
@@ -199,9 +208,33 @@ class SalesItem < ActiveRecord::Base
     self.save 
   end
   
+  def generate_template_sales_item
+    if self.case == SALES_ITEM_CREATION_CASE[:new]
+      template_si = TemplateSalesItem.create_based_on_sales_item( self )
+      self.template_sales_item_id = template_si.id 
+      self.save 
+    end
+  end
+  
+  def generate_customer_subcription
+    si_subcription = SalesItemSubcription.create_subcription(self) 
+    self.sales_item_subcription_id = si_subcription.id 
+    self.save 
+  end
+  
+  
+  
+  
   def confirm
     return nil if self.is_confirmed == true 
     
+    self.is_confirmed = true 
+    self.save
+    
+    self.generate_code
+    self.generate_template_sales_item 
+    self.generate_customer_subcription
+    self.reload 
     if self.only_machining?
        
     elsif self.casting_included?
@@ -209,12 +242,9 @@ class SalesItem < ActiveRecord::Base
       self.update_on_confirm 
     end    
     
-    
-    
-    self.is_confirmed = true 
-    self.save 
-    self.generate_code
   end
+  
+  
   
   def only_machining?
     self.is_production == false && self.is_post_production == true 
