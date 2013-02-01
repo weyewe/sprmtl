@@ -249,7 +249,8 @@ describe SalesItem do
           
           it 'should have pending post production' do 
             @sales_item_subcription.reload 
-            @sales_item_subcription.pending_post_production.should == @ok_quantity
+            @sales_item_subcription.pending_post_production.should ==  0 # no post production.
+            # the ready quantity increases 
           end
           
           # context "Creating the SubcriptionPostProductionHistory: spanning 1 sales item"  do

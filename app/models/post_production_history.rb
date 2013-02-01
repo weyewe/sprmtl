@@ -1,6 +1,7 @@
 class PostProductionHistory < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_item 
+  belongs_to :sales_item_subcription
   validates_presence_of   :ok_quantity,  :broken_quantity, :bad_source_quantity# , 
   #                           # :ok_weight,   :broken_weight,   :bad_source_weight ,  
   #                           # :start_date, :finish_date

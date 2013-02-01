@@ -5,13 +5,37 @@ price
 
 
 We want to simulate these things:
+0. Fixing the sales item update 
+		>>. In the same sales order, customer wants to change service level. 
+			Case 1: production + post production => production only 
+			
+			Case 2: production => production + post production
+			
+			Case 3 (can't happen): post_production => production + post_production 
+
 1. Repeat Sales Item with different service level. 
-		a. In sales_order #1, it requires production only 
-		b. In sales_order #2, it requires production + post_production  
-			# if there is delivery made, those items already sent must go through new sales_order 
-			# ah, one way: cancel delivery.. and bring those item back 
+		a. In sales_order #1 & #2, it requires production only  (DONE)
+			# see: spec/model/repeat_sales_item/complete_similar_repeat_no_post_prod_spec.rb
+			
+		b. In sales_order #1 & #2, it requires production + post_production   (DONE) 
+			# see: spec/model/repeat_sales_item/complete_similar_repeat_with_post_prod_spec.rb
 		
-		c. Impossible case. must be blocked => from post_production only => production + post_production
+		c. In sales_order #1 & #2, it requires post_production only 
+			 
+			
+			
+		
+		
+		
+		d. In sales order #1 => it requires production only 
+			 In sales order #2 => it requires both production and post production
+			 In sales order #3 => it requires production only. HOW?
+			
+	
+		
+			
+		xx. Impossible case. must be blocked => from post_production only => production + post_production
+		# must create new sales item 
 		
 		
 2. Effect on  

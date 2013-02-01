@@ -66,20 +66,32 @@ describe Invoice do
     @broken_quantity = 1
     @repairable_quantity = 1 
     
-    @production_history = ProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
-      :processed_quantity    => @processed_quantity, 
-      :ok_quantity           => @ok_quantity, 
-      :repairable_quantity   => @repairable_quantity, 
-      :broken_quantity       => @broken_quantity, 
-
-      :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
-      :repairable_weight     => '13',
-      :broken_weight         =>  "#{2*10}" ,
-
-      # :person_in_charge      => nil ,# list of employee id 
-      :start_date            => Date.new( 2012, 10,10 ) ,
-      :finish_date           => Date.new( 2013, 1, 15) 
-    })
+    # @production_history = ProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
+    #   :processed_quantity    => @processed_quantity, 
+    #   :ok_quantity           => @ok_quantity, 
+    #   :repairable_quantity   => @repairable_quantity, 
+    #   :broken_quantity       => @broken_quantity, 
+    # 
+    #   :ok_weight             =>  "#{8*15}" ,  # in kg.. .00 
+    #   :repairable_weight     => '13',
+    #   :broken_weight         =>  "#{2*10}" ,
+    # 
+    #   # :person_in_charge      => nil ,# list of employee id 
+    #   :start_date            => Date.new( 2012, 10,10 ) ,
+    #   :finish_date           => Date.new( 2013, 1, 15) 
+    # })
+    
+    @sales_item_subcription = @complete_cycle_sales_item.sales_item_subcription
+    @production_history = SubcriptionProductionHistory.create_history( @admin, @sales_item_subcription , {
+      :ok_quantity             => @ok_quantity           ,
+      :repairable_quantity     => @repairable_quantity   ,
+      :broken_quantity         => @broken_quantity       ,
+      :ok_weight               => "#{8*15}"          ,
+      :repairable_weight       => '13'     ,
+      :broken_weight           => "#{2*10}"         ,
+      :start_date              => Date.new( 2012, 10,10 )          ,
+      :finish_date             => Date.new( 2013, 1, 15)      
+    } )
     
     @initial_pending_production = @complete_cycle_sales_item.pending_production
     @initial_pending_post_production = @complete_cycle_sales_item.pending_post_production 
@@ -92,19 +104,31 @@ describe Invoice do
     
     @post_production_broken_1 = 1 
     @post_production_ok_1 = @total_post_production_1 - @post_production_broken_1
-    @post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
-      :ok_quantity           => @post_production_ok_1, 
-      :broken_quantity       => @post_production_broken_1, 
-      :bad_source_quantity => 0, 
-
-      :ok_weight             =>  "#{@post_production_ok_1*15}" ,  # in kg.. .00 
-      :broken_weight         =>  "#{@post_production_broken_1*10}" ,
-      :bad_source_weight => '0',
-
-      # :person_in_charge      => nil ,# list of employee id 
-      :start_date            => Date.new( 2012, 10,10 ) ,
-      :finish_date           => Date.new( 2013, 1, 15) 
-    })
+    # @post_production_history = PostProductionHistory.create_history( @admin, @complete_cycle_sales_item, {
+    #   :ok_quantity           => @post_production_ok_1, 
+    #   :broken_quantity       => @post_production_broken_1, 
+    #   :bad_source_quantity => 0, 
+    # 
+    #   :ok_weight             =>  "#{@post_production_ok_1*15}" ,  # in kg.. .00 
+    #   :broken_weight         =>  "#{@post_production_broken_1*10}" ,
+    #   :bad_source_weight => '0',
+    # 
+    #   # :person_in_charge      => nil ,# list of employee id 
+    #   :start_date            => Date.new( 2012, 10,10 ) ,
+    #   :finish_date           => Date.new( 2013, 1, 15) 
+    # })
+    
+    @sales_item_subcription.reload 
+    @post_production_history = SubcriptionPostProductionHistory.create_history( @admin, @sales_item_subcription , {
+      :ok_quantity             => @post_production_ok_1           ,
+      :bad_source_quantity     => 0   ,
+      :broken_quantity         => @post_production_broken_1       ,
+      :ok_weight               => "#{@post_production_ok_1*15}"              ,
+      :bad_source_weight       =>  '0'  ,
+      :broken_weight           => "#{@post_production_broken_1*10}"       ,
+      :start_date              => Date.new( 2012, 10,10 )            ,
+      :finish_date             => Date.new( 2013, 1, 15)        
+    } )
     
     @complete_cycle_sales_item.reload 
     

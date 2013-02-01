@@ -1,7 +1,8 @@
 class ProductionHistory < ActiveRecord::Base
   # attr_accessible :title, :body
   # belongs_to :sales_item 
-  belongs_to :sales_item_subcription
+  # belongs_to :sales_item_subcription
+  belongs_to :sales_item
   validates_presence_of   :ok_quantity,  :broken_quantity,  :repairable_quantity  
   validates_numericality_of :ok_quantity, :broken_quantity  ,  :repairable_quantity 
                   

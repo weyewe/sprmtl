@@ -206,22 +206,40 @@ describe PostProductionHistory do
           @broken_weight = '0'
           @bad_source_weight = '20'
           
-          @post_production_history = PostProductionHistory.create_history( @admin, @only_post_production_sales_item, {
-            :ok_quantity           => @ok_quantity, 
-            :broken_quantity       => @broken_quantity, 
-            :bad_source_quantity => @bad_source_quantity, 
-
-            :ok_weight             =>  @ok_weight ,  # in kg.. .00 
-            :broken_weight         =>  @broken_weight ,
-            :bad_source_weight => @bad_source_weight ,
-
-            # :person_in_charge      => nil ,# list of employee id 
-            :start_date            => Date.new( 2012, 10,10 ) ,
-            :finish_date           => Date.new( 2013, 1, 15) 
-          })
+          # @post_production_history = PostProductionHistory.create_history( @admin, @only_post_production_sales_item, {
+          #   :ok_quantity           => @ok_quantity, 
+          #   :broken_quantity       => @broken_quantity, 
+          #   :bad_source_quantity => @bad_source_quantity, 
+          # 
+          #   :ok_weight             =>  @ok_weight ,  # in kg.. .00 
+          #   :broken_weight         =>  @broken_weight ,
+          #   :bad_source_weight => @bad_source_weight ,
+          # 
+          #   # :person_in_charge      => nil ,# list of employee id 
+          #   :start_date            => Date.new( 2012, 10,10 ) ,
+          #   :finish_date           => Date.new( 2013, 1, 15) 
+          # })
+          
+          @only_post_production_sales_item.reload 
+          @sales_item_subcription = @only_post_production_sales_item.sales_item_subcription 
+          @post_production_history = SubcriptionPostProductionHistory.create_history( @admin, @sales_item_subcription , {
+            :ok_quantity             => @ok_quantity           ,
+            :bad_source_quantity     => @bad_source_quantity   ,
+            :broken_quantity         => @broken_quantity       ,
+            :ok_weight               => @ok_weight             ,
+            :bad_source_weight       => @bad_source_weight  ,
+            :broken_weight           => @broken_weight       ,
+            :start_date              => Date.new( 2012, 10,10 )            ,
+            :finish_date             => Date.new( 2013, 1, 15)        
+          } )
+          
+          
         end
         
         it 'should create valid post production history' do
+          @post_production_history.errors.messages.each do |msg|
+            puts "The error: #{msg}"
+          end
           @post_production_history.should be_valid 
           @post_production_history.bad_source_quantity.should == @bad_source_quantity
         end
@@ -274,19 +292,34 @@ describe PostProductionHistory do
           @broken_weight = '20'
           @bad_source_weight = '0'
           
-          @post_production_history = PostProductionHistory.create_history( @admin, @only_post_production_sales_item, {
-            :ok_quantity           => @ok_quantity, 
-            :broken_quantity       => @broken_quantity, 
-            :bad_source_quantity => @bad_source_quantity, 
-
-            :ok_weight             =>  @ok_weight ,  # in kg.. .00 
-            :broken_weight         =>  @broken_weight ,
-            :bad_source_weight => @bad_source_weight ,
-
-            # :person_in_charge      => nil ,# list of employee id 
-            :start_date            => Date.new( 2012, 10,10 ) ,
-            :finish_date           => Date.new( 2013, 1, 15) 
-          })
+          # @post_production_history = PostProductionHistory.create_history( @admin, @only_post_production_sales_item, {
+          #   :ok_quantity           => @ok_quantity, 
+          #   :broken_quantity       => @broken_quantity, 
+          #   :bad_source_quantity => @bad_source_quantity, 
+          # 
+          #   :ok_weight             =>  @ok_weight ,  # in kg.. .00 
+          #   :broken_weight         =>  @broken_weight ,
+          #   :bad_source_weight => @bad_source_weight ,
+          # 
+          #   # :person_in_charge      => nil ,# list of employee id 
+          #   :start_date            => Date.new( 2012, 10,10 ) ,
+          #   :finish_date           => Date.new( 2013, 1, 15) 
+          # })
+          
+          @only_post_production_sales_item.reload 
+          @sales_item_subcription= @only_post_production_sales_item.sales_item_subcription
+          @post_production_history = SubcriptionPostProductionHistory.create_history( @admin, @sales_item_subcription , {
+            :ok_quantity             => @ok_quantity           ,
+            :bad_source_quantity     => @bad_source_quantity   ,
+            :broken_quantity         => @broken_quantity       ,
+            :ok_weight               => @ok_weight             ,
+            :bad_source_weight       => @bad_source_weight  ,
+            :broken_weight           => @broken_weight       ,
+            :start_date              => Date.new( 2012, 10,10 )            ,
+            :finish_date             => Date.new( 2013, 1, 15)        
+          } )
+          
+          
         end
         
         it 'should create valid post production history' do
