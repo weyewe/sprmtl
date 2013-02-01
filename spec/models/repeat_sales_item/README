@@ -1,0 +1,26 @@
+in this repeat sales item, we are simulating the case where sales item is repeat.
+
+Means: same customer, different sales order, same template sales item. Difference: quantity
+price
+
+
+We want to simulate these things:
+1. Repeat Sales Item with different service level. 
+		a. In sales_order #1, it requires production only 
+		b. In sales_order #2, it requires production + post_production  
+			# if there is delivery made, those items already sent must go through new sales_order 
+			# ah, one way: cancel delivery.. and bring those item back 
+		
+		c. Impossible case. must be blocked => from post_production only => production + post_production
+		
+		
+2. Effect on  
+	a. SubcriptionProductionHistory, SubcriptionPostProductionHistory  in the case with no changes
+				in the service level
+				
+	b. If there is changes in service level  ( try case 1b ) 
+	
+3. Loose Delivery: you can just send out any items. 
+		 # so , if it is only at production. But the customer wants to rush it up..
+		# send it while it is in production, reduce the pending post production ... hheheh! 
+		# mark the loose delivery entry => to peg the pending post_production

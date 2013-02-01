@@ -86,7 +86,7 @@ class ProductionHistory < ActiveRecord::Base
   
   
   def ProductionHistory.create_history( sales_item_subcription, subcription_production_history, sales_item , params ) 
-    return nil if sales_item.nil?  or sales_item_subcription.nil? 
+    return nil if sales_item.nil?  or sales_item_subcription.nil?  or subcription_production_history.nil? 
     puts "create history. pass the sales item check"
     return nil if sales_item_subcription.has_unconfirmed_production_history? 
     puts "create history. has no unconfirmed production history"
@@ -100,6 +100,7 @@ class ProductionHistory < ActiveRecord::Base
     new_object.ok_quantity         = params[:ok_quantity]
     new_object.repairable_quantity = params[:repairable_quantity]
     new_object.broken_quantity     = params[:broken_quantity] 
+    new_object.subcription_production_history_id = subcription_production_history.id 
     # new_object.ok_weight           = params[:ok_weight] 
     # new_object.repairable_weight   = params[:repairable_weight] 
     # new_object.broken_weight       = params[:broken_weight] 

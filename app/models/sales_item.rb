@@ -574,6 +574,8 @@ class SalesItem < ActiveRecord::Base
       ProductionOrder.generate_post_production_failure_production_order( post_production_history  ) 
     else
       # if no production, just post production.. don't do anything.. do it as it is 
+      # => REturn the bad source and broken to customer.. reimburse or whatever
+      # => the policy is to be announced 
     end 
     
   end

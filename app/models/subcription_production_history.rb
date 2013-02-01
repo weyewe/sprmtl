@@ -15,6 +15,7 @@ class SubcriptionProductionHistory < ActiveRecord::Base
   validate :no_negative_weight
   validate :prevent_zero_weight_for_non_zero_quantity
   validate :start_date_must_not_be_later_than_finish_date
+  validate :no_excess_production 
  
 
    
@@ -87,6 +88,13 @@ class SubcriptionProductionHistory < ActiveRecord::Base
     end 
   end
   
+  def no_excess_production
+    sales_item_subcription = self.sales_item_subcription 
+    if ok_quantity.present? and ok_quantity > sales_item_subcription.pending_production 
+      errors.add(:ok_quantity , "Tidak boleh lebih besar dari #{sales_item_subcription.pending_production }" ) 
+    end
+  end
+  
   
   
   def self.create_history( employee, sales_item_subcription , params ) 
@@ -98,10 +106,10 @@ class SubcriptionProductionHistory < ActiveRecord::Base
     new_object.creator_id = employee.id 
      
   
-    if not params[:ok_quantity].nil? and params[:ok_quantity].to_i > sales_item_subcription.pending_production 
-      new_object.errors.add(:ok_quantity , "Maksimal pending production: #{sales_item_subcription.pending_production}" ) 
-      return new_object 
-    end
+    # if not params[:ok_quantity].nil? and params[:ok_quantity].to_i > sales_item_subcription.pending_production 
+    #   new_object.errors.add(:ok_quantity , "Maksimal pending production: #{sales_item_subcription.pending_production}" ) 
+    #   return new_object 
+    # end
     
     new_object.ok_quantity         = params[:ok_quantity]
     new_object.repairable_quantity = params[:repairable_quantity]
@@ -145,6 +153,7 @@ class SubcriptionProductionHistory < ActiveRecord::Base
   
   def delete(employee)
     return nil if employee.nil?
+    return nil if self.is_confirmed == true 
     self.destroy if self.is_confirmed == false 
   end
   
@@ -186,36 +195,7 @@ class SubcriptionProductionHistory < ActiveRecord::Base
       
       puts "\n\n*******************"
       puts "Gonna distribute "
-      self.distribute_production_result # over here, will create production result, and 
-      # create post production order / production order 
-      # update 
-      
-      
-      # DISPATCH THE PRODUCTION HISTORY to all sales items ordered.. 
-      # how is the dispatch order? 
-      
-      # =>  >>>>>>>>>>>>>>>>>>>>>>>>>>>>   FIFO!   <<<<<<<<<<<<<<<<<<<<<<<<<<<< 
-      
-      # there are 3 quantities to be dispatched to several production Histories: 
-      # => ok quantity, 
-      # => repairable quantity, and 
-      # => broken quantity  
-      # What is our policy? 
-      # 
-      
-      
-      # self.update_processed_quantity # not needed anymore.. we should update the sales item 
-      
-      # generate the production history for sales item 
-      # 
-      
-      # sales_item = self.sales_item
-      # 
-      #  
-      # 
-      # sales_item.generate_next_phase_after_production( self ) 
-      # sales_item.update_on_production_history_confirm
-       
+      self.distribute_production_result  
     end
     
   end
@@ -230,7 +210,6 @@ class SubcriptionProductionHistory < ActiveRecord::Base
   # => to create extra production history 
   def distribute_production_result
     return nil if self.is_confirmed == false 
-    puts "pass the is_confirmed in the distribute"
     
     ok_quantity = self.ok_quantity
     repairable_quantity = self.repairable_quantity
@@ -239,12 +218,10 @@ class SubcriptionProductionHistory < ActiveRecord::Base
     sales_item_subcription = self.sales_item_subcription
     
     if sales_item_subcription.pending_production_sales_items.count == 0 
-      puts "IN THE DISTRIBUTE_PRODUCTION RESULT"
       raise ActiveRecord::Rollback, "Call tech support!" 
       return
     end
     
-    puts "done pending production check"
     
     total_pending = sales_item_subcription.pending_production  ## aggregate over all shite 
     

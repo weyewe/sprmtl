@@ -147,13 +147,118 @@ describe SalesItem do
         
         @sales_item_subcription_1.pending_production.should == @repeat_quantity + @has_production_quantity
       end
-    end
-    
-    
-    
-    context "creating subcription history that spans 2 sales_item " do
       
-    end
+      context "creating subcription production history that spans 2 sales_item " do
+        before(:each) do
+          @sales_item_subcription = @has_production_sales_item.sales_item_subcription
+          @sales_item_subcription.reload 
+        end
+        
+        it 'should not allow creation that exceed pending production of all sales items' do
+          @ok_quantity         = @repeat_quantity + @has_production_quantity + 1 
+          @repairable_quantity = 0 
+          @broken_quantity     = 0 
+          @ok_weight           = "#{@ok_quantity*10}"
+          @repairable_weight   = '0'
+          @broken_weight       = '0' 
+          @start_date          = Date.new(2012,12,12)
+          @finish_date         = Date.new(2012,12,15)
+
+          @sph = SubcriptionProductionHistory.create_history( @admin, @sales_item_subcription , {
+            :ok_quantity             => @ok_quantity           ,
+            :repairable_quantity     => @repairable_quantity   ,
+            :broken_quantity         => @broken_quantity       ,
+            :ok_weight               => @ok_weight             ,
+            :repairable_weight       => @repairable_weight     ,
+            :broken_weight           => @broken_weight         ,
+            :start_date              => @start_date            ,
+            :finish_date             => @finish_date          
+          } )
+          
+          @sph.should_not be_valid 
+        end
+        
+        it 'should allow creation of subcription_production_history that spans 2 sales item' do
+          @ok_quantity         = @repeat_quantity + @has_production_quantity - 5
+          @repairable_quantity = 0 
+          @broken_quantity     = 0 
+          @ok_weight           = "#{@ok_quantity*10}"
+          @repairable_weight   = '0'
+          @broken_weight       = '0' 
+          @start_date          = Date.new(2012,12,12)
+          @finish_date         = Date.new(2012,12,15)
+
+          @sph = SubcriptionProductionHistory.create_history( @admin, @sales_item_subcription , {
+            :ok_quantity             => @ok_quantity           ,
+            :repairable_quantity     => @repairable_quantity   ,
+            :broken_quantity         => @broken_quantity       ,
+            :ok_weight               => @ok_weight             ,
+            :repairable_weight       => @repairable_weight     ,
+            :broken_weight           => @broken_weight         ,
+            :start_date              => @start_date            ,
+            :finish_date             => @finish_date          
+          } )
+          
+          @sph.should be_valid
+        end
+        
+        context "post creation of subcription history spanning multiple sales item" do
+          before(:each) do
+            @delta = 5 
+            # has_production_quantity = 50 
+            # repeat_quantity = 20 
+            @ok_quantity         = @repeat_quantity + @has_production_quantity - @delta 
+            # i expect the post confirm quantity to be 5. 
+            @repairable_quantity = 0 
+            @broken_quantity     = 0 
+            @ok_weight           = "#{@ok_quantity*10}"
+            @repairable_weight   = '0'
+            @broken_weight       = '0' 
+            @start_date          = Date.new(2012,12,12)
+            @finish_date         = Date.new(2012,12,15)
+
+            @sph = SubcriptionProductionHistory.create_history( @admin, @sales_item_subcription , {
+              :ok_quantity             => @ok_quantity           ,
+              :repairable_quantity     => @repairable_quantity   ,
+              :broken_quantity         => @broken_quantity       ,
+              :ok_weight               => @ok_weight             ,
+              :repairable_weight       => @repairable_weight     ,
+              :broken_weight           => @broken_weight         ,
+              :start_date              => @start_date            ,
+              :finish_date             => @finish_date          
+            } )
+            @sales_item_subcription.reload 
+            @initial_pending_production = @sales_item_subcription.pending_production 
+            @sph.confirm(@admin) 
+            @sph.reload 
+            @sales_item_subcription.reload 
+          end
+          
+          it 'should be confirmed' do
+            @sph.is_confirmed.should be_true 
+          end
+          
+          it 'should be linked to 2 production histories' do
+            @sph.production_histories.count.should == 2 
+          end
+          
+          it 'should leave pending production to be equal to delta ' do
+            @final_pending_production = @sales_item_subcription.pending_production 
+            @final_pending_production.should == @delta 
+          end
+          
+          context "Creating the SubcriptionPostProductionHistory" 
+          
+        end # context "post creation of subcription history spanning multiple sales item"
+        
+        
+      end # "creating subcription production history that spans 2 sales_item " 
+      
+    end # context 'confirming the second sales order'
+    
+    
+    
+    
   end
     
   
