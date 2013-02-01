@@ -1,9 +1,9 @@
 class PostProductionHistory < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_item 
-  validates_presence_of   :ok_quantity,  :broken_quantity, :bad_source_quantity, 
-                          # :ok_weight,   :broken_weight,   :bad_source_weight ,  
-                          :start_date, :finish_date
+  validates_presence_of   :ok_quantity,  :broken_quantity, :bad_source_quantity# , 
+  #                           # :ok_weight,   :broken_weight,   :bad_source_weight ,  
+  #                           # :start_date, :finish_date
                           
   validates_numericality_of :ok_quantity, :broken_quantity  ,  :bad_source_quantity# , 
   #                           :ok_weight, :broken_weight    , :bad_source_weight         
@@ -13,7 +13,7 @@ class PostProductionHistory < ActiveRecord::Base
   validate :no_negative_quantity
   # validate :no_negative_weight
   # validate :prevent_zero_weight_for_non_zero_quantity
-  validate  :prevent_excess_post_production
+  # validate  :prevent_excess_post_production
 
    
 
@@ -98,7 +98,7 @@ class PostProductionHistory < ActiveRecord::Base
     new_object.ok_quantity         = params[:ok_quantity]
     new_object.broken_quantity     = params[:broken_quantity] 
     new_object.bad_source_quantity = params[:bad_source_quantity] 
-    new_object.subcription_post_production_history = subcription_post_production_history.id 
+    new_object.subcription_post_production_history_id = subcription_post_production_history.id 
      
   
     if not new_object.save 

@@ -1,6 +1,7 @@
 class SubcriptionPostProductionHistory < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_item_subcription 
+  has_many :post_production_histories 
   
   validates_presence_of   :ok_quantity,  :broken_quantity, :bad_source_quantity, 
                           :ok_weight,   :broken_weight,   :bad_source_weight ,  
@@ -94,7 +95,7 @@ class SubcriptionPostProductionHistory < ActiveRecord::Base
     return nil if sales_item_subcription.has_unconfirmed_post_production_history? 
     
     new_object  = self.new
-    new_object.subcription_sales_item_id = subcription_sales_item.id 
+    new_object.sales_item_subcription_id = sales_item_subcription.id 
      
   
     
@@ -232,7 +233,7 @@ class SubcriptionPostProductionHistory < ActiveRecord::Base
       end
       
       # the post production order is assigned only once in the beginning
-      if repairable_quantity != 0 
+      if bad_source_quantity != 0 
         assigned_bad_source_quantity = bad_source_quantity
         bad_source_quantity =  0  
       end

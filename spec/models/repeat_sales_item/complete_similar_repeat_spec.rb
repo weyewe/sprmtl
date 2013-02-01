@@ -247,9 +247,15 @@ describe SalesItem do
             @final_pending_production.should == @delta 
           end
           
-          context "Creating the SubcriptionPostProductionHistory" 
+          context "Creating the SubcriptionPostProductionHistory: spanning 1 sales item"  do
+            
+          end
           
-        end # context "post creation of subcription history spanning multiple sales item"
+          context "Creating the SubcriptionPostProductionHistory: spanning multiple sales item"  do
+          end
+          
+        end # context "post creation of subcription history spanning multiple sales item" do
+        
         
         
       end # "creating subcription production history that spans 2 sales_item " 
