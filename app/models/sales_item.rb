@@ -1,6 +1,10 @@
 class SalesItem < ActiveRecord::Base
   # attr_accessible :title, :body
   belongs_to :sales_order
+  belongs_to :customer 
+  belongs_to :template_sales_item 
+  belongs_to :sales_item_subcription
+  
   
   has_many :pre_production_orders
   has_many :production_orders
@@ -31,9 +35,7 @@ class SalesItem < ActiveRecord::Base
   validate :quantity_must_be_at_least_one
   validate  :weight_per_piece_must_not_be_less_than_zero
   
-  belongs_to :customer 
-  belongs_to :template_sales_item 
-  belongs_to :sales_item_subcription 
+   
   
   def material_must_present_if_production_is_true
     if  is_production == true  and  material_id.nil?
@@ -336,9 +338,17 @@ class SalesItem < ActiveRecord::Base
   
   def generate_customer_subcription
     return nil if not self.sales_item_subcription.nil? 
-    si_subcription = SalesItemSubcription.create_subcription(self) 
+    
+    si_subcription = nil 
+    
+      si_subcription = SalesItemSubcription.create_or_find_subcription(self)  
+   
+    
     self.sales_item_subcription_id = si_subcription.id 
-    self.save 
+    self.save
+    
+    
+    
   end
   
   

@@ -170,6 +170,7 @@ describe SubcriptionProductionHistory do
         @sph.reload 
         @sales_item_subcription.reload
         @pre_confirm_pending_production = @sales_item_subcription.pending_production
+        @pre_confirm_pending_post_production = @sales_item_subcription.pending_post_production
         @initial_production_history_count = @sph.production_histories 
         @sph.confirm(@admin)
         @sph.reload 
@@ -199,7 +200,11 @@ describe SubcriptionProductionHistory do
         diff.should == @ok_quantity
       end
       
-      it 'should add the pending post production (if post production is required)'
+      it 'should increase the pending post production for the post-production included' do
+        @post_confirm_pending_post_production = @sales_item_subcription.pending_post_production 
+        diff = @post_confirm_pending_post_production - @pre_confirm_pending_post_production 
+        diff.should == (   @ok_quantity + @repairable_quantity) 
+      end
     end # context "post confirm"
     
   end

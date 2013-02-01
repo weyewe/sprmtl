@@ -11,12 +11,20 @@ class SalesItemSubcription < ActiveRecord::Base
   
   validates_presence_of :customer_id, :template_sales_item_id 
   
-  def self.create_subcription(sales_item)
-    new_object=  self.new
-    new_object.customer_id = sales_item.customer_id 
-    new_object.template_sales_item_id = sales_item.template_sales_item_id
-    new_object.save 
-    return new_object 
+  def self.create_or_find_subcription(sales_item)
+    
+    if sales_item.case == SALES_ITEM_CREATION_CASE[:new]
+      new_object                        = self.new
+      new_object.customer_id            = sales_item.customer_id 
+      new_object.template_sales_item_id = sales_item.template_sales_item_id
+      new_object.save 
+      return new_object 
+    else
+      return self.where(
+        :customer_id => sales_item.customer_id, 
+        :template_sales_item_id => sales_item.template_sales_item_id 
+      ).first 
+    end
   end
   
   
@@ -52,4 +60,21 @@ class SalesItemSubcription < ActiveRecord::Base
       ( is_deleted.eq   false     )               
     }.order("created_at ASC")
   end
+  
+=begin
+  PENDING POST_+ PRODUCTION SUMMARY
+=end
+  def pending_post_production
+    self.pending_post_production_sales_items.sum("pending_post_production")
+  end
+  
+  def pending_post_production_sales_items
+    self.sales_items.where{
+      ( pending_post_production.gt 0) & 
+      ( is_canceled.eq false      ) & 
+      ( is_confirmed.eq true      ) &             
+      ( is_deleted.eq   false     )               
+    }.order("created_at ASC")
+  end
 end
+
