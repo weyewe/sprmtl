@@ -412,6 +412,7 @@ ActiveRecord::Schema.define(:version => 20130131050154) do
     t.integer  "customer_id"
     t.integer  "sales_item_subcription_id"
     t.integer  "case",                                                              :default => 1
+    t.boolean  "is_canceled",                                                       :default => false
   end
 
   create_table "sales_orders", :force => true do |t|
@@ -492,7 +493,7 @@ ActiveRecord::Schema.define(:version => 20130131050154) do
   end
 
   create_table "subcription_production_histories", :force => true do |t|
-    t.integer  "subcription_sales_item_id"
+    t.integer  "sales_item_subcription_id"
     t.integer  "sales_item_id"
     t.integer  "creator_id"
     t.integer  "processed_quantity",                                      :default => 0

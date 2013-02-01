@@ -1,7 +1,7 @@
 class CreateSubcriptionProductionHistories < ActiveRecord::Migration
   def change
     create_table :subcription_production_histories do |t|
-      t.integer   :subcription_sales_item_id
+      t.integer   :sales_item_subcription_id
       t.integer  :sales_item_id
       t.integer  :creator_id
       t.integer  :processed_quantity     ,          :default => 0

@@ -751,29 +751,11 @@ class SalesItem < ActiveRecord::Base
 #
 ####################################################
   def update_pending_production 
-    # puts "\n\n ******************in the update_pending_production"
-    # puts "production_finished_quantity: #{self.production_finished_quantity }"
-    # puts "post_production_finished_quantity: #{self.post_production_finished_quantity }"
+    
     produced_quantity  =   self.production_finished_quantity 
     
-    # we need adjustment because there events trigger a new production order 
-    # puts "\n the adjustment\n"
-    # puts "failed_production: #{self.number_of_failed_production }"
-    # puts "number_of_failed_post_production: #{self.number_of_failed_post_production }"
-    # puts "number_of_delivery_lost: #{self.number_of_delivery_lost }"
-    # puts "sales_return: #{self.sales_return_entries.where(:is_confirmed => true ).sum('quantity_for_production') }"
-    # 
+    adjustment_to_production_order  = self.number_of_failed_production   
     
-    adjustment_to_production_order  = self.number_of_failed_production  # -   
-                                  #self.used_quota_for_post_production_failure_replacement 
-                                  # self.number_of_failed_post_production 
-                                  
-                                  
-                                   #  +
-                                  # self.number_of_delivery_lost +  # delivery lost doesn't preserve the pending production
-                                  # self.sales_return_entries.where(:is_confirmed => true ).sum("quantity_for_production")
-    
-    # puts "\nproduction_orders: #{self.production_orders.sum('quantity')}"
     self.pending_production =  self.production_orders.sum("quantity") -    
                                 produced_quantity - 
                                 adjustment_to_production_order 
