@@ -34,7 +34,7 @@ describe SalesItem do
       :material_id => @copper.id, 
       :is_pre_production => true , 
       :is_production     => true, 
-      :is_post_production => false, 
+      :is_post_production => true, 
       :is_delivered => true, 
       :delivery_address => "Perumahan Citra Garden 1 Blok AC2/3G",
       :quantity => @has_production_quantity,
@@ -75,7 +75,7 @@ describe SalesItem do
         :quantity               => @repeat_quantity, 
         :is_pre_production      => true , 
         :is_production          => true, 
-        :is_post_production     => false,
+        :is_post_production     => true,
         :pre_production_price   => "50000", 
         :production_price       => "20000",
         :post_production_price  => "150000",
@@ -247,12 +247,80 @@ describe SalesItem do
             @final_pending_production.should == @delta 
           end
           
+          it 'should have pending post production' do 
+            @sales_item_subcription.reload 
+            @sales_item_subcription.pending_post_production.should == @ok_quantity
+          end
+          
           context "Creating the SubcriptionPostProductionHistory: spanning 1 sales item"  do
-            
+            before(:each) do
+              # has_production_quantity = 50 
+              # repeat_quantity = 20  => worked only 15 
+              # (already tested in the subcription_post_production_history)
+            end
           end
           
           context "Creating the SubcriptionPostProductionHistory: spanning multiple sales item"  do
-          end
+            before(:each) do
+              # has_production_quantity = 50 
+              # repeat_quantity = 20  => worked only 15
+              # total pending post production = 65 
+              @sales_item_subcription.reload 
+              @delta_post_production = 5 
+              @ok_quantity              = @sales_item_subcription.pending_post_production - @delta_post_production
+              @bad_source_quantity      = 0
+              @broken_quantity          = 0 
+              @ok_weight                = BigDecimal("#{@ok_quantity*10}")
+              @bad_source_weight        = BigDecimal("0")
+              @broken_weight            = BigDecimal("0")
+              @start_date               = Date.new(2013,1,12)
+              @finish_date              = Date.new(2013,1,25)
+          
+          
+              @spph = SubcriptionPostProductionHistory.create_history( @admin, @sales_item_subcription , {
+                :ok_quantity             => @ok_quantity           ,
+                :bad_source_quantity     => @bad_source_quantity   ,
+                :broken_quantity         => @broken_quantity       ,
+                :ok_weight               => @ok_weight             ,
+                :bad_source_weight       => @bad_source_weight     ,
+                :broken_weight           => @broken_weight         ,
+                :start_date              => @start_date            ,
+                :finish_date             => @finish_date          
+              } )
+              @spph.reload 
+              @sales_item_subcription.reload 
+            end
+            
+            it 'should create spph' do
+              @spph.should be_valid
+            end
+            
+            context "confirm spph" do
+              before(:each) do
+                @spph.confirm(@admin)
+                @sales_item_subcription.reload 
+              end
+              
+              it 'should produce 2 post_production_histories' do
+                @spph.post_production_histories.count.should == 2 
+              end
+
+              it 'should deduct the pending post production' do
+                @sales_item_subcription.pending_post_production.should == @delta_post_production
+              end
+              
+              it 'should divide the ok quantity according to created_at ASC order' do
+                @first =@spph.post_production_histories.where(:sales_item_id => @has_production_sales_item.id ).first 
+                @repeat = @spph.post_production_histories.where(:sales_item_id => @repeat_si.id ).first
+                
+                @first.ok_quantity.should  == 50
+                @repeat.ok_quantity.should == 10
+              end
+            end # "confirm spph"
+            
+            
+            
+          end # "Creating the SubcriptionPostProductionHistory: spanning multiple sales item" 
           
         end # context "post creation of subcription history spanning multiple sales item" do
         
