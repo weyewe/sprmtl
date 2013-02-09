@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130131050154) do
+ActiveRecord::Schema.define(:version => 20130203140432) do
 
   create_table "banks", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -270,6 +270,11 @@ ActiveRecord::Schema.define(:version => 20130131050154) do
     t.integer  "template_sales_item_id"
   end
 
+  create_table "post_production_results", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "pre_production_histories", :force => true do |t|
     t.integer  "sales_item_id"
     t.integer  "creator_id"
@@ -284,6 +289,11 @@ ActiveRecord::Schema.define(:version => 20130131050154) do
     t.datetime "created_at",                                               :null => false
     t.datetime "updated_at",                                               :null => false
     t.integer  "subcription_pre_production_history_id"
+  end
+
+  create_table "pre_production_results", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "production_histories", :force => true do |t|
@@ -321,6 +331,16 @@ ActiveRecord::Schema.define(:version => 20130131050154) do
     t.datetime "updated_at",                               :null => false
     t.integer  "sales_item_subcription_id"
     t.integer  "template_sales_item_id"
+  end
+
+  create_table "production_repair_results", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "production_results", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "responsibilities", :force => true do |t|

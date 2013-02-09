@@ -21,6 +21,18 @@ class SalesOrder < ActiveRecord::Base
     self.destroy
   end
   
+  def cancel(employee)
+    return nil if employee.nil?
+    return nil if not self.is_confirmed? 
+    
+    if self.sales_items.where(:is_deleted => false).count != 0
+      return nil
+    end
+    
+    self.is_deleted = true 
+    self.save 
+  end
+  
   def active_sales_items 
     self.sales_items.where(:is_deleted => false )
   end
